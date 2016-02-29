@@ -6,4 +6,5 @@
 *.jar	binary
 *.pdf	binary
 *.PDF	binary
+.git_archival.txt  export-subst
 *.bin filter=lfs diff=lfs merge=lfs -text
