@@ -1,0 +1,12 @@
+version: '3.4'
+
+services:
+  ridss2023:
+    image: ridss2023
+    build:
+      context: ../
+      dockerfile: ./docker/Dockerfile
+    container_name: ridss2023Container
+    command: ["sh", "-c", "pip install pipreqs && pip install black && pip install debugpy -t /tmp && python /tmp/debugpy --wait-for-client --listen 0.0.0.0:5678 src/main.py "]
+    ports:
+      - 5678:5678

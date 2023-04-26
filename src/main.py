@@ -1,10 +1,22 @@
 from PIL import Image
-
 import pytesseract
+import cv2
+import wand
 
-# If you don't have tesseract executable in your PATH, include the following:
-#pytesseract.pytesseract.tesseract_cmd = r'<full_path_to_your_tesseract_executable>'
-# Example tesseract_cmd = r'C:\Program Files (x86)\Tesseract-OCR\tesseract'
+image = '/RIDSS2023/testimages/Beispiel_Texterkennung.png'
 
 # Simple image to string
-print(pytesseract.image_to_string(Image.open('/workspaces/ocr-erkennung-wiwi-portal/testimages/Beispiel_Texterkennung.png')))
+print(pytesseract.image_to_string(Image.open(image)))
+
+
+from wand.image import Image
+from wand.display import display
+
+with Image(filename=image) as img:
+    print(img.size)
+    for r in 1, 2, 3:
+        with img.clone() as i:
+            i.resize(int(i.width * r * 0.25), int(i.height * r * 0.25))
+            i.rotate(90 * r)
+            i.save(filename='mona-lisa-{0}.png'.format(r))
+            display(i)
