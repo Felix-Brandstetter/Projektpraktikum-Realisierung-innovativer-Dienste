@@ -1,0 +1,17 @@
+version: '3.4'
+
+services:
+  ridss2023:
+    image: ridss2023
+    build:
+      context: ../
+      dockerfile: ./docker/Dockerfile
+    container_name: ridss2023Container
+    volumes:
+      #Inputfolder
+      - ../Inputfolder:/RIDSS2023/Inputfolder
+      #Outputfolder
+      - ../Outputfolder:/RIDSS2023/Outputfolder
+    restart: always
+      
+
