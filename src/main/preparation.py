@@ -17,4 +17,5 @@ def copy_file_to_folder(file, destination_folder, override=True):
             shutil.move(file, destination_filepath)
 
 def is_pdf_digital(pdf):
-    
+    #TODO
+    print("ToDo")
