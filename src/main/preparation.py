@@ -9,6 +9,8 @@ def get_file_format(file):
 
 
 def copy_file_to_folder(file, destination_folder, override=True):
+    if not os.path.exists(destination_folder):
+        os.mkdir(destination_folder)
     destination_filepath = os.path.join(destination_folder, os.path.basename(file))
     if override:
         shutil.move(file, destination_filepath)
