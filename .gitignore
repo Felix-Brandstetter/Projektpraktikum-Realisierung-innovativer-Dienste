@@ -1,4 +1,7 @@
 .vscode/
 *.pyc
 *.png
-!testimages/
+*.pdf
+inputfolder/
+outputfolder/
+!*.gitkeep

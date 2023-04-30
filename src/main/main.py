@@ -1,22 +1,16 @@
-from PIL import Image
-import pytesseract
-import cv2
-import wand
-
-image = "/RIDSS2023/inputfolder/sample.pdf"
-
-# Simple image to string
-# print(pytesseract.image_to_string(Image.open(image)))
+import shutil
+import os
+import preparation
 
 
-from wand.image import Image
-from wand.display import display
+def main(file):
+    file_format = preparation.get_file_format(file)
+    if file_format == "PDF":
+        preparation.
 
-with Image(filename=image) as img:
-    print(img.size)
-    for r in 1, 2, 3:
-        with img.clone() as i:
-            i.resize(int(i.width * r * 0.25), int(i.height * r * 0.25))
-            i.rotate(90 * r)
-            i.save(filename="outputfolder/mona-lisa-{0}.pdf".format(r))
-            display(i)
+    #preparation.copy_file_to_folder(file,"/RIDSS2023/outputfolder",override=True)
+
+
+
+if __name__ == "__main__":
+    main("/RIDSS2023/inputfolder/Testnotenauszug.pdf")
