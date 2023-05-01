@@ -11,8 +11,13 @@ def get_file_format(file):
             return image.format
     except wand.exceptions.CorruptImageError:
         # TODO Was passiert mit Bildern die nicht eingelesen werden können
-        print("Bild konnte nicht eingelsen werden")
+        print("Bild konnte nicht eingelesen werden")
         move_file_to_folder(file, "/RIDSS2023/outputfolder/failed", override=True)
+    except wand.exceptions.BlobError:
+        print("File not found")
+    except Exception as e:
+        print(e)
+        print("Anderes Problem")
 
 
 def move_file_to_folder(file, destination_folder, override=True):
@@ -37,8 +42,19 @@ def is_pdf_digital(file):
                 break
     return pdf_is_digital
 
+
 def get_metadata(file):
     metadata = {}
     with Image(filename=file) as image:
         metadata.update((k, v) for k, v in image.metadata.items())
     print(metadata)
+
+
+def convert_to_pdf(file):
+    with Image(filename=file, resolution=300) as image:
+        image.format = 'pdf'
+        filename=os.path.join('/RIDSS2023/tmp', os.path.splitext(os.path.basename(file))[0]+'.pdf')
+        print(filename)
+        image.save(filename=filename)
+    return filename
+        
