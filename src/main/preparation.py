@@ -4,6 +4,7 @@ import shutil
 
 
 def get_file_format(file):
+    #TODO Failed with .txt Datei
     with Image(filename=file) as image:
         return image.format
 
