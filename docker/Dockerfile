@@ -1,85 +1,82 @@
-# Debian 11 aka Bullseye
-FROM python:3.11-slim
+FROM ubuntu:22.04
 
-#ARG TESSERACT_VERSION="main"
-ARG TESSERACT_VERSION="5.3.1"
-ARG TESSERACT_URL="https://api.github.com/repos/tesseract-ocr/tesseract/tarball/$TESSERACT_VERSION"
 ARG imagemagic_config=/etc/ImageMagick-6/policy.xml
+ENV LANG=C.UTF-8
+ENV TZ=UTC
+RUN echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selections
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+  python3 \
+  libqpdf-dev \
+  zlib1g \
+  liblept5
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+  build-essential autoconf automake libtool \
+  libleptonica-dev \
+  zlib1g-dev \
+  python3-dev \
+  python3-distutils \
+  libffi-dev \
+  ca-certificates \
+  curl \
+  git
+
+RUN \
+  curl https://bootstrap.pypa.io/get-pip.py | python3
+
+# Compile and install jbig2
+# Needs libleptonica-dev, zlib1g-dev
+RUN \
+  mkdir jbig2 \
+  && curl -L https://github.com/agl/jbig2enc/archive/ea6a40a.tar.gz | \
+  tar xz -C jbig2 --strip-components=1 \
+  && cd jbig2 \
+  && ./autogen.sh && ./configure && make && make install \
+  && cd .. \
+  && rm -rf jbig2
+
+# For Tesseract 5
+RUN apt-get update && apt-get install -y --no-install-recommends \
+  software-properties-common gpg-agent
+RUN add-apt-repository -y ppa:alex-p/tesseract-ocr-devel
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+  ghostscript \
+  imagemagick \
+  jbig2dec \
+  img2pdf \
+  libsm6 libxext6 libxrender-dev \
+  pngquant \
+  tesseract-ocr \
+  tesseract-ocr-chi-sim \
+  tesseract-ocr-deu \
+  tesseract-ocr-eng \
+  #tesseract-ocr-fra \
+  #tesseract-ocr-por \
+  #tesseract-ocr-spa \
+  unpaper \
+  python-is-python3\
+  libcairo2-dev \
+  && rm -rf /var/lib/apt/lists/*
 
 
-#Update
-RUN apt-get update && apt-get --no-install-recommends --yes upgrade && apt upgrade && apt --no-install-recommends --yes upgrade
-
-#Install imagemagick
-RUN apt-get install --no-install-recommends --yes ghostscript imagemagick
 #Allow Imagemagick to convert PDF
 RUN if [ -f $imagemagic_config ] ; then sed -i 's/<policy domain="coder" rights="none" pattern="PDF" \/>/<policy domain="coder" rights="read|write" pattern="PDF" \/>/g' $imagemagic_config ; else echo did not see file $imagemagic_config ; fi
 
-
-#OpenCV dependencies
-RUN apt-get install --no-install-recommends --yes ffmpeg libsm6 libxext6  -y
-
-#Tesseract: install basic tools / dependencies of tesseract
-RUN apt-get install --no-install-recommends --yes \
-    apt-transport-https \
-    asciidoc \
-    automake \
-    bash \
-    ca-certificates \
-    curl \
-    docbook-xsl \
-    g++ \
-    git \
-    libleptonica-dev \
-    libtool \
-    libicu-dev \
-    libpango1.0-dev \
-    libcairo2-dev \
-    make \
-    pkg-config \
-    wget \
-    xsltproc \
-    #remove /var/lib/apt/lists/* to shrink imagesize
-    && rm -rf /var/lib/apt/lists/*
-
-
-#Tesseract: install tesseract
-WORKDIR /tmp
-RUN wget -qO tesseract.tar.gz $TESSERACT_URL && \
-    tar -xzf tesseract.tar.gz && \
-    rm tesseract.tar.gz && \
-    mv tesseract-* tesseract
-
-WORKDIR /tmp/tesseract
-
-RUN ./autogen.sh && \
-    ./configure && \
-    make && \
-    make install && \
-    ldconfig
-
-#Tesseract: go to default traineddata directory and import Languages
-WORKDIR /usr/local/share/tessdata/
-#English
-RUN wget -qO eng.traineddata https://github.com/tesseract-ocr/tessdata_best/blob/main/eng.traineddata?raw=true && \
-    #German
-    wget -qO deu.traineddata https://github.com/tesseract-ocr/tessdata_best/blob/main/deu.traineddata?raw=true && \
-    #Chinese
-    wget -qO chi_sim.traineddata https://github.com/tesseract-ocr/tessdata_best/blob/main/chi_sim.traineddata?raw=true
-
-
-# Install pip requirements
 WORKDIR /RIDSS2023
+
+# Creates a non-root user with an explicit UID and adds permission to access the /app folder
+# For more info, please refer to https://aka.ms/vscode-docker-python-configure-containers
+RUN adduser -u 5678 --disabled-password --gecos "" myuser && chown -R myuser /RIDSS2023
+USER myuser
+
 COPY requirements.txt .
 RUN pip install --upgrade pip && pip install -r requirements.txt
 
 #Copy Files
 COPY . /RIDSS2023
 
-# Creates a non-root user with an explicit UID and adds permission to access the /app folder
-# For more info, please refer to https://aka.ms/vscode-docker-python-configure-containers
-RUN adduser -u 5678 --disabled-password --gecos "" myuser && chown -R myuser /RIDSS2023
-USER myuser
 
 # During debugging, this entry point will be overridden. For more information, please refer to https://aka.ms/vscode-docker-python-debug
 CMD ["python", "src/main/main.py"]

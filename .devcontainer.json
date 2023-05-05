@@ -3,16 +3,16 @@
   "service": "ridss2023",
   "workspaceFolder": "/RIDSS2023",
   "customizations": {
+    "settings": {
+      "python.formatting.provider": "black"
+    },
     "vscode": {
       "extensions": [
-		"ms-python.python",
-		"njpwerner.autodocstring",
-		"esbenp.prettier-vscode",
-		"Gruntfuggly.todo-tree"
-	],
-      "settings": {
-        "python.formatting.provider": "black"
-      }
+        "esbenp.prettier-vscode",
+        "ms-python.vscode-pylance",
+        "njpwerner.autodocstring",
+        "Gruntfuggly.todo-tree"
+      ]
     }
   }
 }

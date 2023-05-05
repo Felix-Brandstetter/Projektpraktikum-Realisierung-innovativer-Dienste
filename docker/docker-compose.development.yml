@@ -10,7 +10,7 @@ services:
     command: ["sh", "-c", "pip install pipreqs && 
               pip install black && 
               pip install debugpy -t /tmp && 
-              python /tmp/debugpy --wait-for-client --listen 0.0.0.0:5678 src/main.py "]
+              python /tmp/debugpy --wait-for-client --listen 0.0.0.0:5678 src/main/main.py "]
     volumes:
       - ../:/RIDSS2023
       - ../inputfolder:/RIDSS2023/inputfolder
