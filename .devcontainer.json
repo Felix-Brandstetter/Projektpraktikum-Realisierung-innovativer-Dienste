@@ -3,17 +3,17 @@
   "service": "ridss2023",
   "workspaceFolder": "/RIDSS2023",
   "customizations": {
-    "settings": {
-      "python.formatting.provider": "black"
-    },
     "vscode": {
+      "settings": {
+        "python.formatting.provider": "black"
+      },
       "extensions": [
-		"esbenp.prettier-vscode",
-		"ms-python.vscode-pylance",
-		"njpwerner.autodocstring",
-		"Gruntfuggly.todo-tree",
-		"tomoki1207.pdf"
-	]
+        "esbenp.prettier-vscode",
+        "ms-python.vscode-pylance",
+        "njpwerner.autodocstring",
+        "Gruntfuggly.todo-tree",
+        "tomoki1207.pdf"
+      ]
     }
   }
 }
