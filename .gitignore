@@ -4,4 +4,5 @@
 *.pdf
 inputfolder/*
 outputfolder/*
+!README_Images/*
 !*.gitkeep
