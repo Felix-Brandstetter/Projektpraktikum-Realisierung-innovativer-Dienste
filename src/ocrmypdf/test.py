@@ -4,4 +4,4 @@ import ocrmypdf
 
 image = "/RIDSS2023/inputfolder/Testnotenauszug_scanned.pdf"
 
-ocrmypdf.ocr(image,"test.pdf", deskew=True, image_dpi=300)
+ocrmypdf.ocr(image,"test.pdf", deskew=True, image_dpi=300, skip_text=True)

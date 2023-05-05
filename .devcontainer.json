@@ -8,11 +8,12 @@
     },
     "vscode": {
       "extensions": [
-        "esbenp.prettier-vscode",
-        "ms-python.vscode-pylance",
-        "njpwerner.autodocstring",
-        "Gruntfuggly.todo-tree"
-      ]
+		"esbenp.prettier-vscode",
+		"ms-python.vscode-pylance",
+		"njpwerner.autodocstring",
+		"Gruntfuggly.todo-tree",
+		"tomoki1207.pdf"
+	]
     }
   }
 }
