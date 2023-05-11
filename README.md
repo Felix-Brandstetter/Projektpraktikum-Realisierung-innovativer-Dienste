@@ -13,4 +13,3 @@
 2. Open Repository in VS Code
 3. Run the `Dev Containers: Open Folder in Container...` command from the Command Palette
 4. Note: It may take some time until the container is built
-

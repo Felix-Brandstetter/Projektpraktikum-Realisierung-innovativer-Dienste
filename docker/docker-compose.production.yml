@@ -8,10 +8,12 @@ services:
       dockerfile: ./docker/Dockerfile
     container_name: ridss2023Container
     volumes:
+      - ../:/RIDSS2023
       #Inputfolder
-      - ../Inputfolder:/RIDSS2023/Inputfolder
+      - ../inputfolder:/RIDSS2023inputfolder
       #Outputfolder
-      - ../Outputfolder:/RIDSS2023/Outputfolder
+      - ../outputfolder:/RIDSS2023/outputfolder
     restart: always
+
       
 

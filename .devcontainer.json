@@ -16,4 +16,5 @@
       ]
     }
   }
+ //"overrideCommand": false damit service automatisch aufgerufe wird
 }

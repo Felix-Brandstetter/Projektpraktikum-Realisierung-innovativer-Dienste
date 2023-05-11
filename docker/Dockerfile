@@ -11,7 +11,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
   zlib1g \
   liblept5
 
-RUN apt-get update && apt-get install -y --no-install-recommends \
+RUN apt-get install -y --no-install-recommends \
   build-essential autoconf automake libtool \
   libleptonica-dev \
   zlib1g-dev \
@@ -79,4 +79,4 @@ COPY . /RIDSS2023
 
 
 # During debugging, this entry point will be overridden. For more information, please refer to https://aka.ms/vscode-docker-python-debug
-CMD ["python", "src/main/main.py"]
+CMD ["python", "src/service.py"]
