@@ -79,4 +79,4 @@ COPY . /RIDSS2023
 
 
 # During debugging, this entry point will be overridden. For more information, please refer to https://aka.ms/vscode-docker-python-debug
-CMD ["python", "src/service.py"]
+#CMD ["python", "src/service.py"]

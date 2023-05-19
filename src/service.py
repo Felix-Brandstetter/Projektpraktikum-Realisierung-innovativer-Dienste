@@ -19,8 +19,14 @@ def watch_inputfolder(inputfolder):
 
         if len(files) > 0:
             with Pool(cpu_count()-1) as pool:
-                pool.map(process_file_with_ocrmypdf, files)
+                #pool.map(process_file_with_ocrmypdf, files)
+                pool.map(process_file_with_ocrkit, files)
+
 
 
 if __name__ == "__main__":
     watch_inputfolder("/RIDSS2023/inputfolder")
+
+    
+
+

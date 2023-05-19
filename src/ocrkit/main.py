@@ -8,8 +8,6 @@ from wand.image import Image
 import glob
 
 
-
-
 def process_file_with_ocrkit(file):
 
     #Convert PDF to Jpeg
@@ -18,14 +16,13 @@ def process_file_with_ocrkit(file):
     convert_pdf_to_multiple_jpeg(file_path=file,destination_folder=path_to_converted_jpegs)
     images = glob.glob(path_to_converted_jpegs + "/*.jpg")
 
-    #images = convert_from_path(file)
-
     #Create Seracahble PDF with tesseract
     pdf_writer = PyPDF2.PdfWriter()
     for image in images:
         page = pytesseract.image_to_pdf_or_hocr(image, extension='pdf')
         pdf = PyPDF2.PdfReader(io.BytesIO(page))
         pdf_writer.add_page(pdf.pages[0])
+
     # export the searchable PDF to searchable.pdf
     with open("searchable.pdf", "wb") as f:
         pdf_writer.write(f)
@@ -43,8 +40,6 @@ def convert_pdf_to_multiple_jpeg(file_path: str, destination_folder: str):
         )
         image.save(filename=filename)
     return filename
-
-
 
 
 if __name__ == "__main__":

@@ -16,7 +16,9 @@ def process_file_with_ocrmypdf(pdf):
                 clean=True,
                 tesseract_timeout=180,
                 pdf_renderer="hocr",
-                skip_text=True)
+                skip_text=True,
+                tesseract_config="tsv")
 
 if __name__ == "__main__":
-    process_file_with_ocrmypdf("/RIDSS2023/inputfolder/Testnotenauszug_scanned.pdf")
+    process_file_with_ocrmypdf("/RIDSS2023/inputfolder/Testnotenauszug_scanned.tiff")
+
