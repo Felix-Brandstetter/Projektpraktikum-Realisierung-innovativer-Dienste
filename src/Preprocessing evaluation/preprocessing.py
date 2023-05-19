@@ -17,8 +17,8 @@ def convert_to_binary_tiff(pdf,output_folder):
     with Image(filename=pdf, resolution=300) as img:
         img.format = "tiff"
         img.depth = 8
-        img.mode = "grey"
-        img.threshold = 0.2
+        img.transform_colorspace('gray')
+        img.adaptive_threshold(width=16, height=16, offset=-0.08 * img.quantum_range)
         img.alpha_channel = 'off'
         img.save(filename=outfile)
     return outfile

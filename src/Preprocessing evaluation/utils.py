@@ -50,6 +50,10 @@ def get_maximum_of_confidence(ocrdata: pd.DataFrame, page_number: int = None):
     maximum_of_confidence = ocrdata["conf"].max()
     return maximum_of_confidence
 
+def get_number_of_zero_confidence(ocrdata: pd.DataFrame, page_number: int = None):
+    number_of_zero_confidence = (ocrdata["conf"] == 0).sum()
+    return number_of_zero_confidence
+
 
 def evaluate_ocrdata(ocrdata: pd.DataFrame):
     ocr_evaluation = pd.DataFrame(
@@ -60,6 +64,7 @@ def evaluate_ocrdata(ocrdata: pd.DataFrame):
             "variance_of_confidence",
             "minimum_of_confidence",
             "maximum_of_confidence",
+            "number_of_zero_confidence"
         ]
     )
 
@@ -77,6 +82,7 @@ def evaluate_ocrdata(ocrdata: pd.DataFrame):
         variance_of_confidence = get_variance_of_confidence(ocrdata_per_page)
         minimum_of_confidence = get_minimum_of_confidence(ocrdata_per_page)
         maximum_of_confidence = get_maximum_of_confidence(ocrdata_per_page)
+        number_of_zero_confidence = get_number_of_zero_confidence(ocrdata_per_page)
 
         # Create new row
         new_row = {
@@ -86,6 +92,7 @@ def evaluate_ocrdata(ocrdata: pd.DataFrame):
             "variance_of_confidence": variance_of_confidence,
             "minimum_of_confidence": minimum_of_confidence,
             "maximum_of_confidence": maximum_of_confidence,
+            "number_of_zero_confidence": number_of_zero_confidence
         }
 
         # Append row to dataframe
