@@ -1,1 +1,0 @@
-from .main import process_file_with_ocrmypdf

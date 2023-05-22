@@ -8,12 +8,14 @@
         "python.formatting.provider": "black"
       },
       "extensions": [
-        "esbenp.prettier-vscode",
-        "ms-python.vscode-pylance",
-        "njpwerner.autodocstring",
-        "Gruntfuggly.todo-tree",
-        "tomoki1207.pdf"
-      ]
+		"esbenp.prettier-vscode",
+		"ms-python.vscode-pylance",
+		"njpwerner.autodocstring",
+		"Gruntfuggly.todo-tree",
+		"tomoki1207.pdf",
+		"analytic-signal.preview-tiff",
+		"GrapeCity.gc-excelviewer"
+	]
     }
   }
  //"overrideCommand": false damit service automatisch aufgerufe wird

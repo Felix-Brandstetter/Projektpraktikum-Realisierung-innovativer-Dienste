@@ -1,46 +1,60 @@
-import os
-import pytesseract
-from pdf2image import convert_from_path
-import PyPDF2
-import io
-import os
-from wand.image import Image
-import glob
+import preprocessing
+import ocr
+import evaluation
+
+# create comparison image and preprocessed image
+tiff = preprocessing.convert_to_tiff(
+    "/RIDSS2023/inputfolder/ToOcr_Seiten.pdf/ToOcr-09.pdf", "tmp"
+)
+binary_tiff = preprocessing.convert_to_binary_tiff(
+    "/RIDSS2023/inputfolder/ToOcr_Seiten.pdf/ToOcr-09.pdf", "tmp"
+)
 
 
-def process_file_with_ocrkit(file):
-
-    #Convert PDF to Jpeg
-    path_to_converted_jpegs = os.path.join("/RIDSS2023/tmp",os.path.splitext(os.path.basename(file))[0])
-    os.makedirs(path_to_converted_jpegs, exist_ok=True)
-    convert_pdf_to_multiple_jpeg(file_path=file,destination_folder=path_to_converted_jpegs)
-    images = glob.glob(path_to_converted_jpegs + "/*.jpg")
-
-    #Create Seracahble PDF with tesseract
-    pdf_writer = PyPDF2.PdfWriter()
-    for image in images:
-        page = pytesseract.image_to_pdf_or_hocr(image, extension='pdf')
-        pdf = PyPDF2.PdfReader(io.BytesIO(page))
-        pdf_writer.add_page(pdf.pages[0])
-
-    # export the searchable PDF to searchable.pdf
-    with open("searchable.pdf", "wb") as f:
-        pdf_writer.write(f)
+# Create hocr file and ocrdata for each image
+(
+    hocr_without_preprocessing,
+    ocrdata_without_preprocessing,
+) = ocr.create_hocr_file_and_ocrdata_from_tiff_image(
+    image=tiff, outputfolder="tmp", language="eng"
+)
 
 
-
-def convert_pdf_to_multiple_jpeg(file_path: str, destination_folder: str):
-    with Image(filename=file_path, resolution=300) as image:
-        image.format = "jpg"
-        image.compression_quality = 100
-        image.resolution = 300
-        image.resize(210,297)
-        filename = os.path.join(
-            destination_folder, os.path.splitext(os.path.basename(file_path))[0] + ".jpg"
-        )
-        image.save(filename=filename)
-    return filename
+(
+    hocr_with_preprocessing,
+    ocrdata_with_preprocessing,
+) = ocr.create_hocr_file_and_ocrdata_from_tiff_image(
+    image=binary_tiff, outputfolder="tmp", language="eng"
+)
 
 
-if __name__ == "__main__":
-    process_file_with_ocrkit("/RIDSS2023/inputfolder/Testnotenauszug_scanned.pdf")
+# Evaluate original image and preporcessed image
+(
+    ocr_evaluation_without_preprocessing,
+    ocr_evaluation_with_preprocessing,
+) = evaluation.evaluate_preprocessing(
+    ocrdata_without_preprocessing=ocrdata_without_preprocessing,
+    ocrdata_with_preprocessing=ocrdata_with_preprocessing,
+)
+
+# Print evaluation
+print(ocr_evaluation_without_preprocessing)
+print(ocr_evaluation_with_preprocessing)
+
+
+# Create pdf file with integrated Text
+ocr.create_ocr_pdf_from_hocr_file(
+    hocr_filename=hocr_without_preprocessing,
+    tiff_image=tiff,
+    out_filename="tmp/pdf_without_preprocessing.pdf",
+    fontcolor="red",
+    invisible_text=False,
+)
+
+ocr.create_ocr_pdf_from_hocr_file(
+    hocr_filename=hocr_with_preprocessing,
+    tiff_image=binary_tiff,
+    out_filename="tmp/pdf_with_preprocessing.pdf",
+    fontcolor="red",
+    invisible_text=False,
+)
