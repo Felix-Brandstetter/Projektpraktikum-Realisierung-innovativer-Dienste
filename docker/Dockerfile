@@ -57,12 +57,19 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
   #tesseract-ocr-spa \
   unpaper \
   python-is-python3\
-  libcairo2-dev \
+  libcairo2-dev
+
+
+
+#OpenCV dependencies
+RUN apt-get install --no-install-recommends --yes ffmpeg libsm6 libxext6  -y  \
   && rm -rf /var/lib/apt/lists/*
 
 
 #Allow Imagemagick to convert PDF
 RUN if [ -f $imagemagic_config ] ; then sed -i 's/<policy domain="coder" rights="none" pattern="PDF" \/>/<policy domain="coder" rights="read|write" pattern="PDF" \/>/g' $imagemagic_config ; else echo did not see file $imagemagic_config ; fi
+
+
 
 WORKDIR /RIDSS2023
 

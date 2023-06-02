@@ -15,9 +15,7 @@ from math import atan, cos, sin
 from pathlib import Path
 from typing import Any, NamedTuple
 from xml.etree import ElementTree
-import pytesseract
 from csv import QUOTE_NONE
-import pandas as pd
 
 with warnings.catch_warnings():
     # reportlab uses deprecated load_module
@@ -425,60 +423,3 @@ class HocrTransform:
                 text.setHorizScale(100 * box_width / font_width)
                 text.textOut(elemtxt)
         pdf.drawText(text)
-
-
-def create_ocr_pdf_from_hocr_file(
-    hocr_filename: str | Path,
-    tiff_image: str | Path,
-    out_filename: str | Path,
-    dpi: float = 300,
-    fontcolor: str = None,
-    fontname: str = "Helvetica",
-    show_bounding_boxes: bool = False,
-    invisible_text: bool = False,
-    interword_spaces: bool = False,
-):
-    hocr = HocrTransform(hocr_filename=hocr_filename, dpi=dpi)
-    hocr._to_pdf(
-        out_filename=out_filename,
-        tiff_image=tiff_image,
-        fontcolor=fontcolor,
-        fontname=fontname,
-        show_bounding_boxes=show_bounding_boxes,
-        invisible_text=invisible_text,
-        interword_spaces=interword_spaces,
-    )
-
-
-def create_hocr_file_and_ocrdata_from_tiff_image(
-    image: str | Path, outputfolder: str | Path = "tmp", language: str = "deu"
-):
-    file_basename = os.path.join(outputfolder, os.path.basename(image))
-    ocrdata = pytesseract.pytesseract.run_tesseract(
-        input_filename=image,
-        output_filename_base=file_basename,
-        lang=language,
-        extension="hocr",
-        config="tsv",
-    )
-    hocr = file_basename + ".hocr"
-    tsv = file_basename + ".tsv"
-    ocrdata = pd.read_csv(tsv, delimiter="\t", quoting=QUOTE_NONE)
-    excel_path = os.path.join("tmp", os.path.basename(image) + ".xlsx")
-    ocrdata.to_excel(excel_path)
-    # Remove all rows with confidence = -1, Words with confidence -1 wont be written to pdf
-    ocrdata = ocrdata[ocrdata["conf"] != -1]
-
-    return hocr, ocrdata
-
-"""
-if __name__ == "__main__":
-    hocr = HocrTransform(hocr_filename="/RIDSS2023/tmp/ToOcr-09.pdf.tiff.hocr", dpi=300)
-    hocr.to_pdf(
-        out_filename="tmp/test.pdf",
-        tiff_image="/RIDSS2023/tmp/ToOcr-09.pdf.tiff",
-        fontcolor="red",
-        show_bounding_boxes=False,
-        interword_spaces=False,
-    )
-"""

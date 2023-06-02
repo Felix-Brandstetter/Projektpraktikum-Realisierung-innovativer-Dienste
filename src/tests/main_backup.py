@@ -1,13 +1,14 @@
-import preprocessing
-import ocr
-import evaluation
+import ocrkit
+import tests.evaluation as evaluation
+
+input_pdf = "/RIDSS2023/inputfolder/ToOcr_Seiten.pdf/ToOcr-09.pdf"
 
 # create comparison image and preprocessed image
-tiff = preprocessing.convert_to_tiff(
-    "/RIDSS2023/inputfolder/ToOcr_Seiten.pdf/ToOcr-09.pdf", "tmp"
-)
-binary_tiff = preprocessing.convert_to_binary_tiff(
-    "/RIDSS2023/inputfolder/ToOcr_Seiten.pdf/ToOcr-09.pdf", "tmp"
+original_tiff_image = ocrkit.convert_to_tiff(
+    pdf=input_pdf, output_folder="tmp")
+
+preprocessed_tiff_image = ocrkit.utils.convert_to_binary_tiff_with_adaptive_threshold(
+    pdf=input_pdf, output_folder="tmp"
 )
 
 
@@ -15,16 +16,16 @@ binary_tiff = preprocessing.convert_to_binary_tiff(
 (
     hocr_without_preprocessing,
     ocrdata_without_preprocessing,
-) = ocr.create_hocr_file_and_ocrdata_from_tiff_image(
-    image=tiff, outputfolder="tmp", language="eng"
+) = ocrkit.create_hocr_file_and_ocrdata_from_tiff_image(
+    image=original_tiff_image, outputfolder="tmp", language="eng"
 )
 
 
 (
     hocr_with_preprocessing,
     ocrdata_with_preprocessing,
-) = ocr.create_hocr_file_and_ocrdata_from_tiff_image(
-    image=binary_tiff, outputfolder="tmp", language="eng"
+) = ocrkit.create_hocr_file_and_ocrdata_from_tiff_image(
+    image=preprocessed_tiff_image, outputfolder="tmp", language="eng"
 )
 
 
@@ -43,17 +44,17 @@ print(ocr_evaluation_with_preprocessing)
 
 
 # Create pdf file with integrated Text
-ocr.create_ocr_pdf_from_hocr_file(
+ocrkit.create_ocr_pdf_from_hocr_file(
     hocr_filename=hocr_without_preprocessing,
-    tiff_image=tiff,
+    tiff_image=original_tiff_image,
     out_filename="tmp/pdf_without_preprocessing.pdf",
     fontcolor="red",
     invisible_text=False,
 )
 
-ocr.create_ocr_pdf_from_hocr_file(
+ocrkit.create_ocr_pdf_from_hocr_file(
     hocr_filename=hocr_with_preprocessing,
-    tiff_image=binary_tiff,
+    tiff_image=preprocessed_tiff_image,
     out_filename="tmp/pdf_with_preprocessing.pdf",
     fontcolor="red",
     invisible_text=False,
