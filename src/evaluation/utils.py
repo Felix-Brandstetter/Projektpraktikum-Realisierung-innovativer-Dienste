@@ -1,31 +1,31 @@
 import pandas as pd
 
-def _get_average_confidence(ocrdata: pd.DataFrame, page_number: int = None):
+def _get_average_confidence(ocrdata: pd.DataFrame):
     average_confidence = ocrdata["conf"].mean()
     return average_confidence
 
 
-def _get_number_of_detected_words(ocrdata: pd.DataFrame, page_number: int = None):
+def _get_number_of_detected_words(ocrdata: pd.DataFrame):
     number_of_detected_words = ocrdata["conf"].count()
     return number_of_detected_words
 
 
-def _get_variance_of_confidence(ocrdata: pd.DataFrame, page_number: int = None):
+def _get_variance_of_confidence(ocrdata: pd.DataFrame):
     variance_of_confidence = ocrdata["conf"].var()
     return variance_of_confidence
 
 
-def _get_minimum_of_confidence(ocrdata: pd.DataFrame, page_number: int = None):
+def _get_minimum_of_confidence(ocrdata: pd.DataFrame):
     minimum_of_confidence = ocrdata["conf"].min()
     return minimum_of_confidence
 
 
-def _get_maximum_of_confidence(ocrdata: pd.DataFrame, page_number: int = None):
+def _get_maximum_of_confidence(ocrdata: pd.DataFrame):
     maximum_of_confidence = ocrdata["conf"].max()
     return maximum_of_confidence
 
 
-def _get_number_of_zero_confidence(ocrdata: pd.DataFrame, page_number: int = None):
+def _get_number_of_zero_confidence(ocrdata: pd.DataFrame):
     number_of_zero_confidence = (ocrdata["conf"] == 0).sum()
     return number_of_zero_confidence
 

@@ -4,6 +4,8 @@
 # SPDX-FileCopyrightText: 2022 James R. Barlow
 # SPDX-License-Identifier: MIT
 
+#TODO Write word only if confidence is higher ...
+
 """Transform .hocr and page image to text PDF."""
 
 from __future__ import annotations

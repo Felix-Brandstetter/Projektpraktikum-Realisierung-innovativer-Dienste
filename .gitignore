@@ -3,6 +3,7 @@
 *.png
 *.pdf
 *.tiff
+*.xlsx
 tmp/*
 inputfolder/*
 outputfolder/*

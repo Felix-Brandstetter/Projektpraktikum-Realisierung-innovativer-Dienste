@@ -9,27 +9,18 @@ from pytesseract import Output
 
 
 def create_searchable_pdf(tiff_image: TiffImage, out_filename: str, language: str):
-    # Split preprocessed_tiff_image in seperated pages
-    # TODO in Funktion
-    with Image(filename=tiff_image.path) as img:
-        img.save(
-            filename=os.path.join(
-                tiff_image.workfolder.name, tiff_image.basename + "-page_%00000d.tif"
-            )
-        )
-    pages = glob.glob(
-        os.path.join(tiff_image.workfolder.name, tiff_image.basename + "-page_*.tif")
-    )
+    #Split tiff image into pages
+    tiff_image_pages = tiff_image.split_tiff_image()
 
     # Create folder inside workfolder to store created pdf_pages
     os.mkdir(os.path.join(tiff_image.workfolder.name, "pdf_pages"))
 
     # Loop through tiff_images/pages and create searchable pdfs
     merger = PdfWriter()
-    for page_number, page in enumerate(pages):
+    for page_number, page in enumerate(tiff_image_pages):
         # Create hocr file
         hocr_file = _create_hocr_file_from_one_page_image(
-            image=page, working_folder=tiff_image.workfolder, language=language
+            image=page.path, working_folder=tiff_image.workfolder, language=language
         )
         created_pdf_page = os.path.join(
             tiff_image.workfolder.name,
@@ -39,7 +30,7 @@ def create_searchable_pdf(tiff_image: TiffImage, out_filename: str, language: st
         # Merge tiff and hocr file
         _merge_hocr_and_one_page_image(
             hocr_filename=hocr_file,
-            tiff_image=page,
+            tiff_image=page.path,
             out_filename=created_pdf_page,
             dpi=300,
             fontcolor="red",
@@ -95,5 +86,6 @@ def get_ocr_data(tiff_image: TiffImage, language:str):
         lang=language
 
     )
+    ocrdata = ocrdata[ocrdata["conf"] != -1]
     return ocrdata
 

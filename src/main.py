@@ -1,7 +1,7 @@
 import ocrkit
 
 # Create new Inputfile
-inputpdf = ocrkit.InputPDF("src/tests/test_ressources/test_deskew/test_image.pdf")
+inputpdf = ocrkit.InputPDF("/RIDSS2023/outputfolder/Testnotenauszug_scanned.pdf")
 
 
 # Convert to Tiff Image
@@ -9,7 +9,7 @@ tiff_image = inputpdf.convert_to_tiff()
 
 
 #Preprocessing
-tiff_image_preprocessed = tiff_image.deskew()
+tiff_image_preprocessed = tiff_image.binarize_adaptive_threshold()
 
 #Save Images
 tiff_image.save_image("test.tiff")

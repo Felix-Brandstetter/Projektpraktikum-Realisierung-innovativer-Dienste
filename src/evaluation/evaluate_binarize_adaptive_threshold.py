@@ -7,7 +7,7 @@ import utils
 
 
 # Create new InputPDF
-inputpdf = InputPDF("/RIDSS2023/inputfolder/Testnotenauszug_scanned.pdf")
+inputpdf = InputPDF("/RIDSS2023/inputfolder/ToOcr_Seiten.pdf/ToOcr-06.pdf")
 
 
 # Convert to Tiff Image
@@ -23,6 +23,8 @@ tiff_image_preprocessed.save_image("outputfolder/tiff_image_preprocessed.tiff")
 
 # Get OCRdata
 tiff_image_ocr_data = ocrkit.get_ocr_data(tiff_image=tiff_image, language="deu")
+
+
 tiff_image_preprocessed_ocr_data = ocrkit.get_ocr_data(
     tiff_image=tiff_image_preprocessed, language="deu"
 )
