@@ -2,8 +2,10 @@
 *.pyc
 *.png
 *.pdf
+*.tiff
 tmp/*
 inputfolder/*
 outputfolder/*
+.pytest_cache/*
 !README_Images/*
 !*.gitkeep

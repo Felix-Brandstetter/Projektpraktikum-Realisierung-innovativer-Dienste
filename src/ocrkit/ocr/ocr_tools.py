@@ -4,12 +4,13 @@ from ocrkit.ocr.hocrtransform import HocrTransform
 import os
 import glob
 import pytesseract
-from PyPDF2 import PdfMerger
+from pypdf import PdfWriter
+from pytesseract import Output
 
 
 def create_searchable_pdf(tiff_image: TiffImage, out_filename: str, language: str):
     # Split preprocessed_tiff_image in seperated pages
-    #TODO in Funktion
+    # TODO in Funktion
     with Image(filename=tiff_image.path) as img:
         img.save(
             filename=os.path.join(
@@ -24,7 +25,7 @@ def create_searchable_pdf(tiff_image: TiffImage, out_filename: str, language: st
     os.mkdir(os.path.join(tiff_image.workfolder.name, "pdf_pages"))
 
     # Loop through tiff_images/pages and create searchable pdfs
-    merger = PdfMerger()
+    merger = PdfWriter()
     for page_number, page in enumerate(pages):
         # Create hocr file
         hocr_file = _create_hocr_file_from_one_page_image(
@@ -85,3 +86,14 @@ def _merge_hocr_and_one_page_image(
         invisible_text=invisible_text,
         interword_spaces=interword_spaces,
     )
+
+
+def get_ocr_data(tiff_image: TiffImage, language:str):
+    ocrdata = pytesseract.image_to_data(
+        image=tiff_image.path,
+        output_type=Output.DATAFRAME,
+        lang=language
+
+    )
+    return ocrdata
+

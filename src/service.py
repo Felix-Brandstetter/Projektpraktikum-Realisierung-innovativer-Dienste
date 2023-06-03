@@ -3,6 +3,7 @@ from multiprocessing import Pool, cpu_count
 import os
 from ocrkit_with_ocrmypdf import process_file_with_ocrmypdf
 from ocrkit import process_file_with_ocrkit
+#TODO Imports anpassen
 
 
 

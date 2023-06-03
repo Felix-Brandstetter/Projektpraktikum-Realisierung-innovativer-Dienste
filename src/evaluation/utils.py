@@ -1,6 +1,4 @@
-from pathlib import Path
 import pandas as pd
-
 
 def _get_average_confidence(ocrdata: pd.DataFrame, page_number: int = None):
     average_confidence = ocrdata["conf"].mean()
@@ -88,6 +86,10 @@ def evaluate_preprocessing(
     )
 
     ocr_evaluation_with_preprocessing = _evaluate_ocrdata(ocrdata_with_preprocessing)
+
+    print(ocr_evaluation_without_preprocessing)
+    print(ocr_evaluation_with_preprocessing)
+
 
     return (
         ocr_evaluation_without_preprocessing,

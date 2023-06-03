@@ -1,20 +1,22 @@
-from ocrkit.ocr import ocr_tools
-from ocrkit import InputPDF
+import ocrkit
 
 # Create new Inputfile
-inputfile = InputPDF("/RIDSS2023/inputfolder/Testnotenauszug_scanned.pdf")
+inputpdf = ocrkit.InputPDF("src/tests/test_ressources/test_deskew/test_image.pdf")
 
 
 # Convert to Tiff Image
-tiff_image = inputfile.convert_to_tiff()
+tiff_image = inputpdf.convert_to_tiff()
+
 
 #Preprocessing
-tiff_image = tiff_image.binarize_adaptive_threshold()
-tiff_image.display()
+tiff_image_preprocessed = tiff_image.deskew()
 
+#Save Images
+tiff_image.save_image("test.tiff")
+tiff_image_preprocessed.save_image("preprocessed_tiff.tiff")
 
 
 # Create Searchable PDF
-ocr_tools.create_searchable_pdf(
+ocrkit.create_searchable_pdf(
     tiff_image=tiff_image, out_filename="outputfolder/test.pdf", language="deu"
 )
