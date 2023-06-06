@@ -2,14 +2,20 @@ from ocrkit import TiffImage
 from wand.image import Image
 from ocrkit.ocr.hocrtransform import HocrTransform
 import os
-import glob
 import pytesseract
 from pypdf import PdfWriter
 from pytesseract import Output
 
 
-def create_searchable_pdf(tiff_image: TiffImage, out_filename: str, language: str):
-    #Split tiff image into pages
+def create_searchable_pdf(
+    tiff_image: TiffImage,
+    out_filename: str,
+    language: str,
+    fontcolor: str = "red",
+    fontname: str = "Helvetica",
+    show_bounding_boxes=False,
+):
+    # Split tiff image into pages
     tiff_image_pages = tiff_image.split_tiff_image()
 
     # Create folder inside workfolder to store created pdf_pages
@@ -79,13 +85,9 @@ def _merge_hocr_and_one_page_image(
     )
 
 
-def get_ocr_data(tiff_image: TiffImage, language:str):
+def get_ocr_data(tiff_image: TiffImage, language: str):
     ocrdata = pytesseract.image_to_data(
-        image=tiff_image.path,
-        output_type=Output.DATAFRAME,
-        lang=language
-
+        image=tiff_image.path, output_type=Output.DATAFRAME, lang=language
     )
     ocrdata = ocrdata[ocrdata["conf"] != -1]
     return ocrdata
-
