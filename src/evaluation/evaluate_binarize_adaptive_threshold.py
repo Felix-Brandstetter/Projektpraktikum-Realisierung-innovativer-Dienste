@@ -18,8 +18,8 @@ tiff_image = inputpdf.convert_to_tiff()
 tiff_image_preprocessed = tiff_image.binarize_adaptive_threshold()
 
 # Save
-tiff_image.save_image("outputfolder/tiff_image.tiff")
-tiff_image_preprocessed.save_image("outputfolder/tiff_image_preprocessed.tiff")
+#tiff_image.save_image("outputfolder/tiff_image.tiff")
+#tiff_image_preprocessed.save_image("outputfolder/tiff_image_preprocessed.tiff")
 
 # Get OCRdata
 tiff_image_ocr_data = ocrkit.get_ocr_data(tiff_image=tiff_image, language="deu")

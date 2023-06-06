@@ -29,6 +29,21 @@ def _get_number_of_zero_confidence(ocrdata: pd.DataFrame):
     number_of_zero_confidence = (ocrdata["conf"] == 0).sum()
     return number_of_zero_confidence
 
+def _get_sum_of_confidence(ocrdata: pd.DataFrame):
+    sum_of_confidence = (ocrdata["conf"]).sum()
+    return sum_of_confidence
+
+def _get_standard_deviation_of_confidence(ocrdata: pd.DataFrame):
+    standard_deviation_of_confidence = (ocrdata["conf"]).std()
+    return standard_deviation_of_confidence
+
+def _get_number_of_confidences_under_25(ocrdata: pd.DataFrame):
+    number_of_confidences_under_25 = (ocrdata["conf"] <25).sum()
+    return number_of_confidences_under_25
+
+def _get_number_of_confidences_under_50(ocrdata: pd.DataFrame):
+    number_of_confidences_under_50 = (ocrdata["conf"] <50).sum()
+    return number_of_confidences_under_50
 
 def _evaluate_ocrdata(ocrdata: pd.DataFrame):
     ocr_evaluation = pd.DataFrame(
@@ -37,9 +52,13 @@ def _evaluate_ocrdata(ocrdata: pd.DataFrame):
             "average_confidence",
             "number_of_detected_words",
             "variance_of_confidence",
+            "standard_deviation_of_confidence",
+            "sum_of_confidence",
             "minimum_of_confidence",
             "maximum_of_confidence",
             "number_of_zero_confidence",
+            "number_of_confidences_under_25",
+            "number_of_confidences_under_50",
         ]
     )
 
@@ -58,16 +77,23 @@ def _evaluate_ocrdata(ocrdata: pd.DataFrame):
         minimum_of_confidence = _get_minimum_of_confidence(ocrdata_per_page)
         maximum_of_confidence = _get_maximum_of_confidence(ocrdata_per_page)
         number_of_zero_confidence = _get_number_of_zero_confidence(ocrdata_per_page)
-
+        sum_of_confidence = _get_sum_of_confidence(ocrdata_per_page)
+        standard_deviation_of_confidence = _get_standard_deviation_of_confidence(ocrdata_per_page)
+        number_of_confidences_under_25 = _get_number_of_confidences_under_25(ocrdata_per_page)
+        number_of_confidences_under_50 = _get_number_of_confidences_under_50(ocrdata_per_page)
         # Create new row
         new_row = {
             "Page": page,
             "average_confidence": average_confidence,
             "number_of_detected_words": number_of_detected_words,
             "variance_of_confidence": variance_of_confidence,
+            "standard_deviation_of_confidence": standard_deviation_of_confidence,
+            "sum_of_confidence": sum_of_confidence,
             "minimum_of_confidence": minimum_of_confidence,
             "maximum_of_confidence": maximum_of_confidence,
             "number_of_zero_confidence": number_of_zero_confidence,
+            "number_of_confidences_under_25": number_of_confidences_under_25,
+            "number_of_confidences_under_50": number_of_confidences_under_50,
         }
 
         # Append row to dataframe

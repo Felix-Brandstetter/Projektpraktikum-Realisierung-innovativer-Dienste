@@ -31,8 +31,8 @@ def evaluation_comparison(
             ocrdata_with_preprocessing["page_num"] == page
         ]
         for index1, row1 in ocrdata_without_preprocessing_per_page.iterrows():
-            print(row1)
-            print(ocrdata_with_preprocessing_per_page.loc[[index1]])
+            #print(row1)
+            #print(ocrdata_with_preprocessing_per_page.loc[[index1]])
             for index2, row2 in ocrdata_with_preprocessing_per_page.iterrows():
                 if (
                     row1["left"] == row2["left"]
@@ -96,3 +96,7 @@ ocr_evaluation_comparison = evaluation_comparison(
     ocrdata_with_preprocessing=tiff_image_preprocessed_ocr_data,
 )
 print(len(ocr_evaluation_comparison))
+
+#TODO Summe der Confidencen
+#TODO Center Punkte der Bounding Box vergleichen
+#TODO PDF aus verschiedenen Dokumneten zusammenbauen
