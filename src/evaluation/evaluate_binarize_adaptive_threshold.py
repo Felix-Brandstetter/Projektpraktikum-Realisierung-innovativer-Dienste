@@ -29,7 +29,10 @@ tiff_image_preprocessed_ocr_data = ocrkit.get_ocr_data(
     tiff_image=tiff_image_preprocessed, language="deu"
 )
 
-utils.evaluate_preprocessing(
-    ocrdata_without_preprocessing=tiff_image_ocr_data,
-    ocrdata_with_preprocessing=tiff_image_preprocessed_ocr_data,
-)
+
+evaluation_without_preprocessing = utils.evaluate_ocrdata(tiff_image_ocr_data)
+evaluation_with_preprocessing = utils.evaluate_ocrdata(tiff_image_preprocessed_ocr_data)
+
+
+evaluation_without_preprocessing.to_excel("evaluation_without_preprocessing.xlsx")
+evaluation_with_preprocessing.to_excel("evaluation_with_preprocessing.xlsx")

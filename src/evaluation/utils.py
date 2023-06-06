@@ -1,5 +1,6 @@
 import pandas as pd
 
+
 def _get_average_confidence(ocrdata: pd.DataFrame):
     average_confidence = ocrdata["conf"].mean()
     return average_confidence
@@ -29,23 +30,28 @@ def _get_number_of_zero_confidence(ocrdata: pd.DataFrame):
     number_of_zero_confidence = (ocrdata["conf"] == 0).sum()
     return number_of_zero_confidence
 
+
 def _get_sum_of_confidence(ocrdata: pd.DataFrame):
     sum_of_confidence = (ocrdata["conf"]).sum()
     return sum_of_confidence
+
 
 def _get_standard_deviation_of_confidence(ocrdata: pd.DataFrame):
     standard_deviation_of_confidence = (ocrdata["conf"]).std()
     return standard_deviation_of_confidence
 
+
 def _get_number_of_confidences_under_25(ocrdata: pd.DataFrame):
-    number_of_confidences_under_25 = (ocrdata["conf"] <25).sum()
+    number_of_confidences_under_25 = (ocrdata["conf"] < 25).sum()
     return number_of_confidences_under_25
 
+
 def _get_number_of_confidences_under_50(ocrdata: pd.DataFrame):
-    number_of_confidences_under_50 = (ocrdata["conf"] <50).sum()
+    number_of_confidences_under_50 = (ocrdata["conf"] < 50).sum()
     return number_of_confidences_under_50
 
-def _evaluate_ocrdata(ocrdata: pd.DataFrame):
+
+def evaluate_ocrdata(ocrdata: pd.DataFrame):
     ocr_evaluation = pd.DataFrame(
         columns=[
             "Page",
@@ -78,9 +84,15 @@ def _evaluate_ocrdata(ocrdata: pd.DataFrame):
         maximum_of_confidence = _get_maximum_of_confidence(ocrdata_per_page)
         number_of_zero_confidence = _get_number_of_zero_confidence(ocrdata_per_page)
         sum_of_confidence = _get_sum_of_confidence(ocrdata_per_page)
-        standard_deviation_of_confidence = _get_standard_deviation_of_confidence(ocrdata_per_page)
-        number_of_confidences_under_25 = _get_number_of_confidences_under_25(ocrdata_per_page)
-        number_of_confidences_under_50 = _get_number_of_confidences_under_50(ocrdata_per_page)
+        standard_deviation_of_confidence = _get_standard_deviation_of_confidence(
+            ocrdata_per_page
+        )
+        number_of_confidences_under_25 = _get_number_of_confidences_under_25(
+            ocrdata_per_page
+        )
+        number_of_confidences_under_50 = _get_number_of_confidences_under_50(
+            ocrdata_per_page
+        )
         # Create new row
         new_row = {
             "Page": page,
@@ -100,24 +112,5 @@ def _evaluate_ocrdata(ocrdata: pd.DataFrame):
         new_row = pd.DataFrame(new_row, index=[page])
         ocr_evaluation = pd.concat([ocr_evaluation, new_row], axis=0, ignore_index=True)
 
+    print(ocr_evaluation)
     return ocr_evaluation
-
-
-def evaluate_preprocessing(
-    ocrdata_without_preprocessing: pd.DataFrame,
-    ocrdata_with_preprocessing: pd.DataFrame,
-):
-    ocr_evaluation_without_preprocessing = _evaluate_ocrdata(
-        ocrdata_without_preprocessing
-    )
-
-    ocr_evaluation_with_preprocessing = _evaluate_ocrdata(ocrdata_with_preprocessing)
-
-    print(ocr_evaluation_without_preprocessing)
-    print(ocr_evaluation_with_preprocessing)
-
-
-    return (
-        ocr_evaluation_without_preprocessing,
-        ocr_evaluation_with_preprocessing,
-    )
