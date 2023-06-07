@@ -1,4 +1,5 @@
 import pandas as pd
+import matplotlib.pyplot as plt
 
 
 def _get_average_confidence(ocrdata: pd.DataFrame):
@@ -114,3 +115,19 @@ def evaluate_ocrdata(ocrdata: pd.DataFrame):
 
     print(ocr_evaluation)
     return ocr_evaluation
+
+
+def plot_confidences(ocrdata: pd.DataFrame):
+    fig, axes = plt.subplots()  # Erstellt eine neue Abbildung und ein einzelnes Achsenobjekt
+    
+    ocrdata["conf"].hist(ax=axes, bins=20)  # Das Achsenobjekt angeben, auf dem das Histogramm gezeichnet werden soll
+    
+    axes.set_xlabel('Confidence')  # Achsenbeschriftung für X-Achse
+    axes.set_ylabel('Frequency')  # Achsenbeschriftung für Y-Achse
+    axes.set_xlim(0, 100)
+    
+    # X-Achsenbeschriftungen festlegen
+    x_ticks = [i for i in range(0, 101, 5)]  # Erzeugt Beschriftungen für Werte von 0 bis 100 mit einer Schrittweite von 10
+    axes.set_xticks(x_ticks)
+
+    fig.savefig('/RIDSS2023/ocrdata_hist.png') 

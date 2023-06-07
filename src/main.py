@@ -1,7 +1,7 @@
 import ocrkit
 
 # Create new Inputfile
-inputpdf = ocrkit.InputPDF("/RIDSS2023/inputfolder/Testnotenauszug_scanned.pdf")
+inputpdf = ocrkit.InputPDF("/RIDSS2023/src/tests/test_ressources/test_rotate_image_to_corrected_text_orientation/test_image.pdf")
 
 
 # Convert to Tiff Image
@@ -9,7 +9,7 @@ tiff_image = inputpdf.convert_to_tiff()
 
 
 # Preprocessing
-tiff_image_preprocessed = tiff_image.binarize_adaptive_threshold()
+tiff_image_preprocessed = tiff_image.rotate_image_to_corrected_text_orientation()
 
 # Save Images
 tiff_image.save_image("test.tiff")

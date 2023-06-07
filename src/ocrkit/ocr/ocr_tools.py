@@ -96,10 +96,10 @@ def get_ocr_data(tiff_image: TiffImage, language: str):
     ocrdata = ocrdata[ocrdata["conf"] != -1]
     return ocrdata
 
-def get_rotation_angle(tiff_image: TiffImage):
+
+def get_rotation_angle(tiff_image: TiffImage) -> float:
     osd_data = pytesseract.image_to_osd(tiff_image.path)
-    print(osd_data)
     # using regex we search for the angle(in string format) of the text
     angle = re.search('(?<=Rotate: )\d+', osd_data).group(0)
-
+    angle  = float(angle)
     return angle
