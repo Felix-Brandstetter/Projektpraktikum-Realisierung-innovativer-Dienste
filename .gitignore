@@ -5,6 +5,7 @@
 *.tiff
 *.xlsx
 tmp/*
+src/mystuff
 inputfolder/*
 outputfolder/*
 .pytest_cache/*

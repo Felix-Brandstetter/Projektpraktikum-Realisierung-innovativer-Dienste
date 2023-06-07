@@ -2,6 +2,7 @@ import os
 from wand.image import Image
 from tempfile import TemporaryDirectory
 import glob
+import ocrkit
 
 
 class TiffImage:
@@ -99,6 +100,26 @@ class TiffImage:
     def save_image(self, filename):
         with Image(filename=self.path, resolution=300) as img:
             img.save(filename=filename)
+    
+    def rotate_image_to_corrected_text_orientation(self):
+        #TODO Test if that works with multipage
+        workfolder = TemporaryDirectory(dir="/RIDSS2023/tmp")
+        path_to_tiff = os.path.join(workfolder.name, self.basename + ".tiff")
+        pages = self.split_tiff_image()
+        with Image(filename=self.path, resolution=300) as img:
+            for page_number, page in enumerate(pages):
+                angle = ocrkit.get_rotation_angle(page)
+                with img.sequence[page_number] as img_page:
+                    img_page.format = "tiff"
+                    img_page.depth = 8
+                    img_page.alpha_channel = "off"
+                    img_page.rotate(angle)
+                
+            img.save(filename=path_to_tiff)
+        tiff_image = TiffImage(path=path_to_tiff, workfolder=workfolder)
+        return tiff_image
+
+
 
     def split_tiff_image(self):
         # Split preprocessed_tiff_image in seperated pages

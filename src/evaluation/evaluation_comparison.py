@@ -19,6 +19,8 @@ def evaluation_comparison(
             "confidence_after",
             "differnce_in_confidence",
             "percentage_differnce_confidence",
+            "text before",
+            "text after"
         ]
     )
 
@@ -36,7 +38,13 @@ def evaluation_comparison(
             for index2, row2 in ocrdata_with_preprocessing_per_page.iterrows():
                 middle_row2_x = row2["left"] + 0.5 * row2["width"]
                 middle_row2_y = row2["top"] + 0.5 * row2["height"] 
+                middle_row2_x = row2["left"] + 0.5 * row2["width"]
+                middle_row2_y = row2["top"] + 0.5 * row2["height"] 
                 if (
+                    middle_row2_x >=  row1["left"]
+                    and middle_row2_x <=  (row1["left"] + row1["width"])
+                    and middle_row2_y >=  row1["top"]
+                    and middle_row2_y <=  (row1["top"] + row1["height"])
                     middle_row2_x >=  row1["left"]
                     and middle_row2_x <=  (row1["left"] + row1["width"])
                     and middle_row2_y >=  row1["top"]
@@ -46,6 +54,7 @@ def evaluation_comparison(
                     row2_confidence = row2["conf"]
                     differnce_confidence = row2_confidence - row1_confidence
                     if(row1_confidence != 0):
+                        if(row1_confidence != 0):
                         percentage_differnce_confidence = (
                         differnce_confidence / row1_confidence
                     )
@@ -56,6 +65,8 @@ def evaluation_comparison(
                         "confidence_after": row2_confidence,
                         "differnce_in_confidence": differnce_confidence,
                         "percentage_differnce_confidence": percentage_differnce_confidence,
+                        "text before": row1["text"],
+                        "text after": row2["text"]
                     }
                     # Append row to dataframe
                     new_row = pd.DataFrame(new_row, index=[page])
@@ -100,8 +111,9 @@ ocr_evaluation_comparison = evaluation_comparison(
 )
 print(len(ocr_evaluation_comparison))
 
-ocr_evaluation_comparison.to_Excel("test_comparison.xlsx")
+ocr_evaluation_comparison.to_excel("test_comparison.xlsx")
 
 #TODO Summe der Confidencen
 #TODO Center Punkte der Bounding Box vergleichen
 #TODO PDF aus verschiedenen Dokumneten zusammenbauen
+

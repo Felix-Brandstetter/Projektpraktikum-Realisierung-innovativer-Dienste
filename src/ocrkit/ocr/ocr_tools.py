@@ -5,15 +5,19 @@ import os
 import pytesseract
 from pypdf import PdfWriter
 from pytesseract import Output
+import re
 
 
 def create_searchable_pdf(
     tiff_image: TiffImage,
     out_filename: str,
     language: str,
+    dpi: float = 300,
     fontcolor: str = "red",
     fontname: str = "Helvetica",
-    show_bounding_boxes=False,
+    show_bounding_boxes:bool=False,
+    invisible_text:bool=False,
+    interword_spaces:bool =False
 ):
     # Split tiff image into pages
     tiff_image_pages = tiff_image.split_tiff_image()
@@ -38,12 +42,12 @@ def create_searchable_pdf(
             hocr_filename=hocr_file,
             tiff_image=page.path,
             out_filename=created_pdf_page,
-            dpi=300,
-            fontcolor="red",
-            fontname="Helvetica",
-            show_bounding_boxes=False,
-            invisible_text=False,
-            interword_spaces=False,
+            dpi=dpi,
+            fontcolor=fontcolor,
+            fontname=fontname,
+            show_bounding_boxes=show_bounding_boxes,
+            invisible_text=invisible_text,
+            interword_spaces=interword_spaces
         )
         merger.append(created_pdf_page)
 
@@ -91,3 +95,11 @@ def get_ocr_data(tiff_image: TiffImage, language: str):
     )
     ocrdata = ocrdata[ocrdata["conf"] != -1]
     return ocrdata
+
+def get_rotation_angle(tiff_image: TiffImage):
+    osd_data = pytesseract.image_to_osd(tiff_image.path)
+    print(osd_data)
+    # using regex we search for the angle(in string format) of the text
+    angle = re.search('(?<=Rotate: )\d+', osd_data).group(0)
+
+    return angle
