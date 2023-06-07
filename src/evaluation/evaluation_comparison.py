@@ -34,16 +34,19 @@ def evaluation_comparison(
             #print(row1)
             #print(ocrdata_with_preprocessing_per_page.loc[[index1]])
             for index2, row2 in ocrdata_with_preprocessing_per_page.iterrows():
+                middle_row2_x = row2["left"] + 0.5 * row2["width"]
+                middle_row2_y = row2["top"] + 0.5 * row2["height"] 
                 if (
-                    row1["left"] == row2["left"]
-                    and row1["top"] == row2["top"]
-                    and row1["width"] == row2["width"]
-                    and row1["height"] == row2["height"]
+                    middle_row2_x >=  row1["left"]
+                    and middle_row2_x <=  (row1["left"] + row1["width"])
+                    and middle_row2_y >=  row1["top"]
+                    and middle_row2_y <=  (row1["top"] + row1["height"])
                 ):
                     row1_confidence = row1["conf"]
                     row2_confidence = row2["conf"]
                     differnce_confidence = row2_confidence - row1_confidence
-                    percentage_differnce_confidence = (
+                    if(row1_confidence != 0):
+                        percentage_differnce_confidence = (
                         differnce_confidence / row1_confidence
                     )
                     new_row = {
@@ -96,6 +99,8 @@ ocr_evaluation_comparison = evaluation_comparison(
     ocrdata_with_preprocessing=tiff_image_preprocessed_ocr_data,
 )
 print(len(ocr_evaluation_comparison))
+
+ocr_evaluation_comparison.to_Excel("test_comparison.xlsx")
 
 #TODO Summe der Confidencen
 #TODO Center Punkte der Bounding Box vergleichen
