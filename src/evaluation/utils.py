@@ -2,15 +2,39 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 
+
 def _get_average_confidence(ocrdata: pd.DataFrame):
     average_confidence = ocrdata["conf"].mean()
     return average_confidence
 
+# Get the average confidence before preprocessing of all the words compared in the before/after preprocessing comparison
+def get_average_confidence_before_preprocessing(ocrdata_comparison_before_after_preprocessing: pd.DataFrame):
+    average_confidence_before_preprocessing = ocrdata_comparison_before_after_preprocessing["confidence_before"].mean()
+    return average_confidence_before_preprocessing
+
+# Get the average confidence after preprocessing of all the words compared in the before/after preprocessing comparison
+def get_average_confidence_after_preprocessing(ocrdata_comparison_before_after_preprocessing: pd.DataFrame):
+    average_confidence_after_preprocessing = ocrdata_comparison_before_after_preprocessing["confidence_after"].mean()
+    return average_confidence_after_preprocessing
+
+# Get the average difference in confidence  of all the words compared in the before/after preprocessing comparison
+def get_average_differnce_in_confidence(ocrdata_comparison_before_after_preprocessing: pd.DataFrame):
+    average_differnce_in_confidence = ocrdata_comparison_before_after_preprocessing["differnce_in_confidence"].mean()
+    return average_differnce_in_confidence
+
+# Get the average percentage difference in confidence of all the words compared in the before/after preprocessing comparison
+def get_average_percentage_differnce_in_confidence(ocrdata_comparison_before_after_preprocessing: pd.DataFrame):
+    average_percentage_differnce_in_confidence = ocrdata_comparison_before_after_preprocessing["percentage_differnce_confidence"].mean()
+    return average_percentage_differnce_in_confidence
 
 def _get_number_of_detected_words(ocrdata: pd.DataFrame):
     number_of_detected_words = ocrdata["conf"].count()
     return number_of_detected_words
 
+#Get the number of words compared in the before/after preprocessing comparison
+def get_number_of_compared_words(ocrdata_comparison_before_after_preprocessing: pd.DataFrame):
+    number_of_compared_words = ocrdata_comparison_before_after_preprocessing["confidence_before"].count()
+    return number_of_compared_words
 
 def _get_variance_of_confidence(ocrdata: pd.DataFrame):
     variance_of_confidence = ocrdata["conf"].var()
@@ -21,11 +45,39 @@ def _get_minimum_of_confidence(ocrdata: pd.DataFrame):
     minimum_of_confidence = ocrdata["conf"].min()
     return minimum_of_confidence
 
+# Get the minimum of confidence before preprocessing of all the words compared in the before/after preprocessing comparison
+def get_minimum_of_confidence_before_preprocessing(ocrdata_comparison_before_after_preprocessing: pd.DataFrame):
+    minimum_of_confidence_before_preprocessing = ocrdata_comparison_before_after_preprocessing["confidence_before"].min()
+    return minimum_of_confidence_before_preprocessing
+
+# Get the minimum of confidence after preprocessing of all the words compared in the before/after preprocessing comparison
+def get_minimum_of_confidence_after_preprocessing(ocrdata_comparison_before_after_preprocessing: pd.DataFrame):
+    minimum_of_confidence_after_preprocessing = ocrdata_comparison_before_after_preprocessing["confidence_after"].min()
+    return minimum_of_confidence_after_preprocessing
 
 def _get_maximum_of_confidence(ocrdata: pd.DataFrame):
     maximum_of_confidence = ocrdata["conf"].max()
     return maximum_of_confidence
 
+# Get the maximum of confidence before preprocessing of all the words compared in the before/after preprocessing comparison
+def get_maximum_of_confidence_before_preprocessing(ocrdata_comparison_before_after_preprocessing: pd.DataFrame):
+    maximum_of_confidence_before_preprocessing = ocrdata_comparison_before_after_preprocessing["confidence_before"].max()
+    return maximum_of_confidence_before_preprocessing
+
+# Get the maximum of confidence after preprocessing of all the words compared in the before/after preprocessing comparison
+def get_maximum_of_confidence_after_preprocessing(ocrdata_comparison_before_after_preprocessing: pd.DataFrame):
+    maximum_of_confidence_after_preprocessing = ocrdata_comparison_before_after_preprocessing["confidence_after"].max()
+    return maximum_of_confidence_after_preprocessing
+
+# Get the biggest difference in confidence of all the words compared in the before/after preprocessing comparison
+def get_maximum_of_differnce_in_confidence(ocrdata_comparison_before_after_preprocessing: pd.DataFrame):
+    maximum_of_differnce_in_confidence = ocrdata_comparison_before_after_preprocessing["differnce_in_confidence"].mean()
+    return maximum_of_differnce_in_confidence
+
+# Get the biggest percentage difference in confidence of all the words compared in the before/after preprocessing comparison
+def get_maximum_of_percentage_differnce_in_confidence(ocrdata_comparison_before_after_preprocessing: pd.DataFrame):
+    maximum_of_percentage_differnce_in_confidence = ocrdata_comparison_before_after_preprocessing["percentage_differnce_confidence"].mean()
+    return maximum_of_percentage_differnce_in_confidence
 
 def _get_number_of_zero_confidence(ocrdata: pd.DataFrame):
     number_of_zero_confidence = (ocrdata["conf"] == 0).sum()
@@ -36,20 +88,69 @@ def _get_sum_of_confidence(ocrdata: pd.DataFrame):
     sum_of_confidence = (ocrdata["conf"]).sum()
     return sum_of_confidence
 
+# Get the sum of confidences before preprocessing of all the words compared in the before/after preprocessing comparison
+def get_sum_of_confidence_before_preprocessing(ocrdata_comparison_before_after_preprocessing: pd.DataFrame):
+    sum_of_confidence_before_preprocessing = ocrdata_comparison_before_after_preprocessing["confidence_before"].sum()
+    return sum_of_confidence_before_preprocessing
+
+# Get the sum of confidences after preprocessing of all the words compared in the before/after preprocessing comparison
+def get_sum_of_confidence_after_preprocessing(ocrdata_comparison_before_after_preprocessing: pd.DataFrame):
+    sum_of_confidence_after_preprocessing = ocrdata_comparison_before_after_preprocessing["confidence_after"].sum()
+    return sum_of_confidence_after_preprocessing
+
 
 def _get_standard_deviation_of_confidence(ocrdata: pd.DataFrame):
     standard_deviation_of_confidence = (ocrdata["conf"]).std()
     return standard_deviation_of_confidence
 
+# Get the standard deviation of confidences before preprocessing of all the words compared in the before/after preprocessing comparison
+def get_standard_deviation_of_confidence_before_preprocessing(ocrdata_comparison_before_after_preprocessing: pd.DataFrame):
+    standard_deviation_of_confidence_before_preprocessing = ocrdata_comparison_before_after_preprocessing["confidence_before"].std()
+    return standard_deviation_of_confidence_before_preprocessing
+
+# Get the standard deviation of confidences after preprocessing of all the words compared in the before/after preprocessing comparison
+def get_standard_deviation_of_confidence_after_preprocessing(ocrdata_comparison_before_after_preprocessing: pd.DataFrame):
+    standard_deviation_of_confidence_after_preprocessing = ocrdata_comparison_before_after_preprocessing["confidence_after"].std()
+    return standard_deviation_of_confidence_after_preprocessing
+
+# Get the standard deviation of the differences in confidences of all the words compared in the before/after preprocessing comparison
+def get_standard_deviation_of_differnce_in_confidence(ocrdata_comparison_before_after_preprocessing: pd.DataFrame):
+    standard_deviation_of_differnce_in_confidence = ocrdata_comparison_before_after_preprocessing["differnce_in_confidence"].std()
+    return standard_deviation_of_differnce_in_confidence
+
+# Get the standard deviation of the percentage differences in confidences of all the words compared in the before/after preprocessing comparison
+def get_standard_deviation_of_percentage_differnce_in_confidence(ocrdata_comparison_before_after_preprocessing: pd.DataFrame):
+    standard_deviation_of_differnce_in_confidence = ocrdata_comparison_before_after_preprocessing["percentage_differnce_confidence"].std()
+    return standard_deviation_of_differnce_in_confidence
 
 def _get_number_of_confidences_under_25(ocrdata: pd.DataFrame):
     number_of_confidences_under_25 = (ocrdata["conf"] < 25).sum()
     return number_of_confidences_under_25
 
+# Get the number of confidences under 25 before preprocessing of all the words compared in the before/after preprocessing comparison
+def get_number_of_confidences_under_25_before_preprocessing(ocrdata_comparison_before_after_preprocessing: pd.DataFrame):
+    number_of_confidences_under_25_before_preprocessing = (ocrdata_comparison_before_after_preprocessing["confidence_before"] < 25).sum()
+    return number_of_confidences_under_25_before_preprocessing
+
+# Get the number of confidences under 25 after preprocessing of all the words compared in the before/after preprocessing comparison
+def get_number_of_confidences_under_25_after_preprocessing(ocrdata_comparison_before_after_preprocessing: pd.DataFrame):
+    number_of_confidences_under_25_after_preprocessing = (ocrdata_comparison_before_after_preprocessing["confidence_after"] < 25).sum()
+    return number_of_confidences_under_25_after_preprocessing
 
 def _get_number_of_confidences_under_50(ocrdata: pd.DataFrame):
     number_of_confidences_under_50 = (ocrdata["conf"] < 50).sum()
     return number_of_confidences_under_50
+
+# Get the number of confidences under 50 before preprocessing of all the words compared in the before/after preprocessing comparison
+def get_number_of_confidences_under_50_before_preprocessing(ocrdata_comparison_before_after_preprocessing: pd.DataFrame):
+    number_of_confidences_under_50_before_preprocessing = (ocrdata_comparison_before_after_preprocessing["confidence_before"] < 50).sum()
+    return number_of_confidences_under_50_before_preprocessing
+
+# Get the number of confidences under 50 after preprocessing of all the words compared in the before/after preprocessing comparison
+def get_number_of_confidences_under_50_after_preprocessing(ocrdata_comparison_before_after_preprocessing: pd.DataFrame):
+    number_of_confidences_under_50_after_preprocessing = (ocrdata_comparison_before_after_preprocessing["confidence_after"] < 50).sum()
+    return number_of_confidences_under_50_after_preprocessing
+
 
 
 def evaluate_ocrdata(ocrdata: pd.DataFrame):
