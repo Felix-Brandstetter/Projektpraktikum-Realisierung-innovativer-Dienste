@@ -62,7 +62,10 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 
 #OpenCV dependencies
-RUN apt-get install --no-install-recommends --yes ffmpeg libsm6 libxext6  -y  \
+RUN apt-get install --no-install-recommends --yes ffmpeg libsm6 libxext6
+
+#Unpaper
+RUN apt-get install --no-install-recommends --yes unpaper libtiff-tools netpbm  -y \
   && rm -rf /var/lib/apt/lists/*
 
 

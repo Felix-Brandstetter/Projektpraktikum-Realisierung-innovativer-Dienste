@@ -255,7 +255,7 @@ def evaluation_of_comparison(ocrdata_comparison_before_after_preprocessing: pd.D
 
 
 # Create new InputPDF
-inputpdf = InputPDF("/RIDSS2023/inputfolder/ToOcr-06.pdf")
+inputpdf = InputPDF("inputfolder/ToOcr_Seiten.pdf/ToOcr-06.pdf")
 
 
 # Convert to Tiff Image

@@ -9,7 +9,7 @@ tiff_image = inputpdf.convert_to_tiff()
 
 
 # Preprocessing
-tiff_image_preprocessed = tiff_image.rotate_image_to_corrected_text_orientation()
+tiff_image_preprocessed = tiff_image.improve_contrast()
 
 # Save Images
 tiff_image.save_image("test.tiff")
