@@ -2,7 +2,7 @@ import pandas as pd
 from numpy.linalg import norm
 import numpy as np
 import sys
-from boundingbox_full_comparison import BoundingBox
+from boundingbox import BoundingBox
 
 sys.path.append("/RIDSS2023/src")
 from ocrkit import *

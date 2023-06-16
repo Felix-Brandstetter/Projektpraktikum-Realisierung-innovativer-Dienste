@@ -1,3 +1,5 @@
+from shapely.geometry import Polygon
+
 class BoundingBox:
 
     def __init__(self,top,left,width,height,index_in_ocr_data):
@@ -15,15 +17,17 @@ class BoundingBox:
         return middle_point_x,middle_point_y
 
 
-    def is_point_inside_bounding_box(self,middlepoint:tuple):
-        x = middlepoint[0]
-        y = middlepoint[1]
-        point_is_in_boundingbox = False
-        if (
-            x >=  self.left
-            and x <=  (self.left + self.width)
-            and y >=  self.top
-            and y <=  (self.top +self.height)
-        ):
-            point_is_in_boundingbox = True
-        return point_is_in_boundingbox
+    def is_comparison_boundingbox_inside_boundingbox(self, comparison_boundingbox):
+        left_top_corner_source_boundingbox =  self.left, self.top
+        right_top_corner_source_boundingbox = self.left+self.width, self.top
+        left_bottom_corner_source_boundingbox = self.left, self.top+self.height
+        right_bottom_corner_source_boundingbox = self.left+self.width, self.top+self.height
+        source_boundingbox_as_polygon = Polygon([left_top_corner_source_boundingbox, right_top_corner_source_boundingbox, left_bottom_corner_source_boundingbox, right_bottom_corner_source_boundingbox])
+
+        left_top_corner_comparison_boundingbox =  comparison_boundingbox.left, comparison_boundingbox.top
+        right_top_corner_comparison_boundingbox = comparison_boundingbox.left+comparison_boundingbox.width, comparison_boundingbox.top
+        left_bottom_corner_comparison_boundingbox = comparison_boundingbox.left, comparison_boundingbox.top+comparison_boundingbox.height
+        right_bottom_corner_comparison_boundingbox = comparison_boundingbox.left+comparison_boundingbox.width, comparison_boundingbox.top+comparison_boundingbox.height
+        comparison_boundingbox_as_polygon = Polygon([left_top_corner_comparison_boundingbox, right_top_corner_comparison_boundingbox, left_bottom_corner_comparison_boundingbox, right_bottom_corner_comparison_boundingbox])
+        
+        return comparison_boundingbox_as_polygon.intersects(source_boundingbox_as_polygon)

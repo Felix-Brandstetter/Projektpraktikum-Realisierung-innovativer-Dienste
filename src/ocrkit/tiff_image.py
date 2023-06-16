@@ -3,7 +3,7 @@ from wand.image import Image
 from tempfile import TemporaryDirectory
 import glob
 import ocrkit
-import pyunpaper
+
 
 
 class TiffImage:
@@ -39,22 +39,6 @@ class TiffImage:
         tiff_image = TiffImage(path=path_to_tiff, workfolder=workfolder)
         return tiff_image
     
-    def improve_contrast(self):
-        workfolder = TemporaryDirectory(dir="/RIDSS2023/tmp")
-        path_to_tiff = os.path.join(workfolder.name, self.basename + ".tiff")
-        with Image(filename=self.path, resolution=300) as img:
-            for page_number in range(len(img.sequence)):
-                with img.sequence[page_number] as page:
-                    page.format = "tiff"
-                    page.depth = 8
-                    page.alpha_channel = "off"
-                    numpy_page = page.numpy()
-                    contrast_improved_nupmy_page = pyunpaper.improve_contrast(numpy_page)
-                    contrast_improved_wand_page = Image(contrast_improved_nupmy_page)
-                    page = contrast_improved_wand_page
-            img.save(filename=path_to_tiff)
-        tiff_image = TiffImage(path=path_to_tiff, workfolder=workfolder)
-        return tiff_image
 
     def deskew(self):
         workfolder = TemporaryDirectory(dir="/RIDSS2023/tmp")
@@ -66,23 +50,6 @@ class TiffImage:
                     page.depth = 8
                     page.alpha_channel = "off"
                     page.deskew(0.4 * img.quantum_range)
-            img.save(filename=path_to_tiff)
-        tiff_image = TiffImage(path=path_to_tiff, workfolder=workfolder)
-        return tiff_image
-    
-    def multi_deskew(self):
-        workfolder = TemporaryDirectory(dir="/RIDSS2023/tmp")
-        path_to_tiff = os.path.join(workfolder.name, self.basename + ".tiff")
-        with Image(filename=self.path, resolution=300) as img:
-            for page_number in range(len(img.sequence)):
-                with img.sequence[page_number] as page:
-                    page.format = "tiff"
-                    page.depth = 8
-                    page.alpha_channel = "off"
-                    numpy_page = page.numpy()
-                    deskewed_nupmy_page = pyunpaper.deskew(numpy_page)
-                    deskewed_wand_page = Image(deskewed_nupmy_page)
-                    page = deskewed_wand_page
             img.save(filename=path_to_tiff)
         tiff_image = TiffImage(path=path_to_tiff, workfolder=workfolder)
         return tiff_image
@@ -117,22 +84,6 @@ class TiffImage:
         tiff_image = TiffImage(path=path_to_tiff, workfolder=workfolder)
         return tiff_image
     
-    def remove_borders(self):
-        workfolder = TemporaryDirectory(dir="/RIDSS2023/tmp")
-        path_to_tiff = os.path.join(workfolder.name, self.basename + ".tiff")
-        with Image(filename=self.path, resolution=300) as img:
-            for page_number in range(len(img.sequence)):
-                with img.sequence[page_number] as page:
-                    page.format = "tiff"
-                    page.depth = 8
-                    page.alpha_channel = "off"
-                    numpy_page = page.numpy()
-                    removed_borders_nupmy_page = pyunpaper.remove_borders(numpy_page)
-                    removed_borders_wand_page = Image(removed_borders_nupmy_page)
-                    page = removed_borders_wand_page
-            img.save(filename=path_to_tiff)
-        tiff_image = TiffImage(path=path_to_tiff, workfolder=workfolder)
-        return tiff_image
     
     def cropping(self):
         workfolder = TemporaryDirectory(dir="/RIDSS2023/tmp")
@@ -164,41 +115,7 @@ class TiffImage:
                     
             img.save(filename=path_to_tiff)
         tiff_image = TiffImage(path=path_to_tiff, workfolder=workfolder)
-        return tiff_image
-
-    def despeckle_unpaper(self):
-        workfolder = TemporaryDirectory(dir="/RIDSS2023/tmp")
-        path_to_tiff = os.path.join(workfolder.name, self.basename + ".tiff")
-        with Image(filename=self.path, resolution=300) as img:
-            for page_number in range(len(img.sequence)):
-                with img.sequence[page_number] as page:
-                    page.format = "tiff"
-                    page.depth = 8
-                    page.alpha_channel = "off"
-                    numpy_page = page.numpy()
-                    despeckled_nupmy_page = pyunpaper.despeckle(numpy_page)
-                    despeckled_wand_page = Image(despeckled_nupmy_page)
-                    page = despeckled_wand_page
-            img.save(filename=path_to_tiff)
-        tiff_image = TiffImage(path=path_to_tiff, workfolder=workfolder)
         return tiff_image   
-
-    def remove_noise(self):
-        workfolder = TemporaryDirectory(dir="/RIDSS2023/tmp")
-        path_to_tiff = os.path.join(workfolder.name, self.basename + ".tiff")
-        with Image(filename=self.path, resolution=300) as img:
-            for page_number in range(len(img.sequence)):
-                with img.sequence[page_number] as page:
-                    page.format = "tiff"
-                    page.depth = 8
-                    page.alpha_channel = "off"
-                    numpy_page = page.numpy()
-                    noise_removed_nupmy_page = pyunpaper.remove_borders(numpy_page)
-                    noise_removed_wand_page = Image(noise_removed_nupmy_page)
-                    page = noise_removed_wand_page
-            img.save(filename=path_to_tiff)
-        tiff_image = TiffImage(path=path_to_tiff, workfolder=workfolder)
-        return tiff_image     
     
     def kuwahara(self):
         workfolder = TemporaryDirectory(dir="/RIDSS2023/tmp")

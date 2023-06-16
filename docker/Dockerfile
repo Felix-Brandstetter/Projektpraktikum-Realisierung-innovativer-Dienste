@@ -71,8 +71,7 @@ RUN apt-get install --no-install-recommends --yes unpaper libtiff-tools netpbm  
 
 #Allow Imagemagick to convert PDF
 RUN if [ -f $imagemagic_config ] ; then sed -i 's/<policy domain="coder" rights="none" pattern="PDF" \/>/<policy domain="coder" rights="read|write" pattern="PDF" \/>/g' $imagemagic_config ; else echo did not see file $imagemagic_config ; fi
-
-
+RUN if [ -f $imagemagic_config ] ; then sed -i 's/<policy domain="resource" name="disk" value="1GiB"\/>/<policy domain="resource" name="disk" value="10GiB"\/>/g' $imagemagic_config ; else echo did not see file $imagemagic_config ; fi
 
 WORKDIR /RIDSS2023
 
