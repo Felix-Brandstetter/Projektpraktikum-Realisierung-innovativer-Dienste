@@ -52,9 +52,14 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
   tesseract-ocr-chi-sim \
   tesseract-ocr-deu \
   tesseract-ocr-eng \
-  #tesseract-ocr-fra \
-  #tesseract-ocr-por \
-  #tesseract-ocr-spa \
+  tesseract-ocr-fra \
+  tesseract-ocr-por \
+  tesseract-ocr-spa \
+  tesseract-ocr-ara \
+  tesseract-ocr-dan \
+  tesseract-ocr-fin \
+  tesseract-ocr-hin \
+  tesseract-ocr-ita \
   unpaper \
   python-is-python3\
   libcairo2-dev
@@ -62,14 +67,16 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 
 #OpenCV dependencies
-RUN apt-get install --no-install-recommends --yes ffmpeg libsm6 libxext6  -y  \
+RUN apt-get install --no-install-recommends --yes ffmpeg libsm6 libxext6
+
+#Unpaper
+RUN apt-get install --no-install-recommends --yes unpaper libtiff-tools netpbm  -y \
   && rm -rf /var/lib/apt/lists/*
 
 
 #Allow Imagemagick to convert PDF
 RUN if [ -f $imagemagic_config ] ; then sed -i 's/<policy domain="coder" rights="none" pattern="PDF" \/>/<policy domain="coder" rights="read|write" pattern="PDF" \/>/g' $imagemagic_config ; else echo did not see file $imagemagic_config ; fi
-
-
+RUN if [ -f $imagemagic_config ] ; then sed -i 's/<policy domain="resource" name="disk" value="1GiB"\/>/<policy domain="resource" name="disk" value="10GiB"\/>/g' $imagemagic_config ; else echo did not see file $imagemagic_config ; fi
 
 WORKDIR /RIDSS2023
 

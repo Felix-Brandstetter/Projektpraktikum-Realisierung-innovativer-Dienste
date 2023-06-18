@@ -12,3 +12,5 @@ inputpdf = ocrkit.InputPDF("/RIDSS2023/inputfolder/ToOcr-06.pdf")
 tiff_image = inputpdf.convert_to_tiff()
 ocrdata = ocrkit.get_ocr_data(tiff_image=tiff_image, language="deu")
 utils.plot_confidences(ocrdata=ocrdata)
+
+#TODO Plot difference in one histogramm
