@@ -1,4 +1,6 @@
 import sys
+from datetime import datetime
+
 
 sys.path.append("/RIDSS2023/src")
 from ocrkit import *
@@ -17,10 +19,13 @@ tiff_image.save_image("Test.tiff")
 
 
 # Get OCRDATA
+startTime_deu = datetime.now()
 ocrdatadeutsch = ocrkit.get_ocr_data(
     delete_minus1_confidences=False,
     tiff_image=tiff_image, language="deu"
 )
+runtime_deu = datetime.now() - startTime_deu
+
 ocrdataenglisch = ocrkit.get_ocr_data(
     delete_minus1_confidences=False,
     tiff_image=tiff_image, language="eng"
