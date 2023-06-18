@@ -1,5 +1,3 @@
-import sys
-
 from ocrkit import *
 import ocrkit
 import sys

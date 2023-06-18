@@ -52,9 +52,14 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
   tesseract-ocr-chi-sim \
   tesseract-ocr-deu \
   tesseract-ocr-eng \
-  #tesseract-ocr-fra \
-  #tesseract-ocr-por \
-  #tesseract-ocr-spa \
+  tesseract-ocr-fra \
+  tesseract-ocr-por \
+  tesseract-ocr-spa \
+  tesseract-ocr-ara \
+  tesseract-ocr-dan \
+  tesseract-ocr-fin \
+  tesseract-ocr-hin \
+  tesseract-ocr-ita \
   unpaper \
   python-is-python3\
   libcairo2-dev

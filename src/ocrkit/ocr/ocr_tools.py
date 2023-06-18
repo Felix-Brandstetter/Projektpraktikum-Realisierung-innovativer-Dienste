@@ -1,5 +1,4 @@
 from ocrkit import TiffImage
-from wand.image import Image
 from ocrkit.ocr.hocrtransform import HocrTransform
 import os
 import pytesseract
@@ -89,11 +88,12 @@ def _merge_hocr_and_one_page_image(
     )
 
 
-def get_ocr_data(tiff_image: TiffImage, language: str):
+def get_ocr_data(tiff_image: TiffImage, language: str, delete_minus1_confidences:bool = True):
     ocrdata = pytesseract.image_to_data(
         image=tiff_image.path, output_type=Output.DATAFRAME, lang=language
     )
-    ocrdata = ocrdata[ocrdata["conf"] != -1]
+    if delete_minus1_confidences:
+        ocrdata = ocrdata[ocrdata["conf"] != -1]
     return ocrdata
 
 
