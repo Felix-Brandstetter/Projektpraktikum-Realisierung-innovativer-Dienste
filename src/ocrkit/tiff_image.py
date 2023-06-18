@@ -3,7 +3,9 @@ from wand.image import Image
 from tempfile import TemporaryDirectory
 import glob
 import ocrkit
-import pyunpaper
+from langdetect import detect, detect_langs
+import pandas as pd
+from ocrkit.language_identification_model import Language_Identification_Model
 
 
 class TiffImage:
@@ -19,6 +21,103 @@ class TiffImage:
             if len(img.sequence) > 1:
                 is_multipage = True
         return is_multipage
+    
+    def detect_language(self):
+        languages_in_document = pd.DataFrame(columns=["Sprache"])
+        tiff_image_ocrdata = ocrkit.get_ocr_data(tiff_image=self, language="deu+eng+chi_sim")
+        tiff_image_ocrdata = tiff_image_ocrdata[tiff_image_ocrdata["conf"] >= 96]
+        page_numbers = list(tiff_image_ocrdata["page_num"].unique())
+        page_numbers.append("Whole Document")
+        for page in page_numbers:
+            counter_deu = 0
+            counter_eng = 0
+            counter_chi_sim = 0
+            if page != "Whole Document":
+                ocrdata_per_page = tiff_image_ocrdata[tiff_image_ocrdata["page_num"] == page]
+            else:
+                ocrdata_per_page = tiff_image_ocrdata
+            for index1 in range(len(ocrdata_per_page)): 
+                row = ocrdata_per_page.iloc[index1]
+                word_in_row = row["text"]
+                try:
+                    lang_word = detect(word_in_row)
+                    #print(lang_word)
+                except:
+                    lang_word = None
+                if lang_word == "en":
+                    counter_eng += 1
+                elif lang_word == "de":
+                    counter_deu += 1
+                elif lang_word == "zh-cn":
+                    counter_chi_sim +=1    
+            language_in_text = ""
+            if counter_eng >= 15:
+                language_in_text += " eng " 
+            if counter_deu >= 15:
+                language_in_text += " deu "
+            if counter_chi_sim >= 15:
+                language_in_text += " chi_sim "
+            if language_in_text == "":
+                language_in_text = "N/A"
+            new_row = {"Sprache": language_in_text}
+            new_row = pd.DataFrame(new_row, index=[page])
+            languages_in_document = pd.concat([languages_in_document, new_row], axis=0, ignore_index=True)
+        print(languages_in_document)
+        return languages_in_document
+
+    def detect_language2(self):
+        languages_in_document = pd.DataFrame(columns=["Sprache"])
+        tiff_image_ocrdata = ocrkit.get_ocr_data(tiff_image=self, language="deu+eng+chi_sim")
+        tiff_image_ocrdata = tiff_image_ocrdata[tiff_image_ocrdata["conf"] >= 96]
+        page_numbers = list(tiff_image_ocrdata["page_num"].unique())
+        page_numbers.append("Whole Document")
+        for page in page_numbers:
+            text_in_page = ""
+            if page != "Whole Document":
+                ocrdata_per_page = tiff_image_ocrdata[tiff_image_ocrdata["page_num"] == page]
+            else:
+                ocrdata_per_page = tiff_image_ocrdata
+            for index1 in range(len(ocrdata_per_page)): 
+                row = ocrdata_per_page.iloc[index1]
+                word_in_row = row["text"]
+                text_in_page += " " + word_in_row + " "    
+            language_identification_model = Language_Identification_Model()
+            most_probable_languages = language_identification_model.predict_lang(text_in_page)
+            print(most_probable_languages)
+            #new_row = {"Sprache": language_in_text}
+            #new_row = pd.DataFrame(new_row, index=[page])
+            #languages_in_document = pd.concat([languages_in_document, new_row], axis=0, ignore_index=True)
+        #print(languages_in_document)
+        return languages_in_document   
+
+    def detect_language3(self):
+        languages_in_document = pd.DataFrame(columns=["Sprache"])
+        tiff_image_ocrdata = ocrkit.get_ocr_data(tiff_image=self, language="deu+eng+chi_sim")
+        tiff_image_ocrdata = tiff_image_ocrdata[tiff_image_ocrdata["conf"] >= 96]
+        page_numbers = list(tiff_image_ocrdata["page_num"].unique())
+        page_numbers.append("Whole Document")
+        for page in page_numbers:
+            text_in_page = ""
+            if page != "Whole Document":
+                ocrdata_per_page = tiff_image_ocrdata[tiff_image_ocrdata["page_num"] == page]
+            else:
+                ocrdata_per_page = tiff_image_ocrdata
+            for index1 in range(len(ocrdata_per_page)): 
+                row = ocrdata_per_page.iloc[index1]
+                word_in_row = row["text"]
+                text_in_page += " " + word_in_row + " "    
+            detected_languages = detect_langs(text_in_page)
+            # Sort the detected languages by probability in descending order
+            detected_languages.sort(key=lambda x: x.prob, reverse=True)
+            # Get the three most probable languages
+            most_probable_languages = detected_languages[:2]
+            for language in most_probable_languages:
+                print(f"Language: {language.lang}, Probability: {language.prob}")
+            #new_row = {"Sprache": language_in_text}
+            #new_row = pd.DataFrame(new_row, index=[page])
+            #languages_in_document = pd.concat([languages_in_document, new_row], axis=0, ignore_index=True)
+        #print(languages_in_document)
+        return most_probable_languages     
 
     def binarize_adaptive_threshold(self):
         workfolder = TemporaryDirectory(dir="/RIDSS2023/tmp")
@@ -38,23 +137,6 @@ class TiffImage:
 
         tiff_image = TiffImage(path=path_to_tiff, workfolder=workfolder)
         return tiff_image
-    
-    def improve_contrast(self):
-        workfolder = TemporaryDirectory(dir="/RIDSS2023/tmp")
-        path_to_tiff = os.path.join(workfolder.name, self.basename + ".tiff")
-        with Image(filename=self.path, resolution=300) as img:
-            for page_number in range(len(img.sequence)):
-                with img.sequence[page_number] as page:
-                    page.format = "tiff"
-                    page.depth = 8
-                    page.alpha_channel = "off"
-                    numpy_page = page.numpy()
-                    contrast_improved_nupmy_page = pyunpaper.improve_contrast(numpy_page)
-                    contrast_improved_wand_page = Image(contrast_improved_nupmy_page)
-                    page = contrast_improved_wand_page
-            img.save(filename=path_to_tiff)
-        tiff_image = TiffImage(path=path_to_tiff, workfolder=workfolder)
-        return tiff_image
 
     def deskew(self):
         workfolder = TemporaryDirectory(dir="/RIDSS2023/tmp")
@@ -70,23 +152,6 @@ class TiffImage:
         tiff_image = TiffImage(path=path_to_tiff, workfolder=workfolder)
         return tiff_image
     
-    def multi_deskew(self):
-        workfolder = TemporaryDirectory(dir="/RIDSS2023/tmp")
-        path_to_tiff = os.path.join(workfolder.name, self.basename + ".tiff")
-        with Image(filename=self.path, resolution=300) as img:
-            for page_number in range(len(img.sequence)):
-                with img.sequence[page_number] as page:
-                    page.format = "tiff"
-                    page.depth = 8
-                    page.alpha_channel = "off"
-                    numpy_page = page.numpy()
-                    deskewed_nupmy_page = pyunpaper.deskew(numpy_page)
-                    deskewed_wand_page = Image(deskewed_nupmy_page)
-                    page = deskewed_wand_page
-            img.save(filename=path_to_tiff)
-        tiff_image = TiffImage(path=path_to_tiff, workfolder=workfolder)
-        return tiff_image
-
     def adaptive_sharpen(self):
         workfolder = TemporaryDirectory(dir="/RIDSS2023/tmp")
         path_to_tiff = os.path.join(workfolder.name, self.basename + ".tiff")
@@ -116,40 +181,6 @@ class TiffImage:
             img.save(filename=path_to_tiff)
         tiff_image = TiffImage(path=path_to_tiff, workfolder=workfolder)
         return tiff_image
-    
-    def remove_borders(self):
-        workfolder = TemporaryDirectory(dir="/RIDSS2023/tmp")
-        path_to_tiff = os.path.join(workfolder.name, self.basename + ".tiff")
-        with Image(filename=self.path, resolution=300) as img:
-            for page_number in range(len(img.sequence)):
-                with img.sequence[page_number] as page:
-                    page.format = "tiff"
-                    page.depth = 8
-                    page.alpha_channel = "off"
-                    numpy_page = page.numpy()
-                    removed_borders_nupmy_page = pyunpaper.remove_borders(numpy_page)
-                    removed_borders_wand_page = Image(removed_borders_nupmy_page)
-                    page = removed_borders_wand_page
-            img.save(filename=path_to_tiff)
-        tiff_image = TiffImage(path=path_to_tiff, workfolder=workfolder)
-        return tiff_image
-    
-    def cropping(self):
-        workfolder = TemporaryDirectory(dir="/RIDSS2023/tmp")
-        path_to_tiff = os.path.join(workfolder.name, self.basename + ".tiff")
-        with Image(filename=self.path, resolution=300) as img:
-            for page_number in range(len(img.sequence)):
-                with img.sequence[page_number] as page:
-                    page.format = "tiff"
-                    page.depth = 8
-                    page.alpha_channel = "off"
-                    numpy_page = page.numpy()
-                    cropped_nupmy_page = pyunpaper.cropping(numpy_page)
-                    cropped_wand_page = Image(cropped_nupmy_page)
-                    page = cropped_wand_page
-            img.save(filename=path_to_tiff)
-        tiff_image = TiffImage(path=path_to_tiff, workfolder=workfolder)
-        return tiff_image
 
     def despeckle(self): 
         workfolder = TemporaryDirectory(dir="/RIDSS2023/tmp")
@@ -162,40 +193,6 @@ class TiffImage:
                     page.alpha_channel = "off"
                     page.despeckle()
                     
-            img.save(filename=path_to_tiff)
-        tiff_image = TiffImage(path=path_to_tiff, workfolder=workfolder)
-        return tiff_image
-
-    def despeckle_unpaper(self):
-        workfolder = TemporaryDirectory(dir="/RIDSS2023/tmp")
-        path_to_tiff = os.path.join(workfolder.name, self.basename + ".tiff")
-        with Image(filename=self.path, resolution=300) as img:
-            for page_number in range(len(img.sequence)):
-                with img.sequence[page_number] as page:
-                    page.format = "tiff"
-                    page.depth = 8
-                    page.alpha_channel = "off"
-                    numpy_page = page.numpy()
-                    despeckled_nupmy_page = pyunpaper.despeckle(numpy_page)
-                    despeckled_wand_page = Image(despeckled_nupmy_page)
-                    page = despeckled_wand_page
-            img.save(filename=path_to_tiff)
-        tiff_image = TiffImage(path=path_to_tiff, workfolder=workfolder)
-        return tiff_image   
-
-    def remove_noise(self):
-        workfolder = TemporaryDirectory(dir="/RIDSS2023/tmp")
-        path_to_tiff = os.path.join(workfolder.name, self.basename + ".tiff")
-        with Image(filename=self.path, resolution=300) as img:
-            for page_number in range(len(img.sequence)):
-                with img.sequence[page_number] as page:
-                    page.format = "tiff"
-                    page.depth = 8
-                    page.alpha_channel = "off"
-                    numpy_page = page.numpy()
-                    noise_removed_nupmy_page = pyunpaper.remove_borders(numpy_page)
-                    noise_removed_wand_page = Image(noise_removed_nupmy_page)
-                    page = noise_removed_wand_page
             img.save(filename=path_to_tiff)
         tiff_image = TiffImage(path=path_to_tiff, workfolder=workfolder)
         return tiff_image     

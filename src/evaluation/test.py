@@ -5,7 +5,7 @@ import ocrkit
 
 
 # Create new Inputfile
-inputpdf = ocrkit.InputPDF("/RIDSS2023/src/tests/test_ressources/test_rotate_image_to_corrected_text_orientation/test_image.pdf")
+inputpdf = ocrkit.InputPDF("/RIDSS2023/inputfolder/ToOcr-06.pdf")
 
 
 # Convert to Tiff Image

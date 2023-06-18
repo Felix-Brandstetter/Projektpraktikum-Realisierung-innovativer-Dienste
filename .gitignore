@@ -11,3 +11,4 @@ outputfolder/*
 .pytest_cache/*
 !README_Images/*
 !*.gitkeep
+!*.bin

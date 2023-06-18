@@ -18,14 +18,14 @@ def get_average_confidence_after_preprocessing(ocrdata_comparison_before_after_p
     return average_confidence_after_preprocessing
 
 # Get the average difference in confidence  of all the words compared in the before/after preprocessing comparison
-def get_average_differnce_in_confidence(ocrdata_comparison_before_after_preprocessing: pd.DataFrame):
-    average_differnce_in_confidence = ocrdata_comparison_before_after_preprocessing["differnce_in_confidence"].mean()
-    return average_differnce_in_confidence
+def get_average_difference_in_confidence(ocrdata_comparison_before_after_preprocessing: pd.DataFrame):
+    average_difference_in_confidence = ocrdata_comparison_before_after_preprocessing["difference_in_confidence"].mean()
+    return average_difference_in_confidence
 
 # Get the average percentage difference in confidence of all the words compared in the before/after preprocessing comparison
-def get_average_percentage_differnce_in_confidence(ocrdata_comparison_before_after_preprocessing: pd.DataFrame):
-    average_percentage_differnce_in_confidence = ocrdata_comparison_before_after_preprocessing["percentage_differnce_confidence"].mean()
-    return average_percentage_differnce_in_confidence
+def get_average_percentage_difference_in_confidence(ocrdata_comparison_before_after_preprocessing: pd.DataFrame):
+    average_percentage_difference_in_confidence = ocrdata_comparison_before_after_preprocessing["percentage_difference_confidence"].mean()
+    return average_percentage_difference_in_confidence
 
 def _get_number_of_detected_words(ocrdata: pd.DataFrame):
     number_of_detected_words = ocrdata["conf"].count()
@@ -70,14 +70,14 @@ def get_maximum_of_confidence_after_preprocessing(ocrdata_comparison_before_afte
     return maximum_of_confidence_after_preprocessing
 
 # Get the biggest difference in confidence of all the words compared in the before/after preprocessing comparison
-def get_maximum_of_differnce_in_confidence(ocrdata_comparison_before_after_preprocessing: pd.DataFrame):
-    maximum_of_differnce_in_confidence = ocrdata_comparison_before_after_preprocessing["differnce_in_confidence"].mean()
-    return maximum_of_differnce_in_confidence
+def get_maximum_of_difference_in_confidence(ocrdata_comparison_before_after_preprocessing: pd.DataFrame):
+    maximum_of_difference_in_confidence = ocrdata_comparison_before_after_preprocessing["difference_in_confidence"].mean()
+    return maximum_of_difference_in_confidence
 
 # Get the biggest percentage difference in confidence of all the words compared in the before/after preprocessing comparison
-def get_maximum_of_percentage_differnce_in_confidence(ocrdata_comparison_before_after_preprocessing: pd.DataFrame):
-    maximum_of_percentage_differnce_in_confidence = ocrdata_comparison_before_after_preprocessing["percentage_differnce_confidence"].mean()
-    return maximum_of_percentage_differnce_in_confidence
+def get_maximum_of_percentage_difference_in_confidence(ocrdata_comparison_before_after_preprocessing: pd.DataFrame):
+    maximum_of_percentage_difference_in_confidence = ocrdata_comparison_before_after_preprocessing["percentage_difference_confidence"].mean()
+    return maximum_of_percentage_difference_in_confidence
 
 def _get_number_of_zero_confidence(ocrdata: pd.DataFrame):
     number_of_zero_confidence = (ocrdata["conf"] == 0).sum()
@@ -114,14 +114,14 @@ def get_standard_deviation_of_confidence_after_preprocessing(ocrdata_comparison_
     return standard_deviation_of_confidence_after_preprocessing
 
 # Get the standard deviation of the differences in confidences of all the words compared in the before/after preprocessing comparison
-def get_standard_deviation_of_differnce_in_confidence(ocrdata_comparison_before_after_preprocessing: pd.DataFrame):
-    standard_deviation_of_differnce_in_confidence = ocrdata_comparison_before_after_preprocessing["differnce_in_confidence"].std()
-    return standard_deviation_of_differnce_in_confidence
+def get_standard_deviation_of_difference_in_confidence(ocrdata_comparison_before_after_preprocessing: pd.DataFrame):
+    standard_deviation_of_difference_in_confidence = ocrdata_comparison_before_after_preprocessing["difference_in_confidence"].std()
+    return standard_deviation_of_difference_in_confidence
 
 # Get the standard deviation of the percentage differences in confidences of all the words compared in the before/after preprocessing comparison
-def get_standard_deviation_of_percentage_differnce_in_confidence(ocrdata_comparison_before_after_preprocessing: pd.DataFrame):
-    standard_deviation_of_differnce_in_confidence = ocrdata_comparison_before_after_preprocessing["percentage_differnce_confidence"].std()
-    return standard_deviation_of_differnce_in_confidence
+def get_standard_deviation_of_percentage_difference_in_confidence(ocrdata_comparison_before_after_preprocessing: pd.DataFrame):
+    standard_deviation_of_difference_in_confidence = ocrdata_comparison_before_after_preprocessing["percentage_difference_confidence"].std()
+    return standard_deviation_of_difference_in_confidence
 
 def _get_number_of_confidences_under_25(ocrdata: pd.DataFrame):
     number_of_confidences_under_25 = (ocrdata["conf"] < 25).sum()
