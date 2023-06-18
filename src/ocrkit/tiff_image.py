@@ -3,13 +3,9 @@ from wand.image import Image
 from tempfile import TemporaryDirectory
 import glob
 import ocrkit
-<<<<<<< HEAD
 from langdetect import detect, detect_langs
 import pandas as pd
 from ocrkit.language_identification_model import Language_Identification_Model
-=======
-
->>>>>>> 5d51a1ca3e0cb72c68a42ebd487a231e53774153
 
 
 class TiffImage:
@@ -141,10 +137,6 @@ class TiffImage:
 
         tiff_image = TiffImage(path=path_to_tiff, workfolder=workfolder)
         return tiff_image
-<<<<<<< HEAD
-=======
-    
->>>>>>> 5d51a1ca3e0cb72c68a42ebd487a231e53774153
 
     def deskew(self):
         workfolder = TemporaryDirectory(dir="/RIDSS2023/tmp")
@@ -159,11 +151,7 @@ class TiffImage:
             img.save(filename=path_to_tiff)
         tiff_image = TiffImage(path=path_to_tiff, workfolder=workfolder)
         return tiff_image
-<<<<<<< HEAD
     
-=======
-
->>>>>>> 5d51a1ca3e0cb72c68a42ebd487a231e53774153
     def adaptive_sharpen(self):
         workfolder = TemporaryDirectory(dir="/RIDSS2023/tmp")
         path_to_tiff = os.path.join(workfolder.name, self.basename + ".tiff")
@@ -193,27 +181,6 @@ class TiffImage:
             img.save(filename=path_to_tiff)
         tiff_image = TiffImage(path=path_to_tiff, workfolder=workfolder)
         return tiff_image
-<<<<<<< HEAD
-=======
-    
-    
-    def cropping(self):
-        workfolder = TemporaryDirectory(dir="/RIDSS2023/tmp")
-        path_to_tiff = os.path.join(workfolder.name, self.basename + ".tiff")
-        with Image(filename=self.path, resolution=300) as img:
-            for page_number in range(len(img.sequence)):
-                with img.sequence[page_number] as page:
-                    page.format = "tiff"
-                    page.depth = 8
-                    page.alpha_channel = "off"
-                    numpy_page = page.numpy()
-                    cropped_nupmy_page = pyunpaper.cropping(numpy_page)
-                    cropped_wand_page = Image(cropped_nupmy_page)
-                    page = cropped_wand_page
-            img.save(filename=path_to_tiff)
-        tiff_image = TiffImage(path=path_to_tiff, workfolder=workfolder)
-        return tiff_image
->>>>>>> 5d51a1ca3e0cb72c68a42ebd487a231e53774153
 
     def despeckle(self): 
         workfolder = TemporaryDirectory(dir="/RIDSS2023/tmp")
@@ -228,11 +195,7 @@ class TiffImage:
                     
             img.save(filename=path_to_tiff)
         tiff_image = TiffImage(path=path_to_tiff, workfolder=workfolder)
-<<<<<<< HEAD
-        return tiff_image     
-=======
         return tiff_image   
->>>>>>> 5d51a1ca3e0cb72c68a42ebd487a231e53774153
     
     def kuwahara(self):
         workfolder = TemporaryDirectory(dir="/RIDSS2023/tmp")

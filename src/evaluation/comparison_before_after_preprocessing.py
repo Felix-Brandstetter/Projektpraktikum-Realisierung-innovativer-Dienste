@@ -2,12 +2,8 @@ import pandas as pd
 from numpy.linalg import norm
 import numpy as np
 import sys
-<<<<<<< HEAD
-from boundingbox_full_comparison import BoundingBox
-import matplotlib.pyplot as plt
-=======
 from boundingbox import BoundingBox
->>>>>>> 5d51a1ca3e0cb72c68a42ebd487a231e53774153
+import matplotlib as plt
 
 sys.path.append("/RIDSS2023/src")
 from ocrkit import *

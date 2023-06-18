@@ -4,7 +4,6 @@
 *.pdf
 *.tiff
 *.xlsx
-*.tsv
 tmp/*
 src/mystuff
 inputfolder/*
