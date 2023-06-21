@@ -214,7 +214,7 @@ def evaluate_ocrdata(ocrdata: pd.DataFrame):
         new_row = pd.DataFrame(new_row, index=[page])
         ocr_evaluation = pd.concat([ocr_evaluation, new_row], axis=0, ignore_index=True)
 
-    print(ocr_evaluation)
+#    print(ocr_evaluation)
     return ocr_evaluation
 
 
