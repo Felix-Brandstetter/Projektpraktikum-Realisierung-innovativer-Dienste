@@ -17,7 +17,7 @@ Image.MAX_IMAGE_PIXELS = 1000000000
 # Pfad zum Eingabeordner mit den PDF-Dateien
 input_folder = "/RIDSS2023/src/Experimente/Testdateien"
 
-output_folder = "/RIDSS2023/experiment_ergebnisse/Kontrast/Binarization_Test"
+output_folder = "/RIDSS2023/experiment_ergebnisse/Kontrast/Adaptive_Threshold_Test"
 if os.path.exists(output_folder):
     shutil.rmtree(output_folder)
 os.makedirs(output_folder)
@@ -49,7 +49,7 @@ for filename in os.listdir(input_folder):
         # Erstelle den Ausgabeordner
         os.makedirs(file_output_folder)
         tiff_image_original = inputpdf.convert_to_tiff_with_ghostscript(dpi=300)
-
+        
         # Get ocrdata from Tiff Image
         ocrdata_original = ocrkit.get_ocr_data(
             tiff_image=tiff_image_original, language="deu+eng+chi_sim"
@@ -69,36 +69,11 @@ for filename in os.listdir(input_folder):
             language="deu+eng+chi_sim",
         )
 
-        methods = [
-            "kapur",
-            "otsu",
-            "triangle",
-            "adaptive_threshold",
-            "edge",
-            "adaptive_threshold + edge",
-            "adaptive_threshold + sharpen",
-            "adaptive_threshold + adaptive_sharpen",
-        ]
-        for method in methods:
-            # Apply Binarization
-            if method == "adaptive_threshold":
-                tiff_image = tiff_image_original.binarize_adaptive_threshold()
-            elif method == "edge":
-                tiff_image = tiff_image_original.binarize_edge(radius=1)
-            elif method == "adaptive_threshold + edge":
-                tiff_image = tiff_image_original.binarize_adaptive_threshold()
-                tiff_image = tiff_image.binarize_edge(radius=1)
-            elif method == "adaptive_threshold + sharpen":
-                tiff_image = tiff_image_original.binarize_adaptive_threshold()
-                tiff_image = tiff_image.sharpen()
-            elif method == "adaptive_threshold + adaptive_sharpen":
-                tiff_image = tiff_image_original.binarize_adaptive_threshold()
-                tiff_image = tiff_image.adaptive_sharpen()
-            else:
-                tiff_image = tiff_image_original.binarize_auto_threshold(method=method)
-
+        sizes = [1,2,3,4,8,16,20,24,28,32]
+        for size in sizes:
+            tiff_image = tiff_image_original.binarize_adaptive_threshold(width=size, heigth=size)
             tiff_image.save_image(
-                os.path.join(file_output_folder, f"tiff_image_{method}.tiff")
+                os.path.join(file_output_folder, f"tiff_image_{size}px.tiff")
             )
 
             # Get ocrdata from Tiff Image
@@ -111,14 +86,14 @@ for filename in os.listdir(input_folder):
 
             # Save to Excel
             evaluation_ocrdata.to_excel(
-                os.path.join(file_output_folder, f"evaluation_ocrdata_{method}.xlsx")
+                os.path.join(file_output_folder, f"evaluation_ocrdata_{size}.xlsx")
             )
 
             # Create Searchable PDF
             ocrkit.create_searchable_pdf(
                 tiff_image=tiff_image,
                 out_filename=os.path.join(
-                    file_output_folder, f"tiff_image_{method}.pdf"
+                    file_output_folder, f"tiff_image_{size}.pdf"
                 ),
                 language="deu+eng+chi_sim",
             )

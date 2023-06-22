@@ -12,7 +12,9 @@ import subprocess
 
 
 class TiffImage:
-    def __init__(self, path: str, workfolder: TemporaryDirectory, dpi: int = 300) -> None:
+    def __init__(
+        self, path: str, workfolder: TemporaryDirectory, dpi: int = 300
+    ) -> None:
         self.path = path
         self.workfolder = workfolder
         self.basename = os.path.basename(self.path).split(".")[0]
@@ -139,7 +141,11 @@ class TiffImage:
         # print(languages_in_document)
         return most_probable_languages
 
-    def binarize_adaptive_threshold(self):
+    """ 
+    Also known as Local Adaptive Threshold, each pixel value is adjusted by the surrounding pixels. 
+    If the current pixel has greater value than the average of the surrounding pixels, then the pixel becomes white, else black.
+    """ 
+    def binarize_adaptive_threshold(self, width: int = 16, heigth: int = 16):
         workfolder = TemporaryDirectory(dir="/RIDSS2023/tmp")
         path_to_tiff = os.path.join(workfolder.name, self.basename + ".tiff")
         with Image(filename=self.path, resolution=self.dpi) as img:
@@ -147,7 +153,7 @@ class TiffImage:
                 with img.sequence[page_number] as page:
                     page.transform_colorspace("gray")
                     page.adaptive_threshold(
-                        width=16, height=16, offset=-0.08 * img.quantum_range
+                        width=width, height=heigth  # The size of the surrounding pixels
                     )
 
             img.save(filename=path_to_tiff)
@@ -155,8 +161,8 @@ class TiffImage:
         tiff_image = TiffImage(path=path_to_tiff, workfolder=workfolder)
         return tiff_image
 
-    def binarize_auto_threshold(self, method:str="kapur"):
-        if method not in ["kapur","otsu","triagle"]:
+    def binarize_auto_threshold(self, method: str = "kapur"):
+        if method not in ["kapur", "otsu", "triagle"]:
             print("Not a valid Threshold Method")
         workfolder = TemporaryDirectory(dir="/RIDSS2023/tmp")
         path_to_tiff = os.path.join(workfolder.name, self.basename + ".tiff")
@@ -171,23 +177,35 @@ class TiffImage:
         tiff_image = TiffImage(path=path_to_tiff, workfolder=workfolder)
         return tiff_image
     
-    def binarize_auto_threshold(self,method:str="kapur"):
-        if method not in ["kapur","otsu","triangle"]:
-            print("Keine gültige Methode für Binarization")
-            return self
+    def binarize_black(self, method: str = "kapur"):
+        if method not in ["kapur", "otsu", "triagle"]:
+            print("Not a valid Threshold Method")
         workfolder = TemporaryDirectory(dir="/RIDSS2023/tmp")
         path_to_tiff = os.path.join(workfolder.name, self.basename + ".tiff")
         with Image(filename=self.path, resolution=self.dpi) as img:
             for page_number in range(len(img.sequence)):
                 with img.sequence[page_number] as page:
                     page.transform_colorspace("gray")
-                    page.auto_threshold(method="kapur")
+                    page.auto_threshold(method=method)
 
             img.save(filename=path_to_tiff)
 
         tiff_image = TiffImage(path=path_to_tiff, workfolder=workfolder)
         return tiff_image
-    
+
+    def binarize_edge(self, radius: int = 1):
+        workfolder = TemporaryDirectory(dir="/RIDSS2023/tmp")
+        path_to_tiff = os.path.join(workfolder.name, self.basename + ".tiff")
+        with Image(filename=self.path, resolution=self.dpi) as img:
+            for page_number in range(len(img.sequence)):
+                with img.sequence[page_number] as page:
+                    page.transform_colorspace("gray")
+                    page.edge(radius=radius)
+
+            img.save(filename=path_to_tiff)
+
+        tiff_image = TiffImage(path=path_to_tiff, workfolder=workfolder)
+        return tiff_image
 
     def deskew(self):
         workfolder = TemporaryDirectory(dir="/RIDSS2023/tmp")
@@ -200,14 +218,25 @@ class TiffImage:
         tiff_image = TiffImage(path=path_to_tiff, workfolder=workfolder)
         return tiff_image
 
-    def adaptive_sharpen(self):
+    def adaptive_sharpen(self, radius: int = 8, sigma: int = 4):
         workfolder = TemporaryDirectory(dir="/RIDSS2023/tmp")
         path_to_tiff = os.path.join(workfolder.name, self.basename + ".tiff")
         with Image(filename=self.path, resolution=self.dpi) as img:
             for page_number in range(len(img.sequence)):
                 with img.sequence[page_number] as page:
-                    # page.adaptive_sharpen(radius=8, sigma=4)
-                    page.adaptive_sharpen()
+                    page.adaptive_sharpen(radius=radius, sigma=sigma)
+
+            img.save(filename=path_to_tiff)
+        tiff_image = TiffImage(path=path_to_tiff, workfolder=workfolder)
+        return tiff_image
+
+    def sharpen(self, radius: int = 8, sigma: int = 4):
+        workfolder = TemporaryDirectory(dir="/RIDSS2023/tmp")
+        path_to_tiff = os.path.join(workfolder.name, self.basename + ".tiff")
+        with Image(filename=self.path, resolution=self.dpi) as img:
+            for page_number in range(len(img.sequence)):
+                with img.sequence[page_number] as page:
+                    page.sharpen(radius=radius, sigma=sigma)
 
             img.save(filename=path_to_tiff)
         tiff_image = TiffImage(path=path_to_tiff, workfolder=workfolder)
@@ -244,7 +273,9 @@ class TiffImage:
             path_to_tiff = os.path.join(
                 workfolder.name, self.basename + "{}.tiff".format(pagenumber)
             )
-            clean(input_file=Path(tiff_page), output_file=Path(path_to_tiff), dpi=self.dpi)
+            clean(
+                input_file=Path(tiff_page), output_file=Path(path_to_tiff), dpi=self.dpi
+            )
         tiff_image = TiffImage(path=path_to_tiff, workfolder=workfolder)
         return tiff_image
 
@@ -302,16 +333,10 @@ class TiffImage:
 
     # Resize to fit A4 Page. 3508 pixel correspond to large size of A4 page
     def resize(self, width: int = 3508, height: int = 3508):
-        #TODO TRY CATCH + TIMEOUT
+        # TODO TRY CATCH + TIMEOUT
         workfolder = TemporaryDirectory(dir="/RIDSS2023/tmp")
         path_to_tiff = os.path.join(workfolder.name, self.basename + ".tiff")
-        command = [
-            "convert",
-            self.path,
-            "-resize",
-            f"{width}x{height}>",
-            path_to_tiff
-        ]
+        command = ["convert", self.path, "-resize", f"{width}x{height}>", path_to_tiff]
         subprocess.run(command, check=True)
         tiff_image = TiffImage(path=path_to_tiff, workfolder=workfolder)
         return tiff_image

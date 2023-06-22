@@ -70,30 +70,16 @@ for filename in os.listdir(input_folder):
         )
 
         methods = [
+            "adaptive_threshold",
             "kapur",
             "otsu",
             "triangle",
-            "adaptive_threshold",
             "edge",
-            "adaptive_threshold + edge",
-            "adaptive_threshold + sharpen",
-            "adaptive_threshold + adaptive_sharpen",
         ]
         for method in methods:
             # Apply Binarization
             if method == "adaptive_threshold":
                 tiff_image = tiff_image_original.binarize_adaptive_threshold()
-            elif method == "edge":
-                tiff_image = tiff_image_original.binarize_edge(radius=1)
-            elif method == "adaptive_threshold + edge":
-                tiff_image = tiff_image_original.binarize_adaptive_threshold()
-                tiff_image = tiff_image.binarize_edge(radius=1)
-            elif method == "adaptive_threshold + sharpen":
-                tiff_image = tiff_image_original.binarize_adaptive_threshold()
-                tiff_image = tiff_image.sharpen()
-            elif method == "adaptive_threshold + adaptive_sharpen":
-                tiff_image = tiff_image_original.binarize_adaptive_threshold()
-                tiff_image = tiff_image.adaptive_sharpen()
             else:
                 tiff_image = tiff_image_original.binarize_auto_threshold(method=method)
 
