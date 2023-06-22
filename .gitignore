@@ -12,3 +12,5 @@ outputfolder/*
 !README_Images/*
 !*.gitkeep
 !*.bin
+!/RIDSS2023/src/Experimente/Textausrichtung/Falsch_Rotierte_PDFs/*.pdf
+!/RIDSS2023/src/Experimente/Textausrichtung/Richtig_Rotierte_PDFs/*.pdf

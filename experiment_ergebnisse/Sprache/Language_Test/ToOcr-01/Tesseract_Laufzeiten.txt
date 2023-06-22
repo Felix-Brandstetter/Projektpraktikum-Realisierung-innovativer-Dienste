@@ -1,0 +1,7 @@
+Laufzeit für eng Sprache:0:00:02.775521 
+ Laufzeit für deu Sprache:0:00:02.775463 
+ Laufzeit für chi_sim Sprache:0:00:04.021393 
+ Laufzeit für deu+eng+chi_sim Sprache:0:00:05.766487 
+ Laufzeit für ita+ara+fin+dan+fra+hin+spa+por+deu+eng+chi_sim Sprache:0:00:18.791796 
+ Laufzeit für eng+chi_sim Sprache:0:00:04.788736 
+ Laufzeit für eng+deu Sprache:0:00:03.456096 

@@ -3,8 +3,7 @@ from numpy.linalg import norm
 import numpy as np
 import sys
 from boundingbox import BoundingBox
-import matplotlib.pyplot as plt
-
+import matplotlib as plt
 
 sys.path.append("/RIDSS2023/src")
 from ocrkit import *
@@ -149,7 +148,8 @@ def get_ocrdata_of_comparison_before_after_preprocessing(
                     new_row,
                     page,
                 )
-
+            elif len(list_of_bounding_boxes) >= 0:
+                print(row1["text"])
 
     print(ocrdata_comparison_before_after_preprocessing.head())
     return ocrdata_comparison_before_after_preprocessing
@@ -280,20 +280,21 @@ def plot_confidences_before_after_preprocessing(ocrdata_without_preprocessing: p
 #    axes.legend()
 #    fig.savefig('/RIDSS2023/ocrdata_hist2.png')
 
+
 # Create new InputPDF
-inputpdf = InputPDF("/RIDSS2023/inputfolder/ToOcr-01.pdf")
-inputpdf2 = InputPDF("/RIDSS2023/inputfolder/ToOcr-01-rotated.pdf")
+inputpdf = InputPDF("inputfolder/ToOcr_Seiten.pdf/ToOcr-06.pdf")
+
 
 # Convert to Tiff Image
 tiff_image = inputpdf.convert_to_tiff()
-tiff_image2 = inputpdf2.convert_to_tiff()
+
 
 # Preprocessing
-#tiff_image_preprocessed = tiff_image.binarize_adaptive_threshold()
+tiff_image_preprocessed = tiff_image.binarize_adaptive_threshold()
 
 # Save and Create Searchable PDF
 tiff_image.save_image("outputfolder/tiff_image.tiff")
-#tiff_image_preprocessed.save_image("outputfolder/tiff_image_preprocessed.tiff")
+tiff_image_preprocessed.save_image("outputfolder/tiff_image_preprocessed.tiff")
 
 ocrkit.create_searchable_pdf(
     tiff_image=tiff_image,
@@ -303,8 +304,7 @@ ocrkit.create_searchable_pdf(
 )
 
 ocrkit.create_searchable_pdf(
-    tiff_image = tiff_image2,
-#    tiff_image=tiff_image_preprocessed,
+    tiff_image=tiff_image_preprocessed,
     out_filename="outputfolder/test_preprocessed.pdf",
     language="deu",
     show_bounding_boxes=True,
@@ -314,37 +314,30 @@ ocrkit.create_searchable_pdf(
 tiff_image_ocr_data = ocrkit.get_ocr_data(tiff_image=tiff_image, language="deu")
 print(len(tiff_image_ocr_data))
 
-tiff_image_ocr_data2 = ocrkit.get_ocr_data(tiff_image=tiff_image2, language="deu")
-print(len(tiff_image_ocr_data2))
-
-
-#tiff_image_preprocessed_ocr_data = ocrkit.get_ocr_data(
-#    tiff_image=tiff_image_preprocessed, language="deu"
-#)
-#print(len(tiff_image_preprocessed_ocr_data))
+tiff_image_preprocessed_ocr_data = ocrkit.get_ocr_data(
+    tiff_image=tiff_image_preprocessed, language="deu"
+)
+print(len(tiff_image_preprocessed_ocr_data))
 ocrdata_without_preprocessing = tiff_image_ocr_data
-ocrdata_without_preprocessing.to_excel("/RIDSS2023/excel-documents/ocrdata_without_preprocessing.xlsx")
-ocrdata_without_preprocessing2 = tiff_image_ocr_data2
-ocrdata_without_preprocessing2.to_excel("/RIDSS2023/excel-documents/ocrdata_without_preprocessing2.xlsx")
-#ocrdata_with_preprocessing = tiff_image_preprocessed_ocr_data
+ocrdata_with_preprocessing = tiff_image_preprocessed_ocr_data
 
 
 
 #Create the DataFrame that compares the OCR Data before and after preprocessing
 ocrdata_comparison_before_after_preprocessing = get_ocrdata_of_comparison_before_after_preprocessing(
     ocrdata_without_preprocessing,
-    tiff_image_ocr_data2,
+    ocrdata_with_preprocessing,
 )
 print(len(ocrdata_comparison_before_after_preprocessing))
-ocrdata_comparison_before_after_preprocessing.to_excel("/RIDSS2023/excel-documents/test_comparison.xlsx")
+#ocrdata_comparison_before_after_preprocessing.to_excel("test_comparison.xlsx")
 
 #Plot the confidences before and after preprocessing
-plot_confidences_before_after_preprocessing(ocrdata_without_preprocessing, tiff_image_ocr_data2)
+plot_confidences_before_after_preprocessing(ocrdata_without_preprocessing, ocrdata_with_preprocessing)
 #plot_confidences_before_after_preprocessing2(ocrdata_comparison_before_after_preprocessing)
 
 #Create the DataFrame that evaluates the data of the comparison DataFrame
-evaluation_of_comparison_DataFrame = evaluation_of_comparison(ocrdata_comparison_before_after_preprocessing)
-evaluation_of_comparison_DataFrame.to_excel("/RIDSS2023/excel-documents/test_comparison_evaluation.xlsx")
+#evaluation_of_comparison_DataFrame = evaluation_of_comparison(ocrdata_comparison_before_after_preprocessing)
+#evaluation_of_comparison_DataFrame.to_excel("test_comparison_evaluation.xlsx")
 
 
 

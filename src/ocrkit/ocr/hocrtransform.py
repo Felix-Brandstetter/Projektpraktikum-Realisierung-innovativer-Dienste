@@ -19,6 +19,10 @@ from typing import Any, NamedTuple
 from xml.etree import ElementTree
 from csv import QUOTE_NONE
 
+#Set MAX_IMAGE_PIXELS for Experiments
+from PIL import Image 
+Image.MAX_IMAGE_PIXELS = 1000000000 
+
 with warnings.catch_warnings():
     # reportlab uses deprecated load_module
     warnings.filterwarnings(
