@@ -20,10 +20,6 @@ def print_size_of_image(image: TiffImage):
     print("Width: {}".format(width))
     print("Height: {}".format(height)) 
 
-# Create new InputPDF
-inputpdf = InputPDF("/RIDSS2023/inputfolder/4974 Nicolas_ReimannDeLaCruz-13.pdf")
-
-
 # Pfad zum Eingabeordner mit den PDF-Dateien
 input_folder = "/RIDSS2023/src/Experimente/Testdateien"
 

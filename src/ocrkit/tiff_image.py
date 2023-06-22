@@ -155,6 +155,40 @@ class TiffImage:
         tiff_image = TiffImage(path=path_to_tiff, workfolder=workfolder)
         return tiff_image
 
+    def binarize_auto_threshold(self, method:str="kapur"):
+        if method not in ["kapur","otsu","triagle"]:
+            print("Not a valid Threshold Method")
+        workfolder = TemporaryDirectory(dir="/RIDSS2023/tmp")
+        path_to_tiff = os.path.join(workfolder.name, self.basename + ".tiff")
+        with Image(filename=self.path, resolution=self.dpi) as img:
+            for page_number in range(len(img.sequence)):
+                with img.sequence[page_number] as page:
+                    page.transform_colorspace("gray")
+                    page.auto_threshold(method=method)
+
+            img.save(filename=path_to_tiff)
+
+        tiff_image = TiffImage(path=path_to_tiff, workfolder=workfolder)
+        return tiff_image
+    
+    def binarize_auto_threshold(self,method:str="kapur"):
+        if method not in ["kapur","otsu","triangle"]:
+            print("Keine gültige Methode für Binarization")
+            return self
+        workfolder = TemporaryDirectory(dir="/RIDSS2023/tmp")
+        path_to_tiff = os.path.join(workfolder.name, self.basename + ".tiff")
+        with Image(filename=self.path, resolution=self.dpi) as img:
+            for page_number in range(len(img.sequence)):
+                with img.sequence[page_number] as page:
+                    page.transform_colorspace("gray")
+                    page.auto_threshold(method="kapur")
+
+            img.save(filename=path_to_tiff)
+
+        tiff_image = TiffImage(path=path_to_tiff, workfolder=workfolder)
+        return tiff_image
+    
+
     def deskew(self):
         workfolder = TemporaryDirectory(dir="/RIDSS2023/tmp")
         path_to_tiff = os.path.join(workfolder.name, self.basename + ".tiff")
