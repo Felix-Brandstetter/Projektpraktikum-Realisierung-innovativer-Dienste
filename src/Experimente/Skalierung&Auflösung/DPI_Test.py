@@ -21,7 +21,7 @@ def print_size_of_image(image: TiffImage):
     print("Height: {}".format(height)) 
 
 # Pfad zum Eingabeordner mit den PDF-Dateien
-input_folder = "/RIDSS2023/src/Experimente/Testdateien"
+input_folder = "/RIDSS2023/src/Experimente/Testdateien/Richtig_Rotierte_PDFs"
 
 output_folder = "/RIDSS2023/experiment_ergebnisse/Skalierung&Auflösung/DPI_Test"
 if os.path.exists(output_folder):

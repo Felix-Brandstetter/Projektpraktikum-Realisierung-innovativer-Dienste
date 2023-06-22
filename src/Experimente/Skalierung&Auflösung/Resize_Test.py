@@ -58,6 +58,7 @@ for filename in os.listdir(input_folder):
             (20000, 20000),  # Riesig
         ]
 
+        runtimes = []
         for width, height in resize_sizes:
             # Resize image
             resized_image = tiff_image.resize(width=width, height=height)
@@ -66,7 +67,10 @@ for filename in os.listdir(input_folder):
             )
 
             # Get OCR data
+            startTime = datetime.now()
             ocrdata = ocrkit.get_ocr_data(resized_image, language="deu+eng+chi_sim")
+            runtime = datetime.now() - startTime
+            runtimes.append("Laufzeit für width: {}, height: {}  Laufzeit:{} \n".format(width,height,runtime))
 
             # Evaluate OCR data
             evaluation_data = utils.evaluate_ocrdata(ocrdata)
@@ -84,3 +88,5 @@ for filename in os.listdir(input_folder):
                 os.path.join(file_output_folder, f"tiff_image_{width}x{height}px.pdf"),
                 language="deu+eng+chi_sim",
             )
+        with open(os.path.join(file_output_folder, "Tesseract_Laufzeiten.txt"), "w") as f:
+            f.write(" ".join(runtimes))

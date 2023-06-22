@@ -332,11 +332,21 @@ class TiffImage:
         return tiff_pages
 
     # Resize to fit A4 Page. 3508 pixel correspond to large size of A4 page
+    def resize_only_shrink_larger_images(self, width: int = 3508, height: int = 3508):
+        # TODO TRY CATCH + TIMEOUT
+        workfolder = TemporaryDirectory(dir="/RIDSS2023/tmp")
+        path_to_tiff = os.path.join(workfolder.name, self.basename + ".tiff")
+        command = ["magick", self.path, "-resize", f"{width}x{height}>", path_to_tiff]
+        subprocess.run(command, check=True)
+        tiff_image = TiffImage(path=path_to_tiff, workfolder=workfolder)
+        return tiff_image
+    
+        # Resize to fit A4 Page. 3508 pixel correspond to large size of A4 page
     def resize(self, width: int = 3508, height: int = 3508):
         # TODO TRY CATCH + TIMEOUT
         workfolder = TemporaryDirectory(dir="/RIDSS2023/tmp")
         path_to_tiff = os.path.join(workfolder.name, self.basename + ".tiff")
-        command = ["convert", self.path, "-resize", f"{width}x{height}>", path_to_tiff]
+        command = ["magick", self.path, "-resize", f"{width}x{height}", path_to_tiff]
         subprocess.run(command, check=True)
         tiff_image = TiffImage(path=path_to_tiff, workfolder=workfolder)
         return tiff_image

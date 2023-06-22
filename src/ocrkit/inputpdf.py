@@ -26,21 +26,8 @@ class InputPDF:
         tiff_image = TiffImage(path=path_to_tiff, workfolder=workfolder)
         return tiff_image
 
-    def convert_to_tiff_with_ghostscript(self, dpi: int = 300) -> TiffImage:
-        workfolder = tempfile.TemporaryDirectory(dir="/RIDSS2023/tmp")
-        path_to_tiff = os.path.join(workfolder.name, self.basename + ".tiff")
-        args = "gs -dNOPAUSE -r{} -sDEVICE=tiffscaled24 -sCompression=lzw -dBATCH -sOutputFile='{}' '{}'".format(
-            dpi, path_to_tiff, self.path
-        )
-        subprocess.call(args, shell=True)
-
-        tiff_image = TiffImage(path=path_to_tiff, workfolder=workfolder)
-        return tiff_image
-
-    import subprocess
-
-    def convert_pdf_to_tiff(
-        self, width: int = None, dpi: int = 300, auto_rotate_pages: bool = True
+    def convert_to_tiff_with_ghostscript(
+        self, dpi: int = 300, auto_rotate_pages: bool = True
     ):
         workfolder = tempfile.TemporaryDirectory(dir="/RIDSS2023/tmp")
         path_to_tiff = os.path.join(workfolder.name, self.basename + ".tiff")
@@ -57,9 +44,6 @@ class InputPDF:
         ]
         if auto_rotate_pages:
             gs_command.insert(-2, "-dAutoRotatePages=/PageByPage")
-        if width is not None:
-            gs_command.insert(-2, "-g{}x".format(width))
-
         subprocess.call(gs_command)
         tiff_image = TiffImage(path=path_to_tiff, workfolder=workfolder)
         return tiff_image
