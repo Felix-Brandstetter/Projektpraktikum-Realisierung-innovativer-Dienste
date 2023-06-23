@@ -260,14 +260,14 @@ class TiffImage:
         return tiff_image
 
     def sharpening_shade(
-        self, grey: bool = True, azimuth: int = 286, elevation: int = 45
+        self, gray: bool = True, azimuth: int = 286, elevation: int = 45
     ):
         workfolder = TemporaryDirectory(dir="/RIDSS2023/tmp")
         path_to_tiff = os.path.join(workfolder.name, self.basename + ".tiff")
         with Image(filename=self.path, resolution=self.dpi) as img:
             for page_number in range(len(img.sequence)):
                 with img.sequence[page_number] as page:
-                    page.shade(grey=grey, azimuth=azimuth, elevation=elevation)
+                    page.shade(gray=gray, azimuth=azimuth, elevation=elevation)
             img.save(filename=path_to_tiff)
         tiff_image = TiffImage(path=path_to_tiff, workfolder=workfolder)
         return tiff_image

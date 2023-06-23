@@ -10,12 +10,16 @@ import os
 import shutil
 from datetime import datetime
 from PIL import Image
+from comparison_before_after_preprocessing import (
+    evaluation_of_comparison,
+    get_ocrdata_of_comparison_before_after_preprocessing,
+)
 
 # Set MAX_IMAGE_PIXELS for Experiments
 Image.MAX_IMAGE_PIXELS = 1000000000
 
 # Pfad zum Eingabeordner mit den PDF-Dateien
-input_folder = "/RIDSS2023/src/Experimente/Testdateien"
+input_folder = "/RIDSS2023/src/Experimente/Testdateien/Richtig_Rotierte_PDFs"
 
 output_folder = "/RIDSS2023/experiment_ergebnisse/Kontrast/Sharpening_Test"
 if os.path.exists(output_folder):
@@ -86,7 +90,7 @@ for filename in os.listdir(input_folder):
             elif method == "kuwahara":
                 tiff_image = tiff_image_original.sharpening_kuwahara()
             elif method == "shade":
-                tiff_image = tiff_image_original.sharpening_shade
+                tiff_image = tiff_image_original.sharpening_shade()
             elif method == "sharpen":
                 tiff_image = tiff_image_original.sharpening_sharpen()
             elif method == "adaptive_sharpen":
@@ -102,6 +106,16 @@ for filename in os.listdir(input_folder):
 
             # Get Evaluation Data
             evaluation_ocrdata = utils.evaluate_ocrdata(ocrdata)
+
+            # Get Wortvergleich
+            comparison = get_ocrdata_of_comparison_before_after_preprocessing(
+                ocrdata_without_preprocessing=ocrdata_original,
+                ocrdata_with_preprocessing=ocrdata,
+            )
+            evaluation_comparison = evaluation_of_comparison(comparison)
+            evaluation_comparison.to_excel(
+                os.path.join(file_output_folder, f"evaluation_comparison_{method}.xlsx"),
+            )
 
             # Save to Excel
             evaluation_ocrdata.to_excel(
