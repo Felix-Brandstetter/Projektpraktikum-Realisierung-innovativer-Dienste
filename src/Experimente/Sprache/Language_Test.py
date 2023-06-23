@@ -13,7 +13,7 @@ from PIL import Image
 
         
 # Pfad zum Eingabeordner mit den PDF-Dateien
-input_folder = "/RIDSS2023/src/Experimente/Testdateien"
+input_folder = "/RIDSS2023/src/Experimente/Testdateien/Richtig_Rotierte_PDFs"
 
 output_folder = "/RIDSS2023/experiment_ergebnisse/Sprache/Language_Test"
 if os.path.exists(output_folder):

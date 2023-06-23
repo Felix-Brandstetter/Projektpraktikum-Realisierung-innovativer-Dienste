@@ -76,8 +76,10 @@ RUN if [ -f $imagemagic_config ] ; then sed -i 's/<!-- <policy domain="coder" ri
 #Allow Imagemagick to process very large files (MB)
 RUN if [ -f $imagemagic_config ] ; then sed -i 's/<!-- <policy domain="resource" name="disk" value="16EiB"\/> -->/<policy domain="resource" name="disk" value="10GiB"\/>/g' $imagemagic_config ; else echo did not see file $imagemagic_config ; fi
 #Allow Imagemagick to process very large Images (Pixel)
-RUN if [ -f $imagemagic_config ] ; then sed -i 's/<!-- <policy domain="resource" name="width" value="10KP"\/> -->/<policy domain="resource" name="width" value="10000KP"\/>/g' $imagemagic_config ; else echo did not see file $imagemagic_config ; fi
-RUN if [ -f $imagemagic_config ] ; then sed -i 's/<!-- <policy domain="resource" name="height" value="10KP"\/> -->/<policy domain="resource" name="height" value="10000KP"\/>/g' $imagemagic_config ; else echo did not see file $imagemagic_config ; fi
+RUN if [ -f $imagemagic_config ] ; then sed -i 's/<!-- <policy domain="resource" name="width" value="10KP"\/> -->/<policy domain="resource" name="width" value="100000KP"\/>/g' $imagemagic_config ; else echo did not see file $imagemagic_config ; fi
+RUN if [ -f $imagemagic_config ] ; then sed -i 's/<!-- <policy domain="resource" name="height" value="10KP"\/> -->/<policy domain="resource" name="height" value="100000KP"\/>/g' $imagemagic_config ; else echo did not see file $imagemagic_config ; fi
+RUN if [ -f $imagemagic_config ] ; then sed -i 's/<!-- <policy domain="resource" name="map" value="4GiB"\/> -->/<policy domain="resource" name="map" value="10GiB"\/>/g' $imagemagic_config ; else echo did not see file $imagemagic_config ; fi
+RUN if [ -f $imagemagic_config ] ; then sed -i 's/<!-- <policy domain="resource" name="area" value="100MP"\/> -->/<policy domain="resource" name="area" value="10000MP"\/>/g' $imagemagic_config ; else echo did not see file $imagemagic_config ; fi
 
 #Pip
 RUN curl https://bootstrap.pypa.io/get-pip.py | python3
