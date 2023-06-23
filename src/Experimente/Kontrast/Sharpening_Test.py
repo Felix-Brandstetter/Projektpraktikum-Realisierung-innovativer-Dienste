@@ -80,15 +80,17 @@ for filename in os.listdir(input_folder):
         for method in methods:
             # Apply Binarization
             if method == "edge":
-                tiff_image = tiff_image_original.binarize_edge()
+                tiff_image = tiff_image_original.edge()
             elif method == "emboss":
-                tiff_image = tiff_image_original.binarize_edge()
+                tiff_image = tiff_image_original.sharpening_emboss()
             elif method == "kuwahara":
-                tiff_image = tiff_image_original.binarize_adaptive_threshold()
+                tiff_image = tiff_image_original.sharpening_kuwahara()
+            elif method == "shade":
+                tiff_image = tiff_image_original.sharpening_shade
             elif method == "sharpen":
-                tiff_image = tiff_image_original.sharpen()
+                tiff_image = tiff_image_original.sharpening_sharpen()
             elif method == "adaptive_sharpen":
-                tiff_image = tiff_image_original.adaptive_sharpen()
+                tiff_image = tiff_image_original.sharpening_adaptive_sharpen()
             tiff_image.save_image(
                 os.path.join(file_output_folder, f"tiff_image_{method}.tiff")
             )

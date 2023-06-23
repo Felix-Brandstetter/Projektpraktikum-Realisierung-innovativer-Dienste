@@ -312,7 +312,6 @@ class TiffImage:
         tiff_image = TiffImage(path=path_to_tiff, workfolder=workfolder)
         return tiff_image
 
-
     def deskew(self):
         workfolder = TemporaryDirectory(dir="/RIDSS2023/tmp")
         path_to_tiff = os.path.join(workfolder.name, self.basename + ".tiff")
