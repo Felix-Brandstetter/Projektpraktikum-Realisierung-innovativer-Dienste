@@ -9,6 +9,9 @@ from ocrkit.language_identification_model import Language_Identification_Model
 from ocrkit.unpaper import clean
 from pathlib import Path
 import subprocess
+from ocrkit.unpaper import clean
+from pathlib import Path
+import cv2
 
 
 class TiffImage:
@@ -144,7 +147,8 @@ class TiffImage:
     """ 
     Also known as Local Adaptive Threshold, each pixel value is adjusted by the surrounding pixels. 
     If the current pixel has greater value than the average of the surrounding pixels, then the pixel becomes white, else black.
-    """ 
+    """
+
     def binarize_adaptive_threshold(self, width: int = 16, heigth: int = 16):
         workfolder = TemporaryDirectory(dir="/RIDSS2023/tmp")
         path_to_tiff = os.path.join(workfolder.name, self.basename + ".tiff")
@@ -153,7 +157,9 @@ class TiffImage:
                 with img.sequence[page_number] as page:
                     page.transform_colorspace("gray")
                     page.adaptive_threshold(
-                        width=width, height=heigth  # The size of the surrounding pixels
+                        width=width,
+                        height=heigth,  # The size of the surrounding pixels
+                        offset=-0.0000001 * page.quantum_range,
                     )
 
             img.save(filename=path_to_tiff)
@@ -176,24 +182,44 @@ class TiffImage:
 
         tiff_image = TiffImage(path=path_to_tiff, workfolder=workfolder)
         return tiff_image
-    
-    def binarize_black(self, method: str = "kapur"):
-        if method not in ["kapur", "otsu", "triagle"]:
-            print("Not a valid Threshold Method")
+
+    def binarize_black_threshold(self, threshold: str = "#930"):
         workfolder = TemporaryDirectory(dir="/RIDSS2023/tmp")
         path_to_tiff = os.path.join(workfolder.name, self.basename + ".tiff")
         with Image(filename=self.path, resolution=self.dpi) as img:
             for page_number in range(len(img.sequence)):
                 with img.sequence[page_number] as page:
                     page.transform_colorspace("gray")
-                    page.auto_threshold(method=method)
+                    page.black_threshold(threshold=threshold)
 
             img.save(filename=path_to_tiff)
 
         tiff_image = TiffImage(path=path_to_tiff, workfolder=workfolder)
         return tiff_image
 
-    def binarize_edge(self, radius: int = 1):
+    def binarize_range_threshold(self, threshold: str = "#930"):
+        workfolder = TemporaryDirectory(dir="/RIDSS2023/tmp")
+        path_to_tiff = os.path.join(workfolder.name, self.basename + ".tiff")
+        with Image(filename=self.path, resolution=self.dpi) as img:
+            for page_number in range(len(img.sequence)):
+                with img.sequence[page_number] as page:
+                    page.transform_colorspace("gray")
+                    white_point = 0.9 * page.quantum_range
+                    black_point = 0.5 * page.quantum_range
+                    delta = 0.05 * page.quantum_range
+                    page.range_threshold(
+                        low_black=black_point - delta,
+                        low_white=white_point - delta,
+                        high_white=white_point + delta,
+                        high_black=black_point + delta,
+                    )
+
+            img.save(filename=path_to_tiff)
+
+        tiff_image = TiffImage(path=path_to_tiff, workfolder=workfolder)
+        return tiff_image
+
+    def edge(self, radius: int = 1):
         workfolder = TemporaryDirectory(dir="/RIDSS2023/tmp")
         path_to_tiff = os.path.join(workfolder.name, self.basename + ".tiff")
         with Image(filename=self.path, resolution=self.dpi) as img:
@@ -266,16 +292,17 @@ class TiffImage:
         tiff_image = TiffImage(path=path_to_tiff, workfolder=workfolder)
         return tiff_image
 
-    def unpaper_clean(self):
+    def despeckle_opencv(self):
         workfolder = TemporaryDirectory(dir="/RIDSS2023/tmp")
-        tiff_pages = self.split_tiff_image()
-        for pagenumber, tiff_page in enumerate(tiff_pages):
-            path_to_tiff = os.path.join(
-                workfolder.name, self.basename + "{}.tiff".format(pagenumber)
-            )
-            clean(
-                input_file=Path(tiff_page), output_file=Path(path_to_tiff), dpi=self.dpi
-            )
+        path_to_tiff = os.path.join(workfolder.name, self.basename + ".tiff")
+
+        # Apply denoising
+        im_gray = cv2.imread(self.path, cv2.IMREAD_GRAYSCALE)
+        denoised_image = cv2.fastNlMeansDenoising(im_gray, h=30, templateWindowSize=3, searchWindowSize=3)
+
+        # Save denoised image as TIFF
+        cv2.imwrite(path_to_tiff, denoised_image)
+
         tiff_image = TiffImage(path=path_to_tiff, workfolder=workfolder)
         return tiff_image
 
@@ -340,13 +367,21 @@ class TiffImage:
         subprocess.run(command, check=True)
         tiff_image = TiffImage(path=path_to_tiff, workfolder=workfolder)
         return tiff_image
-    
+
         # Resize to fit A4 Page. 3508 pixel correspond to large size of A4 page
+
     def resize(self, width: int = 3508, height: int = 3508):
         # TODO TRY CATCH + TIMEOUT
         workfolder = TemporaryDirectory(dir="/RIDSS2023/tmp")
         path_to_tiff = os.path.join(workfolder.name, self.basename + ".tiff")
         command = ["magick", self.path, "-resize", f"{width}x{height}", path_to_tiff]
         subprocess.run(command, check=True)
+        tiff_image = TiffImage(path=path_to_tiff, workfolder=workfolder)
+        return tiff_image
+
+    def clean_unpaper(self):
+        workfolder = TemporaryDirectory(dir="/RIDSS2023/tmp")
+        path_to_tiff = os.path.join(workfolder.name, self.basename + ".tiff")
+        clean(input_file=Path(self.path), output_file=Path(path_to_tiff), dpi=self.dpi)
         tiff_image = TiffImage(path=path_to_tiff, workfolder=workfolder)
         return tiff_image

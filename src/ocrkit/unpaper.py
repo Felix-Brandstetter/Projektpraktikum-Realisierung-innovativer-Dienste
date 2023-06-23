@@ -185,5 +185,3 @@ def clean(
     except UnpaperImageTooLargeError as e:
         log.warning(str(e))
         return input_file
-
-#clean(input_file=Path("/RIDSS2023/inputfolder/OCRTestDocument.tiff"), output_file=Path("Test.tiff"), dpi=300)

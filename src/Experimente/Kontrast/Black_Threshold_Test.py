@@ -49,7 +49,7 @@ for filename in os.listdir(input_folder):
         # Erstelle den Ausgabeordner
         os.makedirs(file_output_folder)
         tiff_image_original = inputpdf.convert_to_tiff_with_ghostscript(dpi=300)
-        
+
         # Get ocrdata from Tiff Image
         ocrdata_original = ocrkit.get_ocr_data(
             tiff_image=tiff_image_original, language="deu+eng+chi_sim"
@@ -69,31 +69,22 @@ for filename in os.listdir(input_folder):
             language="deu+eng+chi_sim",
         )
 
-        sizes = [1,2,3,4,8,16,20,24,28,32]
-        for size in sizes:
-            tiff_image = tiff_image_original.binarize_adaptive_threshold(width=size, heigth=size)
-            tiff_image.save_image(
-                os.path.join(file_output_folder, f"tiff_image_{size}px.tiff")
-            )
+        tiff_image_black_threshold = tiff_image_original.binarize_black
+        # Get ocrdata from Tiff Image
+        ocrdata_original = ocrkit.get_ocr_data(
+            tiff_image=tiff_image_original, language="deu+eng+chi_sim"
+        )
+        # Get Evaluation Data
+        evaluation_ocrdata_original = utils.evaluate_ocrdata(ocrdata_original)
 
-            # Get ocrdata from Tiff Image
-            ocrdata = ocrkit.get_ocr_data(
-                tiff_image=tiff_image, language="deu+eng+chi_sim"
-            )
+        # Save to Excel
+        evaluation_ocrdata_original.to_excel(
+            os.path.join(file_output_folder, f"evaluation_ocrdata_original.xlsx")
+        )
 
-            # Get Evaluation Data
-            evaluation_ocrdata = utils.evaluate_ocrdata(ocrdata)
-
-            # Save to Excel
-            evaluation_ocrdata.to_excel(
-                os.path.join(file_output_folder, f"evaluation_ocrdata_{size}.xlsx")
-            )
-
-            # Create Searchable PDF
-            ocrkit.create_searchable_pdf(
-                tiff_image=tiff_image,
-                out_filename=os.path.join(
-                    file_output_folder, f"tiff_image_{size}.pdf"
-                ),
-                language="deu+eng+chi_sim",
-            )
+        # Create Searchable PDF
+        ocrkit.create_searchable_pdf(
+            tiff_image=tiff_image_original,
+            out_filename=os.path.join(file_output_folder, f"tiff_image_original.pdf"),
+            language="deu+eng+chi_sim",
+        )
