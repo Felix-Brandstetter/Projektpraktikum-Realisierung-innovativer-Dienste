@@ -72,12 +72,12 @@ RUN apt-get install --no-install-recommends --yes unpaper libtiff-tools netpbm -
   && rm -rf /var/lib/apt/lists/*
 
 #Allow Imagemagick to convert PDF
-RUN if [ -f $imagemagic_config ] ; then sed -i 's/<policy domain="coder" rights="none" pattern="PDF" \/>/<policy domain="coder" rights="read|write" pattern="PDF" \/>/g' $imagemagic_config ; else echo did not see file $imagemagic_config ; fi
+RUN if [ -f $imagemagic_config ] ; then sed -i 's/<!-- <policy domain="coder" rights="none" pattern="MVG" \/> -->/<policy domain="coder" rights="read|write" pattern="PDF" \/>/g' $imagemagic_config ; else echo did not see file $imagemagic_config ; fi
 #Allow Imagemagick to process very large files (MB)
-RUN if [ -f $imagemagic_config ] ; then sed -i 's/<policy domain="resource" name="disk" value="1GiB"\/>/<policy domain="resource" name="disk" value="10GiB"\/>/g' $imagemagic_config ; else echo did not see file $imagemagic_config ; fi
+RUN if [ -f $imagemagic_config ] ; then sed -i 's/<!-- <policy domain="resource" name="disk" value="16EiB"\/> -->/<policy domain="resource" name="disk" value="10GiB"\/>/g' $imagemagic_config ; else echo did not see file $imagemagic_config ; fi
 #Allow Imagemagick to process very large Images (Pixel)
-RUN if [ -f $imagemagic_config ] ; then sed -i 's/<policy domain="resource" name="width" value="16KP"\/>/<policy domain="resource" name="width" value="10000KP"\/>/g' $imagemagic_config ; else echo did not see file $imagemagic_config ; fi
-RUN if [ -f $imagemagic_config ] ; then sed -i 's/<policy domain="resource" name="height" value="16KP"\/>/<policy domain="resource" name="height" value="10000KP"\/>/g' $imagemagic_config ; else echo did not see file $imagemagic_config ; fi
+RUN if [ -f $imagemagic_config ] ; then sed -i 's/<!-- <policy domain="resource" name="width" value="10KP"\/> -->/<policy domain="resource" name="width" value="10000KP"\/>/g' $imagemagic_config ; else echo did not see file $imagemagic_config ; fi
+RUN if [ -f $imagemagic_config ] ; then sed -i 's/<!-- <policy domain="resource" name="height" value="10KP"\/> -->/<policy domain="resource" name="height" value="10000KP"\/>/g' $imagemagic_config ; else echo did not see file $imagemagic_config ; fi
 
 #Pip
 RUN curl https://bootstrap.pypa.io/get-pip.py | python3
@@ -89,6 +89,7 @@ WORKDIR /RIDSS2023
 # For more info, please refer to https://aka.ms/vscode-docker-python-configure-containers
 RUN adduser -u 5678 --disabled-password --gecos "" myuser && chown -R myuser /RIDSS2023
 USER myuser
+RUN ls /usr/local/etc/ImageMagick-7/
 
 COPY requirements.txt .
 RUN pip install --upgrade pip && pip install -r requirements.txt
