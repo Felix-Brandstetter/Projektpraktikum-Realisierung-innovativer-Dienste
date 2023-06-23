@@ -13,6 +13,8 @@ from ocrkit.unpaper import clean
 from pathlib import Path
 import cv2
 from skimage.morphology import skeletonize
+import numpy as np
+from skimage.util import invert
 
 
 class TiffImage:
@@ -233,7 +235,7 @@ class TiffImage:
 
         tiff_image = TiffImage(path=path_to_tiff, workfolder=workfolder)
         return tiff_image
-    
+
     def sharpening_emboss(self, radius: int = 3, sigma: int = 1.75):
         workfolder = TemporaryDirectory(dir="/RIDSS2023/tmp")
         path_to_tiff = os.path.join(workfolder.name, self.basename + ".tiff")
@@ -257,17 +259,19 @@ class TiffImage:
         tiff_image = TiffImage(path=path_to_tiff, workfolder=workfolder)
         return tiff_image
 
-    def sharpening_shade(self, grey: bool = True, azimuth: int = 286, elevation: int = 45):
-            workfolder = TemporaryDirectory(dir="/RIDSS2023/tmp")
-            path_to_tiff = os.path.join(workfolder.name, self.basename + ".tiff")
-            with Image(filename=self.path, resolution=self.dpi) as img:
-                for page_number in range(len(img.sequence)):
-                    with img.sequence[page_number] as page:
-                        page.shade(grey=grey, azimuth=azimuth, elevation=elevation)
-                img.save(filename=path_to_tiff)
-            tiff_image = TiffImage(path=path_to_tiff, workfolder=workfolder)
-            return tiff_image
-    
+    def sharpening_shade(
+        self, grey: bool = True, azimuth: int = 286, elevation: int = 45
+    ):
+        workfolder = TemporaryDirectory(dir="/RIDSS2023/tmp")
+        path_to_tiff = os.path.join(workfolder.name, self.basename + ".tiff")
+        with Image(filename=self.path, resolution=self.dpi) as img:
+            for page_number in range(len(img.sequence)):
+                with img.sequence[page_number] as page:
+                    page.shade(grey=grey, azimuth=azimuth, elevation=elevation)
+            img.save(filename=path_to_tiff)
+        tiff_image = TiffImage(path=path_to_tiff, workfolder=workfolder)
+        return tiff_image
+
     def sharpening_sharpen(self, radius: int = 8, sigma: int = 4):
         workfolder = TemporaryDirectory(dir="/RIDSS2023/tmp")
         path_to_tiff = os.path.join(workfolder.name, self.basename + ".tiff")
@@ -278,7 +282,7 @@ class TiffImage:
             img.save(filename=path_to_tiff)
         tiff_image = TiffImage(path=path_to_tiff, workfolder=workfolder)
         return tiff_image
-    
+
     def sharpening_adaptive_sharpen(self, radius: int = 8, sigma: int = 4):
         workfolder = TemporaryDirectory(dir="/RIDSS2023/tmp")
         path_to_tiff = os.path.join(workfolder.name, self.basename + ".tiff")
@@ -290,13 +294,17 @@ class TiffImage:
         tiff_image = TiffImage(path=path_to_tiff, workfolder=workfolder)
         return tiff_image
 
-    def sharpening_unsharp_mask(self, radius: int = 10, sigma: int = 4, amount: int = 1, threshold: int = 0):
+    def sharpening_unsharp_mask(
+        self, radius: int = 10, sigma: int = 4, amount: int = 1, threshold: int = 0
+    ):
         workfolder = TemporaryDirectory(dir="/RIDSS2023/tmp")
         path_to_tiff = os.path.join(workfolder.name, self.basename + ".tiff")
         with Image(filename=self.path, resolution=self.dpi) as img:
             for page_number in range(len(img.sequence)):
                 with img.sequence[page_number] as page:
-                    page.unsharp_mask(radius=radius, sigma=sigma, amount=amount, threshold=threshold)
+                    page.unsharp_mask(
+                        radius=radius, sigma=sigma, amount=amount, threshold=threshold
+                    )
             img.save(filename=path_to_tiff)
         tiff_image = TiffImage(path=path_to_tiff, workfolder=workfolder)
         return tiff_image
@@ -304,14 +312,47 @@ class TiffImage:
     def skeletonize_zhang(self):
         workfolder = TemporaryDirectory(dir="/RIDSS2023/tmp")
         path_to_tiff = os.path.join(workfolder.name, self.basename + ".tiff")
-        with Image(filename=self.path, resolution=self.dpi) as img:
-            for page_number in range(len(img.sequence)):
-                with img.sequence[page_number] as page:
-                    page = skeletonize(page)
-            img.save(filename=path_to_tiff)
+
+        # Apply denoising
+        im_gray = cv2.imread(self.path, cv2.IMREAD_GRAYSCALE)
+        im_gray = invert(im_gray)
+        skeleton = skeletonize(im_gray)
+        skeleton = skeleton.astype(np.uint8)
+        print(skeleton)
+        # Save denoised image as TIFF
+        cv2.imwrite(path_to_tiff, skeleton)
+
         tiff_image = TiffImage(path=path_to_tiff, workfolder=workfolder)
         return tiff_image
 
+    def skeletonize_opencv(self):
+        workfolder = TemporaryDirectory(dir="/RIDSS2023/tmp")
+        path_to_tiff = os.path.join(workfolder.name, self.basename + ".tiff")
+        # Read the image as a grayscale image
+        img = cv2.imread(self.path, cv2.IMREAD_GRAYSCALE)
+
+        # Step 1: Create an empty skeleton
+        skel = np.zeros(img.shape, np.uint8)
+
+        # Get a Cross Shaped Kernel
+        element = cv2.getStructuringElement(cv2.MORPH_CROSS, (3, 3))
+
+        # Repeat steps 2-4
+        while True:
+            # Step 2: Open the image
+            open = cv2.morphologyEx(img, cv2.MORPH_OPEN, element)
+            # Step 3: Substract open from the original image
+            temp = cv2.subtract(img, open)
+            # Step 4: Erode the original image and refine the skeleton
+            eroded = cv2.erode(img, element)
+            skel = cv2.bitwise_or(skel, temp)
+            img = eroded.copy()
+            # Step 5: If there are no white pixels left ie.. the image has been completely eroded, quit the loop
+            if cv2.countNonZero(img) == 0:
+                break
+        cv2.imwrite(path_to_tiff, skel)
+        tiff_image = TiffImage(path=path_to_tiff, workfolder=workfolder)
+        return tiff_image
 
     def deskew(self):
         workfolder = TemporaryDirectory(dir="/RIDSS2023/tmp")
@@ -342,7 +383,23 @@ class TiffImage:
 
         # Apply denoising
         im_gray = cv2.imread(self.path, cv2.IMREAD_GRAYSCALE)
-        denoised_image = cv2.fastNlMeansDenoising(im_gray, h=30, templateWindowSize=3, searchWindowSize=3)
+        denoised_image = cv2.fastNlMeansDenoising(
+            im_gray, h=30, templateWindowSize=3, searchWindowSize=3
+        )
+
+        # Save denoised image as TIFF
+        cv2.imwrite(path_to_tiff, denoised_image)
+
+        tiff_image = TiffImage(path=path_to_tiff, workfolder=workfolder)
+        return tiff_image
+
+    def blur_opencv(self):
+        workfolder = TemporaryDirectory(dir="/RIDSS2023/tmp")
+        path_to_tiff = os.path.join(workfolder.name, self.basename + ".tiff")
+
+        # Apply denoising
+        im_gray = cv2.imread(self.path, cv2.IMREAD_GRAYSCALE)
+        denoised_image = cv2.medianBlur(im_gray, 3)
 
         # Save denoised image as TIFF
         cv2.imwrite(path_to_tiff, denoised_image)

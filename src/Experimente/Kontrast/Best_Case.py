@@ -49,8 +49,10 @@ for filename in os.listdir(input_folder):
         # Erstelle den Ausgabeordner
         os.makedirs(file_output_folder)
         tiff_image_original = inputpdf.convert_to_tiff_with_ghostscript(dpi=300)
-        tiff_image_original.save_image(os.path.join(file_output_folder, f"Original.tiff"))
-        
+        tiff_image_original.save_image(
+            os.path.join(file_output_folder, f"Original.tiff")
+        )
+
         # Get ocrdata from Tiff Image
         ocrdata_original = ocrkit.get_ocr_data(
             tiff_image=tiff_image_original, language="deu+eng+chi_sim"
@@ -70,18 +72,19 @@ for filename in os.listdir(input_folder):
             language="deu+eng+chi_sim",
         )
 
-        #Preprocessing
-        tiff_image = tiff_image_original.binarize_adaptive_threshold(width=32,heigth=32)
-        tiff_image.save_image(os.path.join(file_output_folder, f"Preprocessing_Stage_1.tiff"))
-        tiff_image = tiff_image.despeckle_opencv()
-        tiff_image.save_image(os.path.join(file_output_folder, f"Preprocessing_Stage_2.tiff"))
-        tiff_image = tiff_image.adaptive_sharpen()
-        tiff_image.save_image(os.path.join(file_output_folder, f"Preprocessing_Stage_3.tiff"))
+        # Preprocessing
 
-         # Get ocrdata from Tiff Image
-        ocrdata= ocrkit.get_ocr_data(
-            tiff_image=tiff_image, language="deu+eng+chi_sim"
+        tiff_image = tiff_image_original.sharpening_sharpen()
+        tiff_image.save_image(
+            os.path.join(file_output_folder, f"Preprocessing_Stage_1.tiff")
         )
+        tiff_image = tiff_image.despeckle()
+        tiff_image.save_image(
+            os.path.join(file_output_folder, f"Preprocessing_Stage_2.tiff")
+        )
+
+        # Get ocrdata from Tiff Image
+        ocrdata = ocrkit.get_ocr_data(tiff_image=tiff_image, language="deu+eng+chi_sim")
         # Get Evaluation Data
         evaluation_ocrdata = utils.evaluate_ocrdata(ocrdata)
 
