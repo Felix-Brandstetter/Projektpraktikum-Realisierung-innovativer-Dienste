@@ -12,6 +12,7 @@ import subprocess
 from ocrkit.unpaper import clean
 from pathlib import Path
 import cv2
+from skimage.morphology import skeletonize
 
 
 class TiffImage:
@@ -232,6 +233,85 @@ class TiffImage:
 
         tiff_image = TiffImage(path=path_to_tiff, workfolder=workfolder)
         return tiff_image
+    
+    def sharpening_emboss(self, radius: int = 3, sigma: int = 1.75):
+        workfolder = TemporaryDirectory(dir="/RIDSS2023/tmp")
+        path_to_tiff = os.path.join(workfolder.name, self.basename + ".tiff")
+        with Image(filename=self.path, resolution=self.dpi) as img:
+            for page_number in range(len(img.sequence)):
+                with img.sequence[page_number] as page:
+                    page.transform_colorspace("gray")
+                    page.emboss(radius=radius, sigma=sigma)
+            img.save(filename=path_to_tiff)
+        tiff_image = TiffImage(path=path_to_tiff, workfolder=workfolder)
+        return tiff_image
+
+    def sharpening_kuwahara(self, radius: int = 2, sigma: int = 1.5):
+        workfolder = TemporaryDirectory(dir="/RIDSS2023/tmp")
+        path_to_tiff = os.path.join(workfolder.name, self.basename + ".tiff")
+        with Image(filename=self.path, resolution=self.dpi) as img:
+            for page_number in range(len(img.sequence)):
+                with img.sequence[page_number] as page:
+                    page.kuwahara(radius=radius, sigma=sigma)
+            img.save(filename=path_to_tiff)
+        tiff_image = TiffImage(path=path_to_tiff, workfolder=workfolder)
+        return tiff_image
+
+    def sharpening_shade(self, grey: bool = True, azimuth: int = 286, elevation: int = 45):
+            workfolder = TemporaryDirectory(dir="/RIDSS2023/tmp")
+            path_to_tiff = os.path.join(workfolder.name, self.basename + ".tiff")
+            with Image(filename=self.path, resolution=self.dpi) as img:
+                for page_number in range(len(img.sequence)):
+                    with img.sequence[page_number] as page:
+                        page.shade(grey=grey, azimuth=azimuth, elevation=elevation)
+                img.save(filename=path_to_tiff)
+            tiff_image = TiffImage(path=path_to_tiff, workfolder=workfolder)
+            return tiff_image
+    
+    def sharpening_sharpen(self, radius: int = 8, sigma: int = 4):
+        workfolder = TemporaryDirectory(dir="/RIDSS2023/tmp")
+        path_to_tiff = os.path.join(workfolder.name, self.basename + ".tiff")
+        with Image(filename=self.path, resolution=self.dpi) as img:
+            for page_number in range(len(img.sequence)):
+                with img.sequence[page_number] as page:
+                    page.sharpen(radius=radius, sigma=sigma)
+            img.save(filename=path_to_tiff)
+        tiff_image = TiffImage(path=path_to_tiff, workfolder=workfolder)
+        return tiff_image
+    
+    def sharpening_adaptive_sharpen(self, radius: int = 8, sigma: int = 4):
+        workfolder = TemporaryDirectory(dir="/RIDSS2023/tmp")
+        path_to_tiff = os.path.join(workfolder.name, self.basename + ".tiff")
+        with Image(filename=self.path, resolution=self.dpi) as img:
+            for page_number in range(len(img.sequence)):
+                with img.sequence[page_number] as page:
+                    page.adaptive_sharpen(radius=radius, sigma=sigma)
+            img.save(filename=path_to_tiff)
+        tiff_image = TiffImage(path=path_to_tiff, workfolder=workfolder)
+        return tiff_image
+
+    def sharpening_unsharp_mask(self, radius: int = 10, sigma: int = 4, amount: int = 1, threshold: int = 0):
+        workfolder = TemporaryDirectory(dir="/RIDSS2023/tmp")
+        path_to_tiff = os.path.join(workfolder.name, self.basename + ".tiff")
+        with Image(filename=self.path, resolution=self.dpi) as img:
+            for page_number in range(len(img.sequence)):
+                with img.sequence[page_number] as page:
+                    page.unsharp_mask(radius=radius, sigma=sigma, amount=amount, threshold=threshold)
+            img.save(filename=path_to_tiff)
+        tiff_image = TiffImage(path=path_to_tiff, workfolder=workfolder)
+        return tiff_image
+
+    def skeletonize_zhang(self):
+        workfolder = TemporaryDirectory(dir="/RIDSS2023/tmp")
+        path_to_tiff = os.path.join(workfolder.name, self.basename + ".tiff")
+        with Image(filename=self.path, resolution=self.dpi) as img:
+            for page_number in range(len(img.sequence)):
+                with img.sequence[page_number] as page:
+                    page = skeletonize(page)
+            img.save(filename=path_to_tiff)
+        tiff_image = TiffImage(path=path_to_tiff, workfolder=workfolder)
+        return tiff_image
+
 
     def deskew(self):
         workfolder = TemporaryDirectory(dir="/RIDSS2023/tmp")
@@ -240,42 +320,6 @@ class TiffImage:
             for page_number in range(len(img.sequence)):
                 with img.sequence[page_number] as page:
                     page.deskew(0.4 * img.quantum_range)
-            img.save(filename=path_to_tiff)
-        tiff_image = TiffImage(path=path_to_tiff, workfolder=workfolder)
-        return tiff_image
-
-    def adaptive_sharpen(self, radius: int = 8, sigma: int = 4):
-        workfolder = TemporaryDirectory(dir="/RIDSS2023/tmp")
-        path_to_tiff = os.path.join(workfolder.name, self.basename + ".tiff")
-        with Image(filename=self.path, resolution=self.dpi) as img:
-            for page_number in range(len(img.sequence)):
-                with img.sequence[page_number] as page:
-                    page.adaptive_sharpen(radius=radius, sigma=sigma)
-
-            img.save(filename=path_to_tiff)
-        tiff_image = TiffImage(path=path_to_tiff, workfolder=workfolder)
-        return tiff_image
-
-    def sharpen(self, radius: int = 8, sigma: int = 4):
-        workfolder = TemporaryDirectory(dir="/RIDSS2023/tmp")
-        path_to_tiff = os.path.join(workfolder.name, self.basename + ".tiff")
-        with Image(filename=self.path, resolution=self.dpi) as img:
-            for page_number in range(len(img.sequence)):
-                with img.sequence[page_number] as page:
-                    page.sharpen(radius=radius, sigma=sigma)
-
-            img.save(filename=path_to_tiff)
-        tiff_image = TiffImage(path=path_to_tiff, workfolder=workfolder)
-        return tiff_image
-
-    def edge_detection(self, radius: float):
-        workfolder = TemporaryDirectory(dir="/RIDSS2023/tmp")
-        path_to_tiff = os.path.join(workfolder.name, self.basename + ".tiff")
-        with Image(filename=self.path, resolution=self.dpi) as img:
-            for page_number in range(len(img.sequence)):
-                with img.sequence[page_number] as page:
-                    page.edge(radius=radius)
-
             img.save(filename=path_to_tiff)
         tiff_image = TiffImage(path=path_to_tiff, workfolder=workfolder)
         return tiff_image
@@ -303,18 +347,6 @@ class TiffImage:
         # Save denoised image as TIFF
         cv2.imwrite(path_to_tiff, denoised_image)
 
-        tiff_image = TiffImage(path=path_to_tiff, workfolder=workfolder)
-        return tiff_image
-
-    def kuwahara(self):
-        workfolder = TemporaryDirectory(dir="/RIDSS2023/tmp")
-        path_to_tiff = os.path.join(workfolder.name, self.basename + ".tiff")
-        with Image(filename=self.path, resolution=self.dpi) as img:
-            for page_number in range(len(img.sequence)):
-                with img.sequence[page_number] as page:
-                    page.kuwahara(radius=2, sigma=1.5)
-
-            img.save(filename=path_to_tiff)
         tiff_image = TiffImage(path=path_to_tiff, workfolder=workfolder)
         return tiff_image
 

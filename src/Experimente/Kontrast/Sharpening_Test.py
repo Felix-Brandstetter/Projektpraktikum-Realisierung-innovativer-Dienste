@@ -17,7 +17,7 @@ Image.MAX_IMAGE_PIXELS = 1000000000
 # Pfad zum Eingabeordner mit den PDF-Dateien
 input_folder = "/RIDSS2023/src/Experimente/Testdateien"
 
-output_folder = "/RIDSS2023/experiment_ergebnisse/Kontrast/Binarization_Test"
+output_folder = "/RIDSS2023/experiment_ergebnisse/Kontrast/Sharpening_Test"
 if os.path.exists(output_folder):
     shutil.rmtree(output_folder)
 os.makedirs(output_folder)
@@ -70,18 +70,25 @@ for filename in os.listdir(input_folder):
         )
 
         methods = [
-            "kapur",
-            "otsu",
-            "triangle",
-            "adaptive_threshold",
+            "edge",
+            "emboss",
+            "kuwahara",
+            "shade",
+            "sharpen",
+            "adaptive_sharpen",
         ]
         for method in methods:
             # Apply Binarization
-            if method == "adaptive_threshold":
+            if method == "edge":
+                tiff_image = tiff_image_original.binarize_edge()
+            elif method == "emboss":
+                tiff_image = tiff_image_original.binarize_edge()
+            elif method == "kuwahara":
                 tiff_image = tiff_image_original.binarize_adaptive_threshold()
-            else:
-                tiff_image = tiff_image_original.binarize_auto_threshold(method=method)
-
+            elif method == "sharpen":
+                tiff_image = tiff_image_original.sharpen()
+            elif method == "adaptive_sharpen":
+                tiff_image = tiff_image_original.adaptive_sharpen()
             tiff_image.save_image(
                 os.path.join(file_output_folder, f"tiff_image_{method}.tiff")
             )
