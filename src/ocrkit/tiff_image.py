@@ -9,6 +9,7 @@ from ocrkit.language_identification_model import Language_Identification_Model
 from ocrkit.unpaper import clean
 from pathlib import Path
 import subprocess
+from skimage.morphology import skeletonize
 
 
 class TiffImage:
@@ -214,7 +215,7 @@ class TiffImage:
             for page_number in range(len(img.sequence)):
                 with img.sequence[page_number] as page:
                     page.transform_colorspace("gray")
-                    page.emboss(radius, sigma)
+                    page.emboss(radius=radius, sigma=sigma)
             img.save(filename=path_to_tiff)
         tiff_image = TiffImage(path=path_to_tiff, workfolder=workfolder)
         return tiff_image
@@ -225,7 +226,7 @@ class TiffImage:
         with Image(filename=self.path, resolution=self.dpi) as img:
             for page_number in range(len(img.sequence)):
                 with img.sequence[page_number] as page:
-                    page.kuwahara(radius, sigma)
+                    page.kuwahara(radius=radius, sigma=sigma)
             img.save(filename=path_to_tiff)
         tiff_image = TiffImage(path=path_to_tiff, workfolder=workfolder)
         return tiff_image
@@ -236,7 +237,7 @@ class TiffImage:
             with Image(filename=self.path, resolution=self.dpi) as img:
                 for page_number in range(len(img.sequence)):
                     with img.sequence[page_number] as page:
-                        page.shade(grey, azimuth, elevation)
+                        page.shade(grey=grey, azimuth=azimuth, elevation=elevation)
                 img.save(filename=path_to_tiff)
             tiff_image = TiffImage(path=path_to_tiff, workfolder=workfolder)
             return tiff_image
@@ -248,7 +249,6 @@ class TiffImage:
             for page_number in range(len(img.sequence)):
                 with img.sequence[page_number] as page:
                     page.sharpen(radius=radius, sigma=sigma)
-
             img.save(filename=path_to_tiff)
         tiff_image = TiffImage(path=path_to_tiff, workfolder=workfolder)
         return tiff_image
@@ -260,10 +260,32 @@ class TiffImage:
             for page_number in range(len(img.sequence)):
                 with img.sequence[page_number] as page:
                     page.adaptive_sharpen(radius=radius, sigma=sigma)
-
             img.save(filename=path_to_tiff)
         tiff_image = TiffImage(path=path_to_tiff, workfolder=workfolder)
         return tiff_image
+
+    def sharpening_unsharp_mask(self, radius: int = 10, sigma: int = 4, amount: int = 1, threshold: int = 0):
+        workfolder = TemporaryDirectory(dir="/RIDSS2023/tmp")
+        path_to_tiff = os.path.join(workfolder.name, self.basename + ".tiff")
+        with Image(filename=self.path, resolution=self.dpi) as img:
+            for page_number in range(len(img.sequence)):
+                with img.sequence[page_number] as page:
+                    page.unsharp_mask(radius=radius, sigma=sigma, amount=amount, threshold=threshold)
+            img.save(filename=path_to_tiff)
+        tiff_image = TiffImage(path=path_to_tiff, workfolder=workfolder)
+        return tiff_image
+
+    def skeletonize_zhang(self):
+        workfolder = TemporaryDirectory(dir="/RIDSS2023/tmp")
+        path_to_tiff = os.path.join(workfolder.name, self.basename + ".tiff")
+        with Image(filename=self.path, resolution=self.dpi) as img:
+            for page_number in range(len(img.sequence)):
+                with img.sequence[page_number] as page:
+                    page = skeletonize(page)
+            img.save(filename=path_to_tiff)
+        tiff_image = TiffImage(path=path_to_tiff, workfolder=workfolder)
+        return tiff_image
+
 
     def deskew(self):
         workfolder = TemporaryDirectory(dir="/RIDSS2023/tmp")
