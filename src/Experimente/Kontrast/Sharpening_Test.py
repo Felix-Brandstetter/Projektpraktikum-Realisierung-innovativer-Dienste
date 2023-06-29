@@ -1,4 +1,5 @@
 import sys
+import pandas as pd
 
 sys.path.append("/RIDSS2023/src")
 sys.path.append("/RIDSS2023/src/Experimente")
@@ -28,6 +29,9 @@ os.makedirs(output_folder)
 
 # Liste der unterstützten Dateierweiterungen
 supported_extensions = [".pdf"]
+
+# Erstelle das DataFrame um die Ergebnisse des Experiments zu speichern
+#results = pd.DataFrame(columns[])
 
 # Set MAX_IMAGE_PIXELS for Experiments
 Image.MAX_IMAGE_PIXELS = 1000000000
@@ -84,7 +88,7 @@ for filename in os.listdir(input_folder):
         for method in methods:
             # Apply Binarization
             if method == "edge":
-                tiff_image = tiff_image_original.edge()
+                tiff_image = tiff_image_original.sharpening_edge()
             elif method == "emboss":
                 tiff_image = tiff_image_original.sharpening_emboss()
             elif method == "kuwahara":
@@ -108,14 +112,14 @@ for filename in os.listdir(input_folder):
             evaluation_ocrdata = utils.evaluate_ocrdata(ocrdata)
 
             # Get Wortvergleich
-            comparison = get_ocrdata_of_comparison_before_after_preprocessing(
-                ocrdata_without_preprocessing=ocrdata_original,
-                ocrdata_with_preprocessing=ocrdata,
-            )
-            evaluation_comparison = evaluation_of_comparison(comparison)
-            evaluation_comparison.to_excel(
-                os.path.join(file_output_folder, f"evaluation_comparison_{method}.xlsx"),
-            )
+#            comparison = get_ocrdata_of_comparison_before_after_preprocessing(
+#                ocrdata_without_preprocessing=ocrdata_original,
+#                ocrdata_with_preprocessing=ocrdata,
+#            )
+#            evaluation_comparison = evaluation_of_comparison(comparison)
+#            evaluation_comparison.to_excel(
+#                os.path.join(file_output_folder, f"evaluation_comparison_{method}.xlsx"),
+#            )
 
             # Save to Excel
             evaluation_ocrdata.to_excel(
@@ -123,10 +127,10 @@ for filename in os.listdir(input_folder):
             )
 
             # Create Searchable PDF
-            ocrkit.create_searchable_pdf(
-                tiff_image=tiff_image,
-                out_filename=os.path.join(
-                    file_output_folder, f"tiff_image_{method}.pdf"
-                ),
-                language="deu+eng+chi_sim",
-            )
+#            ocrkit.create_searchable_pdf(
+#                tiff_image=tiff_image,
+#                out_filename=os.path.join(
+#                    file_output_folder, f"tiff_image_{method}.pdf"
+#                ),
+#                language="deu+eng+chi_sim",
+#            )

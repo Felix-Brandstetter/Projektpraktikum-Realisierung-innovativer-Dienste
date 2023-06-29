@@ -12,7 +12,7 @@ import subprocess
 from ocrkit.unpaper import clean
 from pathlib import Path
 import cv2
-from skimage.morphology import skeletonize
+from skimage.morphology import skeletonize, medial_axis, thin
 import numpy as np
 from skimage.util import invert
 
@@ -222,7 +222,7 @@ class TiffImage:
         tiff_image = TiffImage(path=path_to_tiff, workfolder=workfolder)
         return tiff_image
 
-    def edge(self, radius: int = 1):
+    def sharpening_edge(self, radius: int = 1):
         workfolder = TemporaryDirectory(dir="/RIDSS2023/tmp")
         path_to_tiff = os.path.join(workfolder.name, self.basename + ".tiff")
         with Image(filename=self.path, resolution=self.dpi) as img:
@@ -312,16 +312,63 @@ class TiffImage:
     def skeletonize_zhang(self):
         workfolder = TemporaryDirectory(dir="/RIDSS2023/tmp")
         path_to_tiff = os.path.join(workfolder.name, self.basename + ".tiff")
-
-        # Apply denoising
-        im_gray = cv2.imread(self.path, cv2.IMREAD_GRAYSCALE)
-        im_gray = invert(im_gray)
-        skeleton = skeletonize(im_gray)
-        skeleton = skeleton.astype(np.uint8)
-        print(skeleton)
-        # Save denoised image as TIFF
+        # Read the tiff image as a grayscale cv2 image
+        img = cv2.imread(self.path, cv2.IMREAD_GRAYSCALE)
+        # Binarize the image
+        _, binary_image = cv2.threshold(img, 0, 255, cv2.THRESH_BINARY | cv2.THRESH_OTSU)
+        # Invert the colors
+        binary_image = invert(binary_image)
+        # Skeletonize the inverted cv2 image
+        skeleton = skeletonize(binary_image)
+        # Invert the skeleton image back to the original
+        skeleton = invert(skeleton)
+        # Convert the image from binary into type unsigned 8-bit integer with values from 0-255
+        skeleton = skeleton.astype(np.uint8) * 255
+        # Save the resulting image
         cv2.imwrite(path_to_tiff, skeleton)
-
+        # Save the image as a TiffImage
+        tiff_image = TiffImage(path=path_to_tiff, workfolder=workfolder)
+        return tiff_image
+    
+    def skeletonize_medial_axis(self):
+        workfolder = TemporaryDirectory(dir="/RIDSS2023/tmp")
+        path_to_tiff = os.path.join(workfolder.name, self.basename + ".tiff")
+        # Read the tiff image as a grayscale cv2 image
+        img = cv2.imread(self.path, cv2.IMREAD_GRAYSCALE)
+        # Binarize the image
+        _, binary_image = cv2.threshold(img, 0, 255, cv2.THRESH_BINARY | cv2.THRESH_OTSU)
+        # Invert the colors
+        binary_image = invert(binary_image)
+        # Skeletonize the inverted cv2 image
+        skeleton = medial_axis(binary_image)
+        # Invert the skeleton image back to the original
+        skeleton = invert(skeleton)
+        # Convert the image from binary into type unsigned 8-bit integer with values from 0-255
+        skeleton = skeleton.astype(np.uint8) * 255
+        # Save the resulting image
+        cv2.imwrite(path_to_tiff, skeleton)
+        # Save the image as a TiffImage
+        tiff_image = TiffImage(path=path_to_tiff, workfolder=workfolder)
+        return tiff_image
+    
+    def skeletonize_thin(self):
+        workfolder = TemporaryDirectory(dir="/RIDSS2023/tmp")
+        path_to_tiff = os.path.join(workfolder.name, self.basename + ".tiff")
+         # Read the tiff image as a grayscale cv2 image
+        img = cv2.imread(self.path, cv2.IMREAD_GRAYSCALE)
+        # Binarize the image
+        _, binary_image = cv2.threshold(img, 0, 255, cv2.THRESH_BINARY | cv2.THRESH_OTSU)
+        # Invert the colors
+        binary_image = invert(binary_image)
+        # Thin the inverted cv2 image
+        thinned_img = thin(binary_image, max_num_iter=1)
+        # Invert the thinned image back to the original
+        thinned_img = invert(thinned_img)
+        # Convert the image from binary into type unsigned 8-bit integer with values from 0-255
+        thinned_img = thinned_img.astype(np.uint8) * 255
+        # Save the resulting image
+        cv2.imwrite(path_to_tiff, thinned_img)
+        # Save the image as a TiffImage
         tiff_image = TiffImage(path=path_to_tiff, workfolder=workfolder)
         return tiff_image
 
@@ -330,13 +377,10 @@ class TiffImage:
         path_to_tiff = os.path.join(workfolder.name, self.basename + ".tiff")
         # Read the image as a grayscale image
         img = cv2.imread(self.path, cv2.IMREAD_GRAYSCALE)
-
         # Step 1: Create an empty skeleton
-        skel = np.zeros(img.shape, np.uint8)
-
+        skeleton = np.zeros(img.shape, np.uint8)
         # Get a Cross Shaped Kernel
         element = cv2.getStructuringElement(cv2.MORPH_CROSS, (3, 3))
-
         # Repeat steps 2-4
         while True:
             # Step 2: Open the image
@@ -345,12 +389,14 @@ class TiffImage:
             temp = cv2.subtract(img, open)
             # Step 4: Erode the original image and refine the skeleton
             eroded = cv2.erode(img, element)
-            skel = cv2.bitwise_or(skel, temp)
+            skeleton = cv2.bitwise_or(skeleton, temp)
             img = eroded.copy()
             # Step 5: If there are no white pixels left ie.. the image has been completely eroded, quit the loop
             if cv2.countNonZero(img) == 0:
                 break
-        cv2.imwrite(path_to_tiff, skel)
+        # Invert the skeleton image back to the original
+        skeleton = invert(skeleton)
+        cv2.imwrite(path_to_tiff, skeleton)
         tiff_image = TiffImage(path=path_to_tiff, workfolder=workfolder)
         return tiff_image
 

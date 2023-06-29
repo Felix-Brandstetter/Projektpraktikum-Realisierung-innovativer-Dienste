@@ -6,7 +6,7 @@ from pypdf import PdfWriter
 from pytesseract import Output
 import re
 import shutil
-
+from datetime import datetime
 
 def create_searchable_pdf(
     tiff_image: TiffImage,
@@ -97,11 +97,20 @@ def _merge_hocr_and_one_page_image(
 def get_ocr_data(
     tiff_image: TiffImage, language: str, delete_minus1_confidences: bool = True
 ):
+    # Get the start of runtime
+    start_time = datetime.now()
     ocrdata = pytesseract.image_to_data(
         image=tiff_image.path, output_type=Output.DATAFRAME, lang=language
     )
+    # Get the runtime by subtracting the start time from the end time
+    runtime = datetime.now() - start_time
+    # Format the runtime 
+    runtime = "{:.2f}".format(runtime.total_seconds())
+    
     if delete_minus1_confidences:
         ocrdata = ocrdata[ocrdata["conf"] != -1]
+    # Add the runtime to the DataFrame
+    ocrdata['runtime'] = runtime
     return ocrdata
 
 

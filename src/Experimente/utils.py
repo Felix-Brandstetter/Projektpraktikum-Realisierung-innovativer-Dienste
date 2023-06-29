@@ -151,7 +151,9 @@ def get_number_of_confidences_under_50_after_preprocessing(ocrdata_comparison_be
     number_of_confidences_under_50_after_preprocessing = (ocrdata_comparison_before_after_preprocessing["confidence_after"] < 50).sum()
     return number_of_confidences_under_50_after_preprocessing
 
-
+def _get_runtime(ocrdata: pd.DataFrame):
+    runtime = ocrdata["runtime"].values[0]
+    return runtime
 
 def evaluate_ocrdata(ocrdata: pd.DataFrame):
     ocr_evaluation = pd.DataFrame(
@@ -167,6 +169,7 @@ def evaluate_ocrdata(ocrdata: pd.DataFrame):
             "number_of_zero_confidence",
             "number_of_confidences_under_25",
             "number_of_confidences_under_50",
+            "runtime",
         ]
     )
 
@@ -195,6 +198,8 @@ def evaluate_ocrdata(ocrdata: pd.DataFrame):
         number_of_confidences_under_50 = _get_number_of_confidences_under_50(
             ocrdata_per_page
         )
+        runtime = _get_runtime(ocrdata_per_page)
+        
         # Create new row
         new_row = {
             "Page": page,
@@ -208,6 +213,7 @@ def evaluate_ocrdata(ocrdata: pd.DataFrame):
             "number_of_zero_confidence": number_of_zero_confidence,
             "number_of_confidences_under_25": number_of_confidences_under_25,
             "number_of_confidences_under_50": number_of_confidences_under_50,
+            "runtime": runtime
         }
 
         # Append row to dataframe

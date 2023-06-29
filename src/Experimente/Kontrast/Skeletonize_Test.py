@@ -15,7 +15,7 @@ from PIL import Image
 Image.MAX_IMAGE_PIXELS = 1000000000
 
 # Pfad zum Eingabeordner mit den PDF-Dateien
-input_folder = "/RIDSS2023/src/Experimente/Testdateien"
+input_folder = "/RIDSS2023/src/Experimente/Testdateien/Richtig_Rotierte_PDFs"
 
 output_folder = "/RIDSS2023/experiment_ergebnisse/Kontrast/Skeletonize_Test"
 if os.path.exists(output_folder):
@@ -71,15 +71,20 @@ for filename in os.listdir(input_folder):
 
         methods = [
             "zhang",
-            "openCV"
-
+            "medial_axis",
+            "thin",
+            "openCV",
         ]
         for method in methods:
             # Apply Binarization
             if method == "zhang":
                 tiff_image = tiff_image_original.skeletonize_zhang()
+            elif method == "medial_axis":
+                tiff_image = tiff_image_original.skeletonize_medial_axis()
+            elif method == "thin":
+                tiff_image = tiff_image_original.skeletonize_thin()
             elif method == "openCV":
-                tiff_image = tiff_image_original.skeletonize_openCV()
+                tiff_image = tiff_image_original.skeletonize_opencv()
             tiff_image.save_image(
                 os.path.join(file_output_folder, f"tiff_image_{method}.tiff")
             )
