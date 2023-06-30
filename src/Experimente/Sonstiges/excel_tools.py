@@ -66,9 +66,9 @@ def excel_to_wordtable(excel_doc, input_folder):
         for method in methods[1:]:
             filename = f"evaluation_ocrdata_{method}.xlsx"
             try:
-                average_confidence = round(group.loc[group['Filename'] == filename, 'average_confidence'].values[0], 2)
+                average_confidence = "{:,.2f}".format(round(group.loc[group['Filename'] == filename, 'average_confidence'].values[0], 2)).replace(",", "X").replace(".", ",").replace("X", ".")
                 sum_of_confidence = group.loc[group['Filename'] == filename, 'sum_of_confidence'].values[0]
-                runtime = group.loc[group['Filename'] == filename, 'runtime'].values[0]
+                runtime = "{:,.2f}".format(group.loc[group['Filename'] == filename, 'runtime'].values[0]).replace(",", "X").replace(".", ",").replace("X", ".")
             except IndexError:
                 average_confidence = "NaN"
                 sum_of_confidence = "NaN"

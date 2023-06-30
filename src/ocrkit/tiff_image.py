@@ -453,6 +453,50 @@ class TiffImage:
         tiff_image = TiffImage(path=path_to_tiff, workfolder=workfolder)
         return tiff_image
 
+    def turn_gray(self):
+        workfolder = TemporaryDirectory(dir="/RIDSS2023/tmp")
+        path_to_tiff = os.path.join(workfolder.name, self.basename + ".tiff")
+        with Image(filename=self.path, resolution=self.dpi) as img:
+            for page_number in range(len(img.sequence)):
+                with img.sequence[page_number] as page:
+                    page.transform_colorspace("gray")
+            img.save(filename=path_to_tiff)
+        tiff_image = TiffImage(path=path_to_tiff, workfolder=workfolder)
+        return tiff_image
+
+    def contrast_simple_contrast(self):
+        workfolder = TemporaryDirectory(dir="/RIDSS2023/tmp")
+        path_to_tiff = os.path.join(workfolder.name, self.basename + ".tiff")
+        with Image(filename=self.path, resolution=self.dpi) as img:
+            for page_number in range(len(img.sequence)):
+                with img.sequence[page_number] as page:
+                    page.contrast(sharpen = True)
+            img.save(filename=path_to_tiff)
+        tiff_image = TiffImage(path=path_to_tiff, workfolder=workfolder)
+        return tiff_image
+    
+    def contrast_local_contrast(self, radius = 10, strength = 12.5):
+        workfolder = TemporaryDirectory(dir="/RIDSS2023/tmp")
+        path_to_tiff = os.path.join(workfolder.name, self.basename + ".tiff")
+        with Image(filename=self.path, resolution=self.dpi) as img:
+            for page_number in range(len(img.sequence)):
+                with img.sequence[page_number] as page:
+                    page.local_contrast(radius = radius, strength = strength)
+            img.save(filename=path_to_tiff)
+        tiff_image = TiffImage(path=path_to_tiff, workfolder=workfolder)
+        return tiff_image
+    
+    def contrast_sigmoidal_contrast(self, strength = 3, midpoint = 0.65):
+        workfolder = TemporaryDirectory(dir="/RIDSS2023/tmp")
+        path_to_tiff = os.path.join(workfolder.name, self.basename + ".tiff")
+        with Image(filename=self.path, resolution=self.dpi) as img:
+            for page_number in range(len(img.sequence)):
+                with img.sequence[page_number] as page:
+                    page.sigmoidal_contrast( strength = strength, midpoint= midpoint * img.quantum_range)
+            img.save(filename=path_to_tiff)
+        tiff_image = TiffImage(path=path_to_tiff, workfolder=workfolder)
+        return tiff_image
+
     def save_image(self, filename):
         with Image(filename=self.path, resolution=self.dpi) as img:
             img.save(filename=filename)
