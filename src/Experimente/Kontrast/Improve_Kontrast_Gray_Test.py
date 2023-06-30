@@ -11,6 +11,10 @@ import os
 import shutil
 from datetime import datetime
 from PIL import Image
+from comparison_before_after_preprocessing import (
+    evaluation_of_comparison,
+    get_ocrdata_of_comparison_before_after_preprocessing,
+)
 
 # Set MAX_IMAGE_PIXELS for Experiments
 Image.MAX_IMAGE_PIXELS = 1000000000
@@ -18,13 +22,16 @@ Image.MAX_IMAGE_PIXELS = 1000000000
 # Pfad zum Eingabeordner mit den PDF-Dateien
 input_folder = "/RIDSS2023/src/Experimente/Testdateien/Richtig_Rotierte_PDFs"
 
-output_folder = "/RIDSS2023/experiment_ergebnisse/Kontrast/Binarization_Test"
+output_folder = "/RIDSS2023/experiment_ergebnisse/Kontrast/Improve_Kontrast_Gray_Test"
 if os.path.exists(output_folder):
     shutil.rmtree(output_folder)
 os.makedirs(output_folder)
 
 # Liste der unterstützten Dateierweiterungen
 supported_extensions = [".pdf"]
+
+# Erstelle das DataFrame um die Ergebnisse des Experiments zu speichern
+#results = pd.DataFrame(columns[])
 
 # Set MAX_IMAGE_PIXELS for Experiments
 Image.MAX_IMAGE_PIXELS = 1000000000
@@ -74,25 +81,37 @@ for filename in os.listdir(input_folder):
         )
 
         methods = [
-            "kapur",
-            "otsu",
-            "triangle",
-            "adaptive_threshold",
+            "contrast_simple_contrast",
+            "contrast_local_contrast",
+            "contrast_sigmoidal_contrast",
         ]
         for method in methods:
             # Apply Binarization
-            if method == "adaptive_threshold":
+            if method == "contrast_simple_contrast":
                 # Get the start of runtime
                 start_time = datetime.now()
-                tiff_image = tiff_image_original.binarize_adaptive_threshold()
+                tiff_image = tiff_image_original.turn_gray()
+                tiff_image = tiff_image.contrast_simple_contrast()
+                # Get the runtime by subtracting the start time from the end time
                 runtime = datetime.now() - start_time
                 # Format the runtime 
                 runtime = "{:.2f}".format(runtime.total_seconds())
                 runtime_preprocessing.append(runtime)
-            else:
+            elif method == "contrast_local_contrast":
                 # Get the start of runtime
                 start_time = datetime.now()
-                tiff_image = tiff_image_original.binarize_auto_threshold(method=method)
+                tiff_image = tiff_image_original.turn_gray()
+                tiff_image = tiff_image.contrast_local_contrast
+                # Get the runtime by subtracting the start time from the end time
+                runtime = datetime.now() - start_time
+                # Format the runtime 
+                runtime = "{:.2f}".format(runtime.total_seconds())
+                runtime_preprocessing.append(runtime)
+            elif method == "contrast_sigmoidal_contrast":
+                # Get the start of runtime
+                start_time = datetime.now()
+                tiff_image = tiff_image_original.turn_gray()
+                tiff_image = tiff_image.contrast_sigmoidal_contrast()
                 # Get the runtime by subtracting the start time from the end time
                 runtime = datetime.now() - start_time
                 # Format the runtime 
@@ -112,6 +131,16 @@ for filename in os.listdir(input_folder):
             # Add the preprocessing runtimes to the DataFrame
             series_runtime = pd.Series(runtime_preprocessing, name='runtime_preprocessing')
             evaluation_ocrdata = pd.concat([evaluation_ocrdata, series_runtime], axis=1)
+
+            # Get Wortvergleich
+#            comparison = get_ocrdata_of_comparison_before_after_preprocessing(
+#                ocrdata_without_preprocessing=ocrdata_original,
+#                ocrdata_with_preprocessing=ocrdata,
+#            )
+#            evaluation_comparison = evaluation_of_comparison(comparison)
+#            evaluation_comparison.to_excel(
+#                os.path.join(file_output_folder, f"evaluation_comparison_{method}.xlsx"),
+#            )
 
             # Save to Excel
             evaluation_ocrdata.to_excel(

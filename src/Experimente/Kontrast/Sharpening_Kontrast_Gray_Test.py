@@ -22,7 +22,7 @@ Image.MAX_IMAGE_PIXELS = 1000000000
 # Pfad zum Eingabeordner mit den PDF-Dateien
 input_folder = "/RIDSS2023/src/Experimente/Testdateien/Richtig_Rotierte_PDFs"
 
-output_folder = "/RIDSS2023/experiment_ergebnisse/Kontrast/Grayscale_Test"
+output_folder = "/RIDSS2023/experiment_ergebnisse/Kontrast/Sharpening_Kontrast_Gray_Test"
 if os.path.exists(output_folder):
     shutil.rmtree(output_folder)
 os.makedirs(output_folder)
@@ -92,6 +92,7 @@ for filename in os.listdir(input_folder):
                 start_time = datetime.now()
                 tiff_image = tiff_image_original.turn_gray()
                 tiff_image = tiff_image.contrast_simple_contrast()
+                tiff_image = tiff_image.sharpening_sharpen()
                 # Get the runtime by subtracting the start time from the end time
                 runtime = datetime.now() - start_time
                 # Format the runtime 
@@ -102,6 +103,7 @@ for filename in os.listdir(input_folder):
                 start_time = datetime.now()
                 tiff_image = tiff_image_original.turn_gray()
                 tiff_image = tiff_image.contrast_local_contrast
+                tiff_image = tiff_image.sharpening_sharpen()
                 # Get the runtime by subtracting the start time from the end time
                 runtime = datetime.now() - start_time
                 # Format the runtime 
@@ -112,6 +114,7 @@ for filename in os.listdir(input_folder):
                 start_time = datetime.now()
                 tiff_image = tiff_image_original.turn_gray()
                 tiff_image = tiff_image.contrast_sigmoidal_contrast()
+                tiff_image = tiff_image.sharpening_sharpen()
                 # Get the runtime by subtracting the start time from the end time
                 runtime = datetime.now() - start_time
                 # Format the runtime 

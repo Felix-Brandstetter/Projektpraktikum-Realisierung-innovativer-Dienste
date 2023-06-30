@@ -19,7 +19,7 @@ def combine_excels(input_folder):
                 data = pd.read_excel(file_path)
 
                 # Remove all double entries
-                data = data[data["Page"] != 1]
+                data = data[data["Page"] != "Whole Document"]
 
                 # Record the subdirectory name the file belongs to, e.g. ToOcr-01
                 data["Subdirectory"] = os.path.basename(root)
@@ -53,15 +53,18 @@ def excel_to_wordtable(excel_doc, input_folder):
     doc_average_confidence = Document()
     doc_sum_of_confidence = Document()
     doc_runtime = Document()
+    doc_runtime_preprocessing = Document()
     
     average_confidence_DataFrame = pd.DataFrame(columns=methods)
     sum_of_confidence_DataFrame = pd.DataFrame(columns=methods)
     runtime_DataFrame = pd.DataFrame(columns=methods)
+    runtime_preprocessing = pd.DataFrame(columns=methods)
     
     for toocr_document, group in excel_data.groupby("Subdirectory"):
         row_average_confidence = {"DocumentNr.": toocr_document}
         row_sum_of_confidence = {"DocumentNr.": toocr_document}
         row_runtime = {"DocumentNr.": toocr_document}
+        row_runtime_preprocessing = {"DocumentNr.": toocr_document}
         
         for method in methods[1:]:
             filename = f"evaluation_ocrdata_{method}.xlsx"
@@ -69,15 +72,18 @@ def excel_to_wordtable(excel_doc, input_folder):
                 average_confidence = "{:,.2f}".format(round(group.loc[group['Filename'] == filename, 'average_confidence'].values[0], 2)).replace(",", "X").replace(".", ",").replace("X", ".")
                 sum_of_confidence = group.loc[group['Filename'] == filename, 'sum_of_confidence'].values[0]
                 runtime = "{:,.2f}".format(group.loc[group['Filename'] == filename, 'runtime'].values[0]).replace(",", "X").replace(".", ",").replace("X", ".")
+                runtime_preprocessing = "{:,.2f}".format(group.loc[group['Filename'] == filename, 'runtime_preprocessing'].values[0]).replace(",", "X").replace(".", ",").replace("X", ".")
             except IndexError:
                 average_confidence = "NaN"
                 sum_of_confidence = "NaN"
                 runtime = "NaN"
+                runtime_preprocessing = "Nan"
                 print(f"Missing value in {toocr_document} for the method {method}")
             
             row_average_confidence[method] = average_confidence
             row_sum_of_confidence[method] = sum_of_confidence
             row_runtime[method] = runtime
+            row_runtime_preprocessing[method] = runtime_preprocessing
         
         # Convert row_average_confidence dictionary to DataFrame
         row_average_confidence_df = pd.DataFrame(row_average_confidence, index=[0])
@@ -97,6 +103,12 @@ def excel_to_wordtable(excel_doc, input_folder):
         runtime_DataFrame = pd.concat(
             [average_confidence_DataFrame, row_runtime_df], ignore_index=True
         )
+        # Convert row_runtime dictionary to DataFrame
+        row_runtime_preprocessing_df = pd.DataFrame(row_runtime, index=[0])
+        # Concatenate the runtime row to the runtime DataFrame
+        runtime_DataFrame = pd.concat(
+            [average_confidence_DataFrame, row_runtime_preprocessing_df], ignore_index=True
+        )
 
 
     # Save average confidence table
@@ -110,6 +122,10 @@ def excel_to_wordtable(excel_doc, input_folder):
     # Save runtime confidence table
     output_file_runtime = os.path.join(input_folder, "runtime.docx")
     save_table_to_word(doc_runtime, runtime_DataFrame, output_file_runtime)
+
+    # Save runtime confidence table
+    output_file_runtime_preprocessing = os.path.join(input_folder, "runtime_preprocessing.docx")
+    save_table_to_word(doc_runtime_preprocessing, runtime_DataFrame, output_file_runtime_preprocessing)
 
 
 def save_table_to_word(document, df, output_file):
