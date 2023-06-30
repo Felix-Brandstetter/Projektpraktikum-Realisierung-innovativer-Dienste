@@ -102,7 +102,7 @@ for filename in os.listdir(input_folder):
                 # Get the start of runtime
                 start_time = datetime.now()
                 tiff_image = tiff_image_original.turn_gray()
-                tiff_image = tiff_image.contrast_local_contrast
+                tiff_image = tiff_image.contrast_local_contrast()
                 tiff_image = tiff_image.sharpening_sharpen()
                 # Get the runtime by subtracting the start time from the end time
                 runtime = datetime.now() - start_time
