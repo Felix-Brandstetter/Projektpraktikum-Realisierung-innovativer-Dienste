@@ -86,19 +86,50 @@ for filename in os.listdir(input_folder):
             "adaptive_sharpen",
         ]
         for method in methods:
-            # Apply Binarization
+            runtime_preprocessing = 0
+            # Apply Sharpening
             if method == "edge":
+                start_time = datetime.now()
                 tiff_image = tiff_image_original.sharpening_edge()
+                # Get the runtime by subtracting the start time from the end time
+                runtime = datetime.now() - start_time
+                # Format the runtime 
+                runtime_preprocessing = "{:.2f}".format(runtime.total_seconds())
             elif method == "emboss":
+                start_time = datetime.now()
                 tiff_image = tiff_image_original.sharpening_emboss()
+                # Get the runtime by subtracting the start time from the end time
+                runtime = datetime.now() - start_time
+                # Format the runtime 
+                runtime_preprocessing = "{:.2f}".format(runtime.total_seconds())
             elif method == "kuwahara":
+                start_time = datetime.now()
                 tiff_image = tiff_image_original.sharpening_kuwahara()
+                # Get the runtime by subtracting the start time from the end time
+                runtime = datetime.now() - start_time
+                # Format the runtime 
+                runtime_preprocessing = "{:.2f}".format(runtime.total_seconds())
             elif method == "shade":
+                start_time = datetime.now()
                 tiff_image = tiff_image_original.sharpening_shade()
+                # Get the runtime by subtracting the start time from the end time
+                runtime = datetime.now() - start_time
+                # Format the runtime 
+                runtime_preprocessing = "{:.2f}".format(runtime.total_seconds())
             elif method == "sharpen":
+                start_time = datetime.now()
                 tiff_image = tiff_image_original.sharpening_sharpen()
+                # Get the runtime by subtracting the start time from the end time
+                runtime = datetime.now() - start_time
+                # Format the runtime 
+                runtime_preprocessing = "{:.2f}".format(runtime.total_seconds())
             elif method == "adaptive_sharpen":
+                start_time = datetime.now()
                 tiff_image = tiff_image_original.sharpening_adaptive_sharpen()
+                # Get the runtime by subtracting the start time from the end time
+                runtime = datetime.now() - start_time
+                # Format the runtime 
+                runtime_preprocessing = "{:.2f}".format(runtime.total_seconds())
             tiff_image.save_image(
                 os.path.join(file_output_folder, f"tiff_image_{method}.tiff")
             )
@@ -110,16 +141,19 @@ for filename in os.listdir(input_folder):
 
             # Get Evaluation Data
             evaluation_ocrdata = utils.evaluate_ocrdata(ocrdata)
+            # Add the preprocessing runtimes to the DataFrame
+            series_runtime = pd.Series(runtime_preprocessing, name='runtime_preprocessing')
+            evaluation_ocrdata = pd.concat([evaluation_ocrdata, series_runtime], axis=1)
 
             # Get Wortvergleich
-#            comparison = get_ocrdata_of_comparison_before_after_preprocessing(
-#                ocrdata_without_preprocessing=ocrdata_original,
-#                ocrdata_with_preprocessing=ocrdata,
-#            )
-#            evaluation_comparison = evaluation_of_comparison(comparison)
-#            evaluation_comparison.to_excel(
-#                os.path.join(file_output_folder, f"evaluation_comparison_{method}.xlsx"),
-#            )
+            comparison = get_ocrdata_of_comparison_before_after_preprocessing(
+                ocrdata_without_preprocessing=ocrdata_original,
+                ocrdata_with_preprocessing=ocrdata,
+            )
+            evaluation_comparison = evaluation_of_comparison(comparison)
+            evaluation_comparison.to_excel(
+                os.path.join(file_output_folder, f"evaluation_comparison_{method}.xlsx"),
+            )
 
             # Save to Excel
             evaluation_ocrdata.to_excel(
@@ -127,10 +161,10 @@ for filename in os.listdir(input_folder):
             )
 
             # Create Searchable PDF
-#            ocrkit.create_searchable_pdf(
-#                tiff_image=tiff_image,
-#                out_filename=os.path.join(
-#                    file_output_folder, f"tiff_image_{method}.pdf"
-#                ),
-#                language="deu+eng+chi_sim",
-#            )
+            ocrkit.create_searchable_pdf(
+                tiff_image=tiff_image,
+                out_filename=os.path.join(
+                    file_output_folder, f"tiff_image_{method}.pdf"
+                ),
+                language="deu+eng+chi_sim",
+            )

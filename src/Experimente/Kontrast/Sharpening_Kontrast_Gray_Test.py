@@ -58,8 +58,6 @@ for filename in os.listdir(input_folder):
         os.makedirs(file_output_folder)
         tiff_image_original = inputpdf.convert_to_tiff_with_ghostscript(dpi=300)
 
-        # Erstelle eine Liste für die Laufzeiten des Preprocessing
-        runtime_preprocessing = []
 
         # Get ocrdata from Tiff Image
         ocrdata_original = ocrkit.get_ocr_data(
@@ -86,7 +84,8 @@ for filename in os.listdir(input_folder):
             "contrast_sigmoidal_contrast",
         ]
         for method in methods:
-            # Apply Binarization
+            runtime_preprocessing = 0
+            # Apply Turn Gray + Contrast Improvement + Sharpening
             if method == "contrast_simple_contrast":
                 # Get the start of runtime
                 start_time = datetime.now()
@@ -96,8 +95,7 @@ for filename in os.listdir(input_folder):
                 # Get the runtime by subtracting the start time from the end time
                 runtime = datetime.now() - start_time
                 # Format the runtime 
-                runtime = "{:.2f}".format(runtime.total_seconds())
-                runtime_preprocessing.append(runtime)
+                runtime_preprocessing = "{:.2f}".format(runtime.total_seconds())
             elif method == "contrast_local_contrast":
                 # Get the start of runtime
                 start_time = datetime.now()
@@ -107,8 +105,7 @@ for filename in os.listdir(input_folder):
                 # Get the runtime by subtracting the start time from the end time
                 runtime = datetime.now() - start_time
                 # Format the runtime 
-                runtime = "{:.2f}".format(runtime.total_seconds())
-                runtime_preprocessing.append(runtime)
+                runtime_preprocessing = "{:.2f}".format(runtime.total_seconds())
             elif method == "contrast_sigmoidal_contrast":
                 # Get the start of runtime
                 start_time = datetime.now()
@@ -118,8 +115,7 @@ for filename in os.listdir(input_folder):
                 # Get the runtime by subtracting the start time from the end time
                 runtime = datetime.now() - start_time
                 # Format the runtime 
-                runtime = "{:.2f}".format(runtime.total_seconds())
-                runtime_preprocessing.append(runtime)
+                runtime_preprocessing = "{:.2f}".format(runtime.total_seconds())
             tiff_image.save_image(
                 os.path.join(file_output_folder, f"tiff_image_{method}.tiff")
             )
