@@ -1,0 +1,16 @@
+{
+	"dockerComposeFile": ".docker/docker-compose.yml",
+	"service": "ocrmypdf_kit",
+	"workspaceFolder": "/RIDSS2023",
+	"customizations": {
+		"vscode": {
+			"extensions": [
+				"ms-python.black-formatter",
+				"ms-python.vscode-pylance",
+				"ms-python.python",
+				"Gruntfuggly.todo-tree"
+			]
+		}
+	}
+   //"overrideCommand": false damit service automatisch aufgerufe wird
+  }

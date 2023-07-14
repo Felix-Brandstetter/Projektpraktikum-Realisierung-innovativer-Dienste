@@ -1,0 +1,14 @@
+version: '3.4'
+
+services:
+  ocrmypdf_kit:
+    image: ocrmypdf_kit
+    build:
+      context: ../
+      dockerfile: ./.docker/Dockerfile
+    container_name: ocrmypdf_kit_Container
+    stdin_open: true
+
+              
+    volumes:
+      - ../:/RIDSS2023
