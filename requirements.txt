@@ -17,3 +17,9 @@ typing_extensions==4.6.3
 watchdog==3.0.0
 Werkzeug==2.3.6
 pipreqs
+
+#RIDSS2023
+langdetect==1.0.9
+Wand==0.6.11
+
+

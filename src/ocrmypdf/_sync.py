@@ -66,6 +66,7 @@ from ocrmypdf.helpers import (
     samefile,
 )
 from ocrmypdf.pdfa import file_claims_pdfa
+from ocrmypdf.ridss2023_preprocessing import *
 
 log = logging.getLogger(__name__)
 
@@ -89,7 +90,7 @@ old_factory = logging.getLogRecordFactory()
 
 def record_factory(*args, **kwargs):
     record = old_factory(*args, **kwargs)
-    if hasattr(tls, 'pageno'):
+    if hasattr(tls, "pageno"):
         record.pageno = tls.pageno
     return record
 
@@ -97,12 +98,17 @@ def record_factory(*args, **kwargs):
 logging.setLogRecordFactory(record_factory)
 
 
+# TODO Insert Preprocessing Ridss2023
 def preprocess(
     page_context: PageContext,
     image: Path,
     remove_background: bool,
     deskew: bool,
     clean: bool,
+    normalize_contrast: bool = False,
+    improve_contrast: bool = False,
+    sharpen_edges: bool = False,
+    deskew_opencv: bool = False,
 ) -> Path:
     if remove_background:
         image = preprocess_remove_background(image, page_context)
@@ -125,6 +131,27 @@ def make_intermediate_images(
         correction=orientation_correction,
         remove_vectors=False,
     )
+
+    # Options Ridss2023
+    if any(
+        [
+            options.normalize_contrast,
+            options.improve_contrast,
+            options.sharpen_edges,
+            options.deskew_opencv,
+        ]
+    ):
+        ocr_image = preprocess_out = preprocess(
+            page_context,
+            rasterize_out,
+            options.remove_background,
+            options.deskew,
+            clean=False,
+            normalize_contrast=options.normalize_contrast,
+            improve_contrast=options.improve_contrast,
+            sharpen_edges=options.sharpen_edges,
+            deskew_opencv=options.deskew_opencv,
+        )
 
     if not any([options.clean, options.clean_final, options.remove_vectors]):
         ocr_image = preprocess_out = preprocess(
@@ -149,7 +176,7 @@ def make_intermediate_images(
                 page_context,
                 correction=orientation_correction,
                 remove_vectors=True,
-                output_tag='_ocr',
+                output_tag="_ocr",
             )
         else:
             rasterize_ocr_out = rasterize_out
@@ -213,10 +240,10 @@ def exec_page_sync(page_context: PageContext) -> PageResult:
             visible_image_out, page_context, orientation_correction
         )
 
-    if options.pdf_renderer.startswith('hocr'):
+    if options.pdf_renderer.startswith("hocr"):
         (hocr_out, text_out) = ocr_engine_hocr(ocr_image_out, page_context)
         ocr_out = render_hocr_page(hocr_out, page_context)
-    elif options.pdf_renderer == 'sandwich':
+    elif options.pdf_renderer == "sandwich":
         (ocr_out, text_out) = ocr_engine_textonly_pdf(ocr_image_out, page_context)
     else:
         raise NotImplementedError(f"pdf_renderer {options.pdf_renderer}")
@@ -234,7 +261,7 @@ def post_process(
     pdf_file: Path, context: PdfContext, executor: Executor
 ) -> tuple[Path, Sequence[str]]:
     pdf_out = pdf_file
-    if context.options.output_type.startswith('pdfa'):
+    if context.options.output_type.startswith("pdfa"):
         ps_stub_out = generate_postscript_stub(context)
         pdf_out = convert_to_pdfa(pdf_out, ps_stub_out, context)
 
@@ -281,8 +308,8 @@ def exec_concurrent(context: PdfContext, executor: Executor) -> Sequence[str]:
         max_workers=max_workers,
         tqdm_kwargs=dict(
             total=(2 * len(context.pdfinfo)),
-            desc='OCR' if options.tesseract_timeout > 0 else 'Image processing',
-            unit='page',
+            desc="OCR" if options.tesseract_timeout > 0 else "Image processing",
+            unit="page",
             unit_scale=0.5,
             disable=not options.progress_bar,
         ),
@@ -302,7 +329,7 @@ def exec_concurrent(context: PdfContext, executor: Executor) -> Sequence[str]:
     pdf = ocrgraft.finalize()
 
     messages: Sequence[str] = []
-    if options.output_type != 'none':
+    if options.output_type != "none":
         # PDF/A and metadata
         log.info("Postprocessing...")
         pdf, messages = post_process(pdf, context, executor)
@@ -313,7 +340,7 @@ def exec_concurrent(context: PdfContext, executor: Executor) -> Sequence[str]:
 
 
 def configure_debug_logging(
-    log_filename: Path, prefix: str = ''
+    log_filename: Path, prefix: str = ""
 ) -> logging.FileHandler:
     """Create a debug log file at a specified location.
 
@@ -324,7 +351,7 @@ def configure_debug_logging(
     log_file_handler = logging.FileHandler(log_filename, delay=True)
     log_file_handler.setLevel(logging.DEBUG)
     formatter = logging.Formatter(
-        '[%(asctime)s] - %(name)s - %(levelname)7s -%(pageno)s %(message)s'
+        "[%(asctime)s] - %(name)s - %(levelname)7s -%(pageno)s %(message)s"
     )
     log_file_handler.setFormatter(formatter)
     log_file_handler.addFilter(PageNumberFilter())
@@ -350,7 +377,7 @@ def run_pipeline(
     debug_log_handler = None
     if (
         (options.keep_temporary_files or options.verbose >= 1)
-        and not os.environ.get('PYTEST_CURRENT_TEST', '')
+        and not os.environ.get("PYTEST_CURRENT_TEST", "")
         and not api
     ):
         # Debug log for command line interface only with verbose output
@@ -369,7 +396,7 @@ def run_pipeline(
 
         # Triage image or pdf
         origin_pdf = triage(
-            original_filename, start_input_file, work_folder / 'origin.pdf', options
+            original_filename, start_input_file, work_folder / "origin.pdf", options
         )
 
         # Gather pdfinfo and create context
@@ -390,29 +417,29 @@ def run_pipeline(
         # Execute the pipeline
         optimize_messages = exec_concurrent(context, executor)
 
-        if options.output_file == '-':
+        if options.output_file == "-":
             log.info("Output sent to stdout")
         elif (
-            hasattr(options.output_file, 'writable') and options.output_file.writable()
+            hasattr(options.output_file, "writable") and options.output_file.writable()
         ):
             log.info("Output written to stream")
         elif samefile(options.output_file, Path(os.devnull)):
             pass  # Say nothing when sending to dev null
         else:
-            if options.output_type.startswith('pdfa'):
+            if options.output_type.startswith("pdfa"):
                 pdfa_info = file_claims_pdfa(options.output_file)
-                if pdfa_info['pass']:
+                if pdfa_info["pass"]:
                     log.info(
-                        "Output file is a %s (as expected)", pdfa_info['conformance']
+                        "Output file is a %s (as expected)", pdfa_info["conformance"]
                     )
                 else:
                     log.warning(
                         "Output file is okay but is not PDF/A (seems to be %s)",
-                        pdfa_info['conformance'],
+                        pdfa_info["conformance"],
                     )
                     return ExitCode.pdfa_conversion_failed
             if not check_pdf(options.output_file):
-                log.warning('Output file: The generated PDF is INVALID')
+                log.warning("Output file: The generated PDF is INVALID")
                 return ExitCode.invalid_output_pdf
             report_output_file_size(
                 options, start_input_file, options.output_file, optimize_messages

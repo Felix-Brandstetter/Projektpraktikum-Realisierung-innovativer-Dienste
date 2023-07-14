@@ -253,6 +253,14 @@ def ocr(  # noqa: ruff: disable=D417
     plugin_manager=None,
     keep_temporary_files: bool | None = None,
     progress_bar: bool | None = None,
+    
+    #Ridss2023 Options
+    binarization_method: int | None = None,
+    normalize_contrast: bool | None = None,
+    improve_contrast: bool | None = None,
+    sharpen_edges: bool | None = None,
+    deskew_opencv: bool | None = None,
+    rotate_image_to_correct_text_orientation: bool | None = None,
     **kwargs,
 ):
     """Run OCRmyPDF on one PDF or image.
