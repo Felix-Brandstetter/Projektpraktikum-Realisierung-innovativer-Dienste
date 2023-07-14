@@ -132,13 +132,15 @@ def make_intermediate_images(
         remove_vectors=False,
     )
 
-    # Options Ridss2023
-    if any(
+    if not any(
         [
+            options.clean,
+            options.clean_final,
+            options.remove_vectors,
             options.normalize_contrast,
             options.improve_contrast,
             options.sharpen_edges,
-            options.deskew_opencv,
+            options.deskew_opencv
         ]
     ):
         ocr_image = preprocess_out = preprocess(
@@ -152,15 +154,6 @@ def make_intermediate_images(
             sharpen_edges=options.sharpen_edges,
             deskew_opencv=options.deskew_opencv,
         )
-
-    if not any([options.clean, options.clean_final, options.remove_vectors]):
-        ocr_image = preprocess_out = preprocess(
-            page_context,
-            rasterize_out,
-            options.remove_background,
-            options.deskew,
-            clean=False,
-        )
     else:
         if not options.lossless_reconstruction:
             preprocess_out = preprocess(
@@ -169,6 +162,10 @@ def make_intermediate_images(
                 options.remove_background,
                 options.deskew,
                 clean=options.clean_final,
+                normalize_contrast=options.normalize_contrast,
+                improve_contrast=options.improve_contrast,
+                sharpen_edges=options.sharpen_edges,
+                deskew_opencv=options.deskew_opencv,
             )
         if options.remove_vectors:
             rasterize_ocr_out = rasterize(

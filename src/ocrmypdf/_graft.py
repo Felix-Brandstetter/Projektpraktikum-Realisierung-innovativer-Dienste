@@ -299,7 +299,7 @@ class OcrGrafter:
             if strip_old_text:
                 strip_invisible_text(self.pdf_base, base_page)
 
-            base_page.contents_add(new_text_layer, prepend=True)
+            base_page.contents_add(new_text_layer, prepend=False)
 
             _update_resources(
                 obj=base_page, font=font, font_key=font_key, procset=procset

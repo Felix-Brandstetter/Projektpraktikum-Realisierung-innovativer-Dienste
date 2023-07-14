@@ -633,10 +633,11 @@ def render_hocr_page(hocr: Path, page_context: PageContext) -> Path:
 
     hocrtransform = HocrTransform(hocr_filename=hocr, dpi=dpi.x)  # square
     hocrtransform.to_pdf(
+        options,
         out_filename=output_file,
         image_filename=None,
         show_bounding_boxes=False if not debug_mode else True,
-        invisible_text=True if not debug_mode else False,
+        invisible_text= False if options.visible_text else True,
         interword_spaces=True,
     )
     return output_file

@@ -257,7 +257,16 @@ Online documentation is located at:
         help="If True, OCD Method of Tesseract is used, to rotate image to correct text orientation."
     )
     
-    
+    parser.add_argument(
+        '--font-color-pdf',
+        type=str,
+        help="Set to green, red, blue, yellow. Color of font in PDF."
+    )
+    parser.add_argument(
+        '--visible-text',
+        action='store_true',
+        help="If False Text is written in fontcolor to image"
+    )
 
     jobcontrol = parser.add_argument_group("Job control options")
     jobcontrol.add_argument(

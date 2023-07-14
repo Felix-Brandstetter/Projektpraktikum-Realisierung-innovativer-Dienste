@@ -261,6 +261,8 @@ def ocr(  # noqa: ruff: disable=D417
     sharpen_edges: bool | None = None,
     deskew_opencv: bool | None = None,
     rotate_image_to_correct_text_orientation: bool | None = None,
+    font_color_pdf: str |None = None,
+    visible_text: bool |None = None,
     **kwargs,
 ):
     """Run OCRmyPDF on one PDF or image.

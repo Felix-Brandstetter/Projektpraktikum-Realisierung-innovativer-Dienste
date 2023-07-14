@@ -200,6 +200,7 @@ class HocrTransform:
 
     def to_pdf(
         self,
+        options,
         *,
         out_filename: Path,
         image_filename: Path | None = None,
@@ -258,6 +259,12 @@ class HocrTransform:
                     pt.x1, self.height - pt.y2, pt.x2 - pt.x1, pt.y2 - pt.y1, fill=1
                 )
 
+        # put the image on the page, scaled to fill the page #TODO
+        if image_filename is not None:
+            pdf.drawImage(
+                os.fspath(image_filename), 0, 0, width=self.width, height=self.height
+            )
+        
         found_lines = False
         for line in (
             element
@@ -287,11 +294,6 @@ class HocrTransform:
                 invisible_text,
                 interword_spaces,
                 show_bounding_boxes,
-            )
-        # put the image on the page, scaled to fill the page
-        if image_filename is not None:
-            pdf.drawImage(
-                os.fspath(image_filename), 0, 0, width=self.width, height=self.height
             )
 
         # finish up the page and save it
@@ -358,7 +360,7 @@ class HocrTransform:
             pdf.setStrokeColor(red)
 
         text.setTextTransform(cos_a, -sin_a, sin_a, cos_a, line_box.x1, baseline_y2)
-        pdf.setFillColor(black)  # text in black
+        pdf.setFillColor(red)  # text in black #TODO
 
         elements = line.findall(self._child_xpath('span', elemclass))
         for elem in elements:

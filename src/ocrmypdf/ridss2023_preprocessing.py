@@ -3,6 +3,7 @@ import logging
 from pathlib import Path
 from ocrmypdf._jobcontext import PageContext, PdfContext
 from PIL import Image, ImageColor, ImageDraw
+import yaml
 
 
 from ocrmypdf._pipeline import get_page_square_dpi
@@ -14,6 +15,14 @@ except AttributeError:  # pragma: no cover
     BICUBIC = Image.BICUBIC  # type: ignore
 
 log = logging.getLogger(__name__)
+
+def read_config(config_file: Path) -> dict:
+    with open(config_file, 'r') as f:
+        config = yaml.safe_load(f)
+    return config
+
+config_file = Path('Preprocessing_Ridss2023_Config.yaml')
+config = read_config(config_file)
 
 def preprocess_deskew(input_file: Path, page_context: PageContext) -> Path:
     output_file = page_context.get_path('pp_deskew.png')
