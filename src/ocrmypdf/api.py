@@ -255,7 +255,6 @@ def ocr(  # noqa: ruff: disable=D417
     progress_bar: bool | None = None,
     
     #Ridss2023 Options
-    binarization_method: int | None = None,
     normalize_contrast: bool | None = None,
     improve_contrast: bool | None = None,
     sharpen_edges: bool | None = None,

@@ -8,7 +8,8 @@
 				"ms-python.black-formatter",
 				"ms-python.vscode-pylance",
 				"ms-python.python",
-				"Gruntfuggly.todo-tree"
+				"Gruntfuggly.todo-tree",
+				"analytic-signal.preview-tiff"
 			]
 		}
 	}

@@ -218,56 +218,6 @@ Online documentation is located at:
         help="Print program version and exit",
     )
     
-    #Ridss2023 Options
-    parser.add_argument(
-        '--binarization-method',
-        metavar='binarization_method',
-        type=int,
-        help="Specify binarization Method of Tesseract. 0=Otsu, 1=Adaptive Otsu, 2=Sauvola",
-    )
-    
-    parser.add_argument(
-        '--normalize-contrast',
-        action='store_true',
-        help="If True, try to improve contrast with the imagemagick function -normalize. See https://imagemagick.org/script/command-line-options.php#normalize for more information",
-    )
-    
-    parser.add_argument(
-        '--improve-contrast',
-        action='store_true',
-        help="If True, try to improve contrast with the imagemagick function -contrast. See https://imagemagick.org/script/command-line-options.php#contrast for more information",
-    )
-    
-    parser.add_argument(
-        '--sharpen-edges',
-        action='store_true',
-        help="If True, try to shapren edges with the imagemagick function -sharpen."
-        "See https://imagemagick.org/script/command-line-options.php#sharpen for more information",
-    )
-    
-    parser.add_argument(
-        '--deskew-opencv',
-        action='store_true',
-        help="If True, try deskew image with opencv."
-    )
-    
-    parser.add_argument(
-        '--rotate-image-to-correct-text-orientation',
-        action='store_true',
-        help="If True, OCD Method of Tesseract is used, to rotate image to correct text orientation."
-    )
-    
-    parser.add_argument(
-        '--font-color-pdf',
-        type=str,
-        help="Set to green, red, blue, yellow. Color of font in PDF."
-    )
-    parser.add_argument(
-        '--visible-text',
-        action='store_true',
-        help="If False Text is written in fontcolor to image"
-    )
-
     jobcontrol = parser.add_argument_group("Job control options")
     jobcontrol.add_argument(
         '-j',
@@ -377,7 +327,54 @@ Online documentation is located at:
         help="EXPERIMENTAL. Mask out any vector objects in the PDF so that they "
         "will not be included in OCR. This can eliminate false characters.",
     )
-
+    
+     #Ridss2023 Options
+    preprocessing.add_argument(
+        '--normalize-contrast',
+        action='store_true',
+        help="If True, try to improve contrast with the imagemagick function -normalize. See https://imagemagick.org/script/command-line-options.php#normalize for more information",
+    )
+    
+    preprocessing.add_argument(
+        '--improve-contrast',
+        action='store_true',
+        help="If True, try to improve contrast with the imagemagick function -contrast. See https://imagemagick.org/script/command-line-options.php#contrast for more information",
+    )
+    
+    preprocessing.add_argument(
+        '--sharpen-edges',
+        action='store_true',
+        help="If True, try to shapren edges with the imagemagick function -sharpen."
+        "See https://imagemagick.org/script/command-line-options.php#sharpen for more information",
+    )
+    
+    preprocessing.add_argument(
+        '--deskew-opencv',
+        action='store_true',
+        help="If True, try deskew image with opencv."
+    )
+    
+    preprocessing.add_argument(
+        '--rotate-image-to-correct-text-orientation',
+        action='store_true',
+        help="If True, OCD Method of Tesseract is used, to rotate image to correct text orientation."
+    )
+    
+    parser.add_argument(
+        '--font-color-pdf',
+        type=str,
+        help="Set to green, red, blue, yellow. Color of font in PDF."
+    )
+    parser.add_argument(
+        '--visible-text',
+        action='store_true',
+        help="If False Text is written in fontcolor to image"
+    )
+    
+    
+    
+    
+    
     ocrsettings = parser.add_argument_group("OCR options", "Control how OCR is applied")
     ocrsettings.add_argument(
         '-f',

@@ -265,6 +265,11 @@ class HocrTransform:
                 os.fspath(image_filename), 0, 0, width=self.width, height=self.height
             )
         
+        fontcolor = "red"
+        if options.font_color_pdf is not None:
+            if options.font_color_pdf in ["red","blue","yellow","green","black"]:
+                fontcolor = options.font_color_pdf
+        
         found_lines = False
         for line in (
             element
@@ -278,6 +283,7 @@ class HocrTransform:
                 line,
                 "ocrx_word",
                 fontname,
+                fontcolor,
                 invisible_text,
                 interword_spaces,
                 show_bounding_boxes,
@@ -311,6 +317,7 @@ class HocrTransform:
         line: Element | None,
         elemclass: str,
         fontname: str,
+        fontcolor:str,
         invisible_text: bool,
         interword_spaces: bool,
         show_bounding_boxes: bool,
@@ -360,7 +367,7 @@ class HocrTransform:
             pdf.setStrokeColor(red)
 
         text.setTextTransform(cos_a, -sin_a, sin_a, cos_a, line_box.x1, baseline_y2)
-        pdf.setFillColor(red)  # text in black #TODO
+        pdf.setFillColor(fontcolor)  # text in black #TODO
 
         elements = line.findall(self._child_xpath('span', elemclass))
         for elem in elements:
