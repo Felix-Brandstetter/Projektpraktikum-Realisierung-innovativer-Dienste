@@ -387,7 +387,18 @@ Online documentation is located at:
     preprocessing.add_argument(
         "--auto-language-detection",
         action="store_true",
-        help="If enabled, the document is scanned with OCR and the languages are determind by fasttext",
+        help="If enabled, the document is scanned with OCR and the languages are determind by fasttext. Detected languages are added to language option",
+    )
+    preprocessing.add_argument(
+        "--despeckle",
+        action="store_true",
+        help="If enabled, the document is despeckled before OCR",
+    )
+
+    preprocessing.add_argument(
+        "--adaptive-sharpen-edges",
+        action="store_true",
+        help="If enabled, adaptive sharpen is used before OCR",
     )
 
     parser.add_argument(
@@ -395,11 +406,13 @@ Online documentation is located at:
         type=str,
         help="Set to green, red, blue, yellow. Color of font in PDF.",
     )
+
     parser.add_argument(
         "--visible-text",
         action="store_true",
         help="If True Text is written in fontcolor to image",
     )
+
     parser.add_argument(
         "--strip-existing-text",
         action="store_true",

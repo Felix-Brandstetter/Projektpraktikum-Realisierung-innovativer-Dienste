@@ -114,6 +114,8 @@ def preprocess(
     dewarp: bool = False,
     auto_language_detection: bool = False,
     rotate_image_to_correct_text_orientation: bool = False,
+    despeckle: bool = False,
+    adaptive_sharpen: bool = False
 ) -> Path:
     if remove_background:
         image = preprocess_remove_background(image, page_context)
@@ -137,12 +139,18 @@ def preprocess(
         image = preprocess_multi_angle_deskew_ridss2023(image, page_context)
     if dewarp:
         image = preprocess_dewarp_ridss2023(image, page_context)
-    if auto_language_detection:
-        preprocess_auto_language_detection(image, page_context)
+    if despeckle:
+        image = preprocess_despeckle_ridss(image, page_context)
+    if adaptive_sharpen:
+        image = preprocess_adaptive_sharpen_edges_ridss2023(image, page_context)
     if rotate_image_to_correct_text_orientation:
+        #OSD orientation (after deskew better results)
         image = preprocess_rotate_image_to_corrected_text_orientation_ridss2023(
             image, page_context
         )
+    if auto_language_detection:
+        #Language detection on fully preprocessed image
+        image = preprocess_auto_language_detection(image, page_context)
 
     return image
 
@@ -182,7 +190,9 @@ def make_intermediate_images(
             remove_borders=options.remove_borders,
             multi_angle_deskew=options.multi_angle_deskew,
             dewarp=options.dewarp,
-            auto_language_detection=options.auto_language_detection
+            auto_language_detection=options.auto_language_detection,
+            despeckle=options.despeckle,
+            adaptive_sharpen=options.adaptive_sharpen_edges
         )
     else:
         if not options.lossless_reconstruction:
@@ -201,7 +211,9 @@ def make_intermediate_images(
                 remove_borders=options.remove_borders,
                 multi_angle_deskew=options.multi_angle_deskew,
                 dewarp=options.dewarp,
-                auto_language_detection=options.auto_language_detection
+                auto_language_detection=options.auto_language_detection,
+                despeckle=options.despeckle,
+                adaptive_sharpen=options.adaptive_sharpen_edges
             )
         if options.remove_vectors:
             rasterize_ocr_out = rasterize(
@@ -237,7 +249,9 @@ def make_intermediate_images(
                 remove_borders=options.remove_borders,
                 multi_angle_deskew=options.multi_angle_deskew,
                 dewarp=options.dewarp,
-                auto_language_detection=options.auto_language_detection
+                auto_language_detection=options.auto_language_detection,
+                despeckle=options.despeckle,
+                adaptive_sharpen=options.adaptive_sharpen_edges
             )
     return ocr_image, preprocess_out
 
