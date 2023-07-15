@@ -349,7 +349,7 @@ Online documentation is located at:
     )
     
     preprocessing.add_argument(
-        '--deskew-opencv',
+        '--deskew-ridss2023',
         action='store_true',
         help="If True, try deskew image with opencv."
     )

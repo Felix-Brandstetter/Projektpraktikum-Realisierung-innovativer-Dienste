@@ -108,7 +108,7 @@ def preprocess(
     normalize_contrast: bool = False,
     improve_contrast: bool = False,
     sharpen_edges: bool = False,
-    deskew_opencv: bool = False,
+    deskew_ridss2023: bool = False,
 ) -> Path:
     if remove_background:
         image = preprocess_remove_background(image, page_context)
@@ -116,6 +116,8 @@ def preprocess(
         image = preprocess_deskew(image, page_context)
     if clean:
         image = preprocess_clean(image, page_context)
+    if deskew_ridss2023:
+        image = preprocess_deskew_ridss2023(image, page_context)
     return image
 
 
@@ -140,7 +142,7 @@ def make_intermediate_images(
             options.normalize_contrast,
             options.improve_contrast,
             options.sharpen_edges,
-            options.deskew_opencv
+            options.deskew_ridss2023
         ]
     ):
         ocr_image = preprocess_out = preprocess(
@@ -152,7 +154,7 @@ def make_intermediate_images(
             normalize_contrast=options.normalize_contrast,
             improve_contrast=options.improve_contrast,
             sharpen_edges=options.sharpen_edges,
-            deskew_opencv=options.deskew_opencv,
+            deskew_ridss2023=options.deskew_ridss2023,
         )
     else:
         if not options.lossless_reconstruction:
@@ -165,7 +167,7 @@ def make_intermediate_images(
                 normalize_contrast=options.normalize_contrast,
                 improve_contrast=options.improve_contrast,
                 sharpen_edges=options.sharpen_edges,
-                deskew_opencv=options.deskew_opencv,
+                deskew_ridss2023=options.deskew_ridss2023,
             )
         if options.remove_vectors:
             rasterize_ocr_out = rasterize(

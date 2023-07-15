@@ -4,6 +4,11 @@ from pathlib import Path
 from ocrmypdf._jobcontext import PageContext, PdfContext
 from PIL import Image, ImageColor, ImageDraw
 import yaml
+import cv2
+import numpy as np
+from typing import Tuple, Union
+import math
+from deskew import determine_skew
 
 
 from ocrmypdf._pipeline import get_page_square_dpi
@@ -21,24 +26,25 @@ def read_config(config_file: Path) -> dict:
         config = yaml.safe_load(f)
     return config
 
-config_file = Path('Preprocessing_Ridss2023_Config.yaml')
+config_file = Path('config/Preprocessing_Ridss2023_Config.yaml')
 config = read_config(config_file)
 
-def preprocess_deskew(input_file: Path, page_context: PageContext) -> Path:
+def preprocess_deskew_ridss2023(input_file: Path, page_context: PageContext) -> Path:
     output_file = page_context.get_path('pp_deskew.png')
     dpi = get_page_square_dpi(page_context.pageinfo, page_context.options)
 
-    ocr_engine = page_context.plugin_manager.hook.get_ocr_engine()
-    deskew_angle_degrees = ocr_engine.get_deskew(input_file, page_context.options)
-
+    # Graustufenbild erzeugen
     with Image.open(input_file) as im:
-        # According to Pillow docs, .rotate() will automatically use Image.NEAREST
-        # resampling if image is mode '1' or 'P'
-        deskewed = im.rotate(
-            deskew_angle_degrees,
-            resample=BICUBIC,
-            fillcolor=ImageColor.getcolor('white', mode=im.mode),  # type: ignore
-        )
-        deskewed.save(output_file, dpi=dpi)
+        grayscale = im.convert('L')
+
+        deskew_angle_degrees = determine_skew(np.array(grayscale))
+
+        # Restlicher Code ...
+        with im.rotate(
+                deskew_angle_degrees,
+                resample=BICUBIC,
+                fillcolor=ImageColor.getcolor('white', mode=im.mode),
+        ) as deskewed:
+            deskewed.save(output_file, dpi=dpi)
 
     return output_file

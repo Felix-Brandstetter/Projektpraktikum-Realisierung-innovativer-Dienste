@@ -102,6 +102,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
   tesseract-ocr-ara \
   unpaper \
   git \
+  libsm6 \
+  libxext6 \
+  ffmpeg \
   && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /RIDSS2023

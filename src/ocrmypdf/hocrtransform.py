@@ -297,6 +297,7 @@ class HocrTransform:
                 root,
                 "ocrx_word",
                 fontname,
+                fontcolor,
                 invisible_text,
                 interword_spaces,
                 show_bounding_boxes,
