@@ -263,6 +263,10 @@ def ocr(  # noqa: ruff: disable=D417
     font_color_pdf: str | None = None,
     visible_text: bool | None = None,
     strip_existing_text: bool | None = None,
+    dewarp: bool | None = None,
+    multi_angle_deskew: bool | None = None,
+    remove_borders: bool | None = None,
+    auto_language_detection: bool | None = None,
     **kwargs,
 ):
     """Run OCRmyPDF on one PDF or image.

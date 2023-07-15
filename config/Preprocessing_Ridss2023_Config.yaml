@@ -1,3 +1,9 @@
 preprocess_sharpen_edges_ridss2023:
   radius: 1.5
   sigma: 1.0
+
+preprocess_detect_languages:
+  path_to_weights: "/RIDSS2023/config/Language_Model_Weights.bin"
+  number_of_languages_to_detect: 2
+  confidence_threshold: 0.4
+  default_languages: "deu+eng+chi_sim"

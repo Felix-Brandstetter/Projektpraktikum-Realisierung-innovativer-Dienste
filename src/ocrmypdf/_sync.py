@@ -109,6 +109,10 @@ def preprocess(
     autolevel_contrast: bool = False,
     sharpen_edges: bool = False,
     deskew_ridss2023: bool = False,
+    remove_borders: bool = False,
+    multi_angle_deskew: bool = False,
+    dewarp: bool = False,
+    auto_language_detection: bool = False,
     rotate_image_to_correct_text_orientation: bool = False,
 ) -> Path:
     if remove_background:
@@ -127,6 +131,14 @@ def preprocess(
         image = preprocess_improve_contrast_ridss2023(image, page_context)
     if sharpen_edges:
         image = preprocess_sharpen_edges_ridss2023(image, page_context)
+    if remove_borders:
+        image = preprocess_remove_borders_ridss2023(image, page_context)
+    if multi_angle_deskew:
+        image = preprocess_multi_angle_deskew_ridss2023(image, page_context)
+    if dewarp:
+        image = preprocess_dewarp_ridss2023(image, page_context)
+    if auto_language_detection:
+        preprocess_auto_language_detection(image, page_context)
     if rotate_image_to_correct_text_orientation:
         image = preprocess_rotate_image_to_corrected_text_orientation_ridss2023(
             image, page_context
@@ -167,6 +179,10 @@ def make_intermediate_images(
             deskew_ridss2023=options.deskew_ridss2023,
             rotate_image_to_correct_text_orientation=options.rotate_image_to_correct_text_orientation,
             autolevel_contrast=options.autolevel_contrast,
+            remove_borders=options.remove_borders,
+            multi_angle_deskew=options.multi_angle_deskew,
+            dewarp=options.dewarp,
+            auto_language_detection=options.auto_language_detection
         )
     else:
         if not options.lossless_reconstruction:
@@ -182,6 +198,10 @@ def make_intermediate_images(
                 deskew_ridss2023=options.deskew_ridss2023,
                 rotate_image_to_correct_text_orientation=options.rotate_image_to_correct_text_orientation,
                 autolevel_contrast=options.autolevel_contrast,
+                remove_borders=options.remove_borders,
+                multi_angle_deskew=options.multi_angle_deskew,
+                dewarp=options.dewarp,
+                auto_language_detection=options.auto_language_detection
             )
         if options.remove_vectors:
             rasterize_ocr_out = rasterize(
@@ -208,6 +228,16 @@ def make_intermediate_images(
                 options.remove_background,
                 options.deskew,
                 clean=options.clean,
+                normalize_contrast=options.normalize_contrast,
+                improve_contrast=options.improve_contrast,
+                sharpen_edges=options.sharpen_edges,
+                deskew_ridss2023=options.deskew_ridss2023,
+                rotate_image_to_correct_text_orientation=options.rotate_image_to_correct_text_orientation,
+                autolevel_contrast=options.autolevel_contrast,
+                remove_borders=options.remove_borders,
+                multi_angle_deskew=options.multi_angle_deskew,
+                dewarp=options.dewarp,
+                auto_language_detection=options.auto_language_detection
             )
     return ocr_image, preprocess_out
 

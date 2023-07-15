@@ -21,7 +21,7 @@ pipreqs
 #RIDSS2023
 langdetect==1.0.9
 Wand==0.6.11
-pyyaml
-opencv-python
-deskew
-
+pyyaml=6.0
+opencv-python==4.8.0.74
+deskew==1.4.3
+fasttext==0.9.2

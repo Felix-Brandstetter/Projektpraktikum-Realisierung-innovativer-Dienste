@@ -259,7 +259,7 @@ class HocrTransform:
                     pt.x1, self.height - pt.y2, pt.x2 - pt.x1, pt.y2 - pt.y1, fill=1
                 )
 
-        # put the image on the page, scaled to fill the page #TODO
+        # put the image on the page, scaled to fill the page
         if image_filename is not None:
             pdf.drawImage(
                 os.fspath(image_filename), 0, 0, width=self.width, height=self.height
@@ -368,7 +368,7 @@ class HocrTransform:
             pdf.setStrokeColor(red)
 
         text.setTextTransform(cos_a, -sin_a, sin_a, cos_a, line_box.x1, baseline_y2)
-        pdf.setFillColor(fontcolor)  # text in black #TODO
+        pdf.setFillColor(fontcolor)  # text in fontcolor
 
         elements = line.findall(self._child_xpath('span', elemclass))
         for elem in elements:

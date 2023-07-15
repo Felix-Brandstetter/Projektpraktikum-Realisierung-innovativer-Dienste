@@ -16,6 +16,7 @@ ocrmypdf.ocr(
     pdf_renderer="hocr", # pdf renderer. Must be "hocr" if font should be visible
     keep_temporary_files=True, 
     deskew=False,
+    language="eng",
     
     
     #Ridss2023 Options
@@ -28,6 +29,10 @@ ocrmypdf.ocr(
     font_color_pdf="red", # fontcolor in created pdf (Pay attention to the visible text option)
     visible_text=True, #If True text is visible in created PDF
     tesseract_config= "config/tesseract-config (Sauvola).cfg", # Tesseract config to set threshold method used during binarization
-    strip_existing_text = True
+    strip_existing_text = True,
+    multi_angle_deskew=True,
+    dewarp=True,
+    remove_borders=True,
+    auto_language_detection=True
     
 )

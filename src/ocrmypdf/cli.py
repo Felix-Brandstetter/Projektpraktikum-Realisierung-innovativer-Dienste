@@ -11,7 +11,7 @@ from typing import Any, Callable, Mapping, TypeVar
 from ocrmypdf._version import PROGRAM_NAME as _PROGRAM_NAME
 from ocrmypdf._version import __version__ as _VERSION
 
-T = TypeVar('T', int, float)
+T = TypeVar("T", int, float)
 
 
 def numeric(basetype: Callable[[Any], T], min_: T | None = None, max_: T | None = None):
@@ -90,8 +90,8 @@ class LanguageSetAction(argparse.Action):
     def __call__(self, parser, namespace, values, option_string=None):
         """Add a language to the set."""
         dest = getattr(namespace, self.dest)
-        if '+' in values:
-            dest.update(lang for lang in values.split('+'))
+        if "+" in values:
+            dest.update(lang for lang in values.split("+"))
         else:
             dest.add(values)
 
@@ -101,7 +101,7 @@ def get_parser():
     parser = ArgumentParser(
         prog=_PROGRAM_NAME,
         allow_abbrev=True,
-        fromfile_prefix_chars='@',
+        fromfile_prefix_chars="@",
         formatter_class=argparse.RawDescriptionHelpFormatter,
         description="""\
 Generates a searchable PDF or PDF/A from a regular PDF.
@@ -152,37 +152,37 @@ Online documentation is located at:
     )
 
     parser.add_argument(
-        'input_file',
+        "input_file",
         metavar="input_pdf_or_image",
         help="PDF file containing the images to be OCRed (or '-' to read from "
         "standard input)",
     )
     parser.add_argument(
-        'output_file',
+        "output_file",
         metavar="output_pdf",
         help="Output searchable PDF file (or '-' to write to standard output). "
         "Existing files will be overwritten. If same as input file, the "
         "input file will be updated only if processing is successful.",
     )
     parser.add_argument(
-        '-l',
-        '--language',
-        dest='languages',
+        "-l",
+        "--language",
+        dest="languages",
         action=LanguageSetAction,
         help="Language(s) of the file to be OCRed (see tesseract --list-langs for "
         "all language packs installed in your system). Use -l eng+deu for "
         "multiple languages.",
     )
     parser.add_argument(
-        '--image-dpi',
-        metavar='DPI',
+        "--image-dpi",
+        metavar="DPI",
         type=int,
         help="For input image instead of PDF, use this DPI instead of file's.",
     )
     parser.add_argument(
-        '--output-type',
-        choices=['pdfa', 'pdf', 'pdfa-1', 'pdfa-2', 'pdfa-3', 'none'],
-        default='pdfa',
+        "--output-type",
+        choices=["pdfa", "pdf", "pdfa-1", "pdfa-2", "pdfa-3", "none"],
+        default="pdfa",
         help="Choose output type. 'pdfa' creates a PDF/A-2b compliant file for "
         "long term archiving (default, recommended) but may not suitable "
         "for users who want their file altered as little as possible. 'pdfa' "
@@ -197,11 +197,11 @@ Online documentation is located at:
     # since that is the only invalid character for filepaths on all platforms
     # bool('\0') is True in Python
     parser.add_argument(
-        '--sidecar',
-        nargs='?',
-        const='\0',
+        "--sidecar",
+        nargs="?",
+        const="\0",
         default=None,
-        metavar='FILE',
+        metavar="FILE",
         help="Generate sidecar text files that contain the same text recognized "
         "by Tesseract. This may be useful for building a OCR text database. "
         "If FILE is omitted, the sidecar file be named {output_file}.txt; the next "
@@ -212,47 +212,47 @@ Online documentation is located at:
     )
 
     parser.add_argument(
-        '--version',
-        action='version',
+        "--version",
+        action="version",
         version=_VERSION,
         help="Print program version and exit",
     )
-    
+
     jobcontrol = parser.add_argument_group("Job control options")
     jobcontrol.add_argument(
-        '-j',
-        '--jobs',
-        metavar='N',
+        "-j",
+        "--jobs",
+        metavar="N",
         type=numeric(int, 0, 256),
         help="Use up to N CPU cores simultaneously (default: use all).",
     )
     jobcontrol.add_argument(
-        '-q', '--quiet', action='store_true', help="Suppress INFO messages"
+        "-q", "--quiet", action="store_true", help="Suppress INFO messages"
     )
     jobcontrol.add_argument(
-        '-v',
-        '--verbose',
+        "-v",
+        "--verbose",
         type=numeric(int, 0, 2),
         default=0,
         const=1,
-        nargs='?',
+        nargs="?",
         help="Print more verbose messages for each additional verbose level. Use "
         "`-v 1` typically for much more detailed logging. Higher numbers "
         "are probably only useful in debugging.",
     )
     jobcontrol.add_argument(
-        '--no-progress-bar',
-        action='store_false',
-        dest='progress_bar',
+        "--no-progress-bar",
+        action="store_false",
+        dest="progress_bar",
         help=argparse.SUPPRESS,
     )
     jobcontrol.add_argument(
-        '--use-threads', action='store_true', default=True, help=argparse.SUPPRESS
+        "--use-threads", action="store_true", default=True, help=argparse.SUPPRESS
     )
     jobcontrol.add_argument(
-        '--no-use-threads',
-        action='store_false',
-        dest='use_threads',
+        "--no-use-threads",
+        action="store_false",
+        dest="use_threads",
         help=argparse.SUPPRESS,
     )
 
@@ -261,159 +261,179 @@ Online documentation is located at:
         "Set output PDF/A metadata (default: copy input document's metadata)",
     )
     metadata.add_argument(
-        '--title', type=str, help="Set document title (place multiple words in quotes)"
+        "--title", type=str, help="Set document title (place multiple words in quotes)"
     )
-    metadata.add_argument('--author', type=str, help="Set document author")
+    metadata.add_argument("--author", type=str, help="Set document author")
     metadata.add_argument(
-        '--subject', type=str, help="Set document subject description"
+        "--subject", type=str, help="Set document subject description"
     )
-    metadata.add_argument('--keywords', type=str, help="Set document keywords")
+    metadata.add_argument("--keywords", type=str, help="Set document keywords")
 
     preprocessing = parser.add_argument_group(
         "Image preprocessing options",
         "Options to improve the quality of the final PDF and OCR",
     )
     preprocessing.add_argument(
-        '-r',
-        '--rotate-pages',
-        action='store_true',
+        "-r",
+        "--rotate-pages",
+        action="store_true",
         help="Automatically rotate pages based on detected text orientation",
     )
     preprocessing.add_argument(
-        '--remove-background',
-        action='store_true',
+        "--remove-background",
+        action="store_true",
         help="Attempt to remove background from gray or color pages, setting it "
         "to white ",
     )
     preprocessing.add_argument(
-        '-d',
-        '--deskew',
-        action='store_true',
+        "-d",
+        "--deskew",
+        action="store_true",
         help="Deskew each page before performing OCR",
     )
     preprocessing.add_argument(
-        '-c',
-        '--clean',
-        action='store_true',
+        "-c",
+        "--clean",
+        action="store_true",
         help="Clean pages from scanning artifacts before performing OCR, and send "
         "the cleaned page to OCR, but do not include the cleaned page in "
         "the output",
     )
     preprocessing.add_argument(
-        '-i',
-        '--clean-final',
-        action='store_true',
+        "-i",
+        "--clean-final",
+        action="store_true",
         help="Clean page as above, and incorporate the cleaned image in the final "
         "PDF.  Might remove desired content.",
     )
     preprocessing.add_argument(
-        '--unpaper-args',
+        "--unpaper-args",
         type=str,
         default=None,
         help="A quoted string of arguments to pass to unpaper. Requires --clean. "
         "Example: --unpaper-args '--layout double'.",
     )
     preprocessing.add_argument(
-        '--oversample',
-        metavar='DPI',
+        "--oversample",
+        metavar="DPI",
         type=numeric(int, 0, 5000),
         default=0,
         help="Oversample images to at least the specified DPI, to improve OCR "
         "results slightly",
     )
     preprocessing.add_argument(
-        '--remove-vectors',
-        action='store_true',
+        "--remove-vectors",
+        action="store_true",
         help="EXPERIMENTAL. Mask out any vector objects in the PDF so that they "
         "will not be included in OCR. This can eliminate false characters.",
     )
-    
-     #Ridss2023 Options
+
+    # Ridss2023 Options
     preprocessing.add_argument(
-        '--normalize-contrast',
-        action='store_true',
+        "--normalize-contrast",
+        action="store_true",
         help="If True, try to improve contrast with the imagemagick function -normalize. See https://imagemagick.org/script/command-line-options.php#normalize for more information",
     )
-    
+
     preprocessing.add_argument(
-        '--improve-contrast',
-        action='store_true',
+        "--improve-contrast",
+        action="store_true",
         help="If True, try to improve contrast with the imagemagick function -contrast. See https://imagemagick.org/script/command-line-options.php#contrast for more information",
     )
-    
+
     preprocessing.add_argument(
-        '--autolevel-contrast',
-        action='store_true',
+        "--autolevel-contrast",
+        action="store_true",
         help="If True, try to improve contrast with the imagemagick function -auto-level. See https://imagemagick.org/script/command-line-options.php#auto-level for more information",
     )
-    
+
     preprocessing.add_argument(
-        '--sharpen-edges',
-        action='store_true',
+        "--sharpen-edges",
+        action="store_true",
         help="If True, try to shapren edges with the imagemagick function -sharpen."
         "See https://imagemagick.org/script/command-line-options.php#sharpen for more information",
     )
-    
+
     preprocessing.add_argument(
-        '--deskew-ridss2023',
-        action='store_true',
-        help="If True, try deskew image with opencv."
+        "--deskew-ridss2023",
+        action="store_true",
+        help="If True, try deskew image with opencv.",
     )
-    
+
     preprocessing.add_argument(
-        '--rotate-image-to-correct-text-orientation',
-        action='store_true',
-        help="If True, OCD Method of Tesseract is used, to rotate image to correct text orientation."
+        "--rotate-image-to-correct-text-orientation",
+        action="store_true",
+        help="If True, OCD Method of Tesseract is used, to rotate image to correct text orientation.",
     )
-    
+
+    preprocessing.add_argument(
+        "--dewarp",
+        action="store_true",
+        help="If True, Images is dewarped before OCR (Currently not implemented)",
+    )
+
+    preprocessing.add_argument(
+        "--multi-angle-deskew",
+        action="store_true",
+        help="If enabled, the multi-angle deskew algorithm will be used. (Currently not implemented)",
+    )
+
+    preprocessing.add_argument(
+        "--remove-borders",
+        action="store_true",
+        help="If enabled, an algorithm will be applied to remove the borders from the image. (Currently not implemented)",
+    )
+
+    preprocessing.add_argument(
+        "--auto-language-detection",
+        action="store_true",
+        help="If enabled, the document is scanned with OCR and the languages are determind by fasttext",
+    )
+
     parser.add_argument(
-        '--font-color-pdf',
+        "--font-color-pdf",
         type=str,
-        help="Set to green, red, blue, yellow. Color of font in PDF."
+        help="Set to green, red, blue, yellow. Color of font in PDF.",
     )
     parser.add_argument(
-        '--visible-text',
-        action='store_true',
-        help="If True Text is written in fontcolor to image"
+        "--visible-text",
+        action="store_true",
+        help="If True Text is written in fontcolor to image",
     )
     parser.add_argument(
-        '--strip-existing-text',
-        action='store_true',
-        help="If True existing text is deleted from pdf"
+        "--strip-existing-text",
+        action="store_true",
+        help="If True existing text is deleted from pdf",
     )
-    
-    
-    
-    
-    
+
     ocrsettings = parser.add_argument_group("OCR options", "Control how OCR is applied")
     ocrsettings.add_argument(
-        '-f',
-        '--force-ocr',
-        action='store_true',
+        "-f",
+        "--force-ocr",
+        action="store_true",
         help="Rasterize any text or vector objects on each page, apply OCR, and "
         "save the rastered output (this rewrites the PDF)",
     )
     ocrsettings.add_argument(
-        '-s',
-        '--skip-text',
-        action='store_true',
+        "-s",
+        "--skip-text",
+        action="store_true",
         help="Skip OCR on any pages that already contain text, but include the "
         "page in final output; useful for PDFs that contain a mix of "
         "images, text pages, and/or previously OCRed pages",
     )
     ocrsettings.add_argument(
-        '--redo-ocr',
-        action='store_true',
+        "--redo-ocr",
+        action="store_true",
         help="Attempt to detect and remove the hidden OCR layer from files that "
         "were previously OCRed with OCRmyPDF or another program. Apply OCR "
         "to text found in raster images. Existing visible text objects will "
         "not be changed. If there is no existing OCR, OCR will be added.",
     )
     ocrsettings.add_argument(
-        '--skip-big',
+        "--skip-big",
         type=numeric(float, 0, 5000),
-        metavar='MPixels',
+        metavar="MPixels",
         help="Skip OCR on pages larger than the specified amount of megapixels, "
         "but include skipped pages in final output",
     )
@@ -422,7 +442,7 @@ Online documentation is located at:
         "Advanced", "Advanced options to control OCRmyPDF"
     )
     advanced.add_argument(
-        '--pages',
+        "--pages",
         type=str,
         help=(
             "Limit OCR to the specified pages (ranges or comma separated), "
@@ -430,33 +450,33 @@ Online documentation is located at:
         ),
     )
     advanced.add_argument(
-        '--max-image-mpixels',
-        action='store',
+        "--max-image-mpixels",
+        action="store",
         type=numeric(float, 0),
-        metavar='MPixels',
+        metavar="MPixels",
         help="Set maximum number of pixels to unpack before treating an image as a "
         "decompression bomb",
         default=250.0,
     )
     advanced.add_argument(
-        '--pdf-renderer',
-        choices=['auto', 'hocr', 'sandwich', 'hocrdebug'],
-        default='auto',
+        "--pdf-renderer",
+        choices=["auto", "hocr", "sandwich", "hocrdebug"],
+        default="auto",
         help="Choose OCR PDF renderer - the default option is to let OCRmyPDF "
         "choose.  See documentation for discussion.",
     )
     advanced.add_argument(
-        '--rotate-pages-threshold',
+        "--rotate-pages-threshold",
         default=14.0,
         type=numeric(float, 0, 1000),
-        metavar='CONFIDENCE',
+        metavar="CONFIDENCE",
         help="Only rotate pages when confidence is above this value (arbitrary "
         "units reported by tesseract)",
     )
     advanced.add_argument(
-        '--pdfa-image-compression',
-        choices=['auto', 'jpeg', 'lossless'],
-        default='auto',
+        "--pdfa-image-compression",
+        choices=["auto", "jpeg", "lossless"],
+        default="auto",
         help="Specify how to compress images in the output PDF/A. 'auto' lets "
         "OCRmyPDF decide.  'jpeg' changes all grayscale and color images to "
         "JPEG compression.  'lossless' uses PNG-style lossless compression "
@@ -467,7 +487,7 @@ Online documentation is located at:
         "preserves the original compression of all images.",
     )
     advanced.add_argument(
-        '--fast-web-view',
+        "--fast-web-view",
         type=numeric(float, 0),
         default=1.0,
         metavar="MEGABYTES",
@@ -479,17 +499,17 @@ Online documentation is located at:
         "Set the threshold very high to disable.",
     )
     advanced.add_argument(
-        '--continue-on-soft-render-error',
-        action='store_true',
+        "--continue-on-soft-render-error",
+        action="store_true",
         help="Continue processing pages after a recoverable PDF rendering error. "
         "A recoverable error is one that does not prevent the page from being "
         "rendered, but may result in visual differences compared to the input "
         "file. Missing fonts are a typical source of these errors.",
     )
     advanced.add_argument(
-        '--plugin',
-        dest='plugins',
-        action='append',
+        "--plugin",
+        dest="plugins",
+        action="append",
         default=[],
         help="Name of plugin to import. Argument may be issued multiple times to "
         "import multiple plugins. Plugins may be specified as module names in "
@@ -503,21 +523,21 @@ Online documentation is located at:
         "Debugging", "Arguments to help with troubleshooting and debugging"
     )
     debugging.add_argument(
-        '-k',
-        '--keep-temporary-files',
-        action='store_true',
+        "-k",
+        "--keep-temporary-files",
+        action="store_true",
         help="Keep temporary files (helpful for debugging)",
     )
     return parser
 
 
 plugins_only_parser = ArgumentParser(
-    prog=_PROGRAM_NAME, fromfile_prefix_chars='@', add_help=False, allow_abbrev=False
+    prog=_PROGRAM_NAME, fromfile_prefix_chars="@", add_help=False, allow_abbrev=False
 )
 plugins_only_parser.add_argument(
-    '--plugin',
-    dest='plugins',
-    action='append',
+    "--plugin",
+    dest="plugins",
+    action="append",
     default=[],
     help="Name of plugin to import.",
 )

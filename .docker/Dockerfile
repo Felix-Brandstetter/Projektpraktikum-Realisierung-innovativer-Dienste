@@ -11,6 +11,8 @@ RUN echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selectio
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
   python3 \
+  python3-dev \
+  python3-distutils \
   libqpdf-dev \
   zlib1g \
   liblept5
@@ -22,8 +24,6 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
   build-essential autoconf automake libtool \
   libleptonica-dev \
   zlib1g-dev \
-  python3-dev \
-  python3-distutils \
   libffi-dev \
   ca-certificates \
   curl \
@@ -105,6 +105,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
   libsm6 \
   libxext6 \
   ffmpeg \
+  build-essential \
   && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /RIDSS2023
