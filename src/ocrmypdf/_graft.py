@@ -99,6 +99,7 @@ class OcrGrafter:
     def graft_page(
         self,
         *,
+        options = None,
         pageno: int,
         image: Path | None,
         textpdf: Path | None,
@@ -137,7 +138,7 @@ class OcrGrafter:
         if textpdf and self.font:
             # Graft the text layer onto this page, whether new or old, possibly
             # rotating the text layer by the amount is misaligned.
-            strip_old = self.context.options.redo_ocr
+            strip_old = self.context.options.redo_ocr or options.strip_existing_text
             self._graft_text_layer(
                 page_num=pageno + 1,
                 textpdf=textpdf,

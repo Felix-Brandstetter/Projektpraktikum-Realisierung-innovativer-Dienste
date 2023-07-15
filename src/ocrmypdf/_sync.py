@@ -98,7 +98,6 @@ def record_factory(*args, **kwargs):
 logging.setLogRecordFactory(record_factory)
 
 
-# TODO Insert Preprocessing Ridss2023
 def preprocess(
     page_context: PageContext,
     image: Path,
@@ -107,9 +106,10 @@ def preprocess(
     clean: bool,
     normalize_contrast: bool = False,
     improve_contrast: bool = False,
+    autolevel_contrast: bool = False,
     sharpen_edges: bool = False,
     deskew_ridss2023: bool = False,
-    rotate_image_to_correct_text_orientation: bool = False
+    rotate_image_to_correct_text_orientation: bool = False,
 ) -> Path:
     if remove_background:
         image = preprocess_remove_background(image, page_context)
@@ -119,8 +119,19 @@ def preprocess(
         image = preprocess_clean(image, page_context)
     if deskew_ridss2023:
         image = preprocess_deskew_ridss2023(image, page_context)
+    if normalize_contrast:
+        image = preprocess_normalize_contrast_ridss2023(image, page_context)
+    if autolevel_contrast:
+        image = preprocess_autolevel_contrast_ridss2023(image, page_context)
+    if improve_contrast:
+        image = preprocess_improve_contrast_ridss2023(image, page_context)
+    if sharpen_edges:
+        image = preprocess_sharpen_edges_ridss2023(image, page_context)
     if rotate_image_to_correct_text_orientation:
-        image = rotate_image_to_corrected_text_orientation_ridss2023(image, page_context)
+        image = preprocess_rotate_image_to_corrected_text_orientation_ridss2023(
+            image, page_context
+        )
+
     return image
 
 
@@ -142,11 +153,6 @@ def make_intermediate_images(
             options.clean,
             options.clean_final,
             options.remove_vectors,
-            options.normalize_contrast,
-            options.improve_contrast,
-            options.sharpen_edges,
-            options.deskew_ridss2023,
-            options.rotate_image_to_correct_text_orientation
         ]
     ):
         ocr_image = preprocess_out = preprocess(
@@ -155,11 +161,12 @@ def make_intermediate_images(
             options.remove_background,
             options.deskew,
             clean=False,
-            normalize_contrast = options.normalize_contrast,
-            improve_contrast = options.improve_contrast,
-            sharpen_edges = options.sharpen_edges,
-            deskew_ridss2023 = options.deskew_ridss2023,
-            rotate_image_to_correct_text_orientation = options.rotate_image_to_correct_text_orientation
+            normalize_contrast=options.normalize_contrast,
+            improve_contrast=options.improve_contrast,
+            sharpen_edges=options.sharpen_edges,
+            deskew_ridss2023=options.deskew_ridss2023,
+            rotate_image_to_correct_text_orientation=options.rotate_image_to_correct_text_orientation,
+            autolevel_contrast=options.autolevel_contrast,
         )
     else:
         if not options.lossless_reconstruction:
@@ -173,7 +180,8 @@ def make_intermediate_images(
                 improve_contrast=options.improve_contrast,
                 sharpen_edges=options.sharpen_edges,
                 deskew_ridss2023=options.deskew_ridss2023,
-                rotate_image_to_correct_text_orientation = options.rotate_image_to_correct_text_orientation
+                rotate_image_to_correct_text_orientation=options.rotate_image_to_correct_text_orientation,
+                autolevel_contrast=options.autolevel_contrast,
             )
         if options.remove_vectors:
             rasterize_ocr_out = rasterize(
@@ -299,6 +307,7 @@ def exec_concurrent(context: PdfContext, executor: Executor) -> Sequence[str]:
             sidecars[result.pageno] = result.text
             pbar.update()
             ocrgraft.graft_page(
+                options = options,
                 pageno=result.pageno,
                 image=result.pdf_page_from_image,
                 textpdf=result.ocr,

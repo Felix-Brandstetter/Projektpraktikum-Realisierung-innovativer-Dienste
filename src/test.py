@@ -19,13 +19,15 @@ ocrmypdf.ocr(
     
     
     #Ridss2023 Options
-    normalize_contrast=False,
-    improve_contrast=False,
-    sharpen_edges=False,
+    normalize_contrast=True,
+    autolevel_contrast=True,
+    improve_contrast=True,
+    sharpen_edges=True,
     deskew_ridss2023=True,
     rotate_image_to_correct_text_orientation=True,
-    font_color_pdf="green", # fontcolor in created pdf (Pay attention to the visible text option)
+    font_color_pdf="red", # fontcolor in created pdf (Pay attention to the visible text option)
     visible_text=True, #If True text is visible in created PDF
-    tesseract_config= "config/tesseract-config (Sauvola).cfg" # Tesseract config to set threshold method used during binarization
+    tesseract_config= "config/tesseract-config (Sauvola).cfg", # Tesseract config to set threshold method used during binarization
+    strip_existing_text = True
     
 )

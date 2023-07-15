@@ -86,7 +86,7 @@ def configure_logging(
     Returns:
         The toplevel logger for ocrmypdf (or the root logger, if we are managing it).
     """
-    prefix = '' if manage_root_logger else 'ocrmypdf'
+    prefix = "" if manage_root_logger else "ocrmypdf"
 
     log = logging.getLogger(prefix)
     log.setLevel(logging.DEBUG)
@@ -108,9 +108,9 @@ def configure_logging(
     console.addFilter(PageNumberFilter())
 
     if verbosity >= 2:
-        fmt = '%(levelname)7s %(name)s -%(pageno)s %(message)s'
+        fmt = "%(levelname)7s %(name)s -%(pageno)s %(message)s"
     else:
-        fmt = '%(pageno)s%(message)s'
+        fmt = "%(pageno)s%(message)s"
 
     use_colors = progress_bar_friendly
     formatter = None
@@ -128,9 +128,9 @@ def configure_logging(
     log.addHandler(console)
 
     if verbosity <= 1:
-        pdfminer_log = logging.getLogger('pdfminer')
+        pdfminer_log = logging.getLogger("pdfminer")
         pdfminer_log.setLevel(logging.ERROR)
-        pil_log = logging.getLogger('PIL')
+        pil_log = logging.getLogger("PIL")
         pil_log.setLevel(logging.INFO)
 
     if manage_root_logger:
@@ -152,11 +152,11 @@ def create_options(
 
         # These arguments with special handling for which we bypass
         # argparse
-        if arg in {'progress_bar', 'plugins'}:
+        if arg in {"progress_bar", "plugins"}:
             deferred.append((arg, val))
             continue
 
-        cmd_style_arg = arg.replace('_', '-')
+        cmd_style_arg = arg.replace("_", "-")
 
         # Booleans are special: add only if True, omit for False
         if isinstance(val, bool):
@@ -182,11 +182,11 @@ def create_options(
             raise TypeError(f"{arg}: {val} ({type(val)})")
 
     if isinstance(input_file, (BinaryIO, IOBase)):
-        cmdline.append('stream://input_file')
+        cmdline.append("stream://input_file")
     else:
         cmdline.append(os.fspath(input_file))
     if isinstance(output_file, (BinaryIO, IOBase)):
-        cmdline.append('stream://output_file')
+        cmdline.append("stream://output_file")
     else:
         cmdline.append(os.fspath(output_file))
 
@@ -195,9 +195,9 @@ def create_options(
     for keyword, val in deferred:
         setattr(options, keyword, val)
 
-    if options.input_file == 'stream://input_file':
+    if options.input_file == "stream://input_file":
         options.input_file = input_file
-    if options.output_file == 'stream://output_file':
+    if options.output_file == "stream://output_file":
         options.output_file = output_file
 
     return options
@@ -253,15 +253,16 @@ def ocr(  # noqa: ruff: disable=D417
     plugin_manager=None,
     keep_temporary_files: bool | None = None,
     progress_bar: bool | None = None,
-    
-    #Ridss2023 Options
+    # Ridss2023 Options
     normalize_contrast: bool | None = None,
     improve_contrast: bool | None = None,
+    autolevel_contrast: bool | None = None,
     sharpen_edges: bool | None = None,
     deskew_ridss2023: bool | None = None,
     rotate_image_to_correct_text_orientation: bool | None = None,
-    font_color_pdf: str |None = None,
-    visible_text: bool |None = None,
+    font_color_pdf: str | None = None,
+    visible_text: bool | None = None,
+    strip_existing_text: bool | None = None,
     **kwargs,
 ):
     """Run OCRmyPDF on one PDF or image.
@@ -333,11 +334,11 @@ def ocr(  # noqa: ruff: disable=D417
         plugins = list(plugins)
 
     # No new variable names should be assigned until these two steps are run
-    create_options_kwargs = {k: v for k, v in locals().items() if k != 'kwargs'}
+    create_options_kwargs = {k: v for k, v in locals().items() if k != "kwargs"}
     create_options_kwargs.update(kwargs)
 
     parser = get_parser()
-    create_options_kwargs['parser'] = parser
+    create_options_kwargs["parser"] = parser
 
     with _api_lock:
         # We can't allow multiple ocrmypdf.ocr() threads to run in parallel, because
@@ -348,7 +349,7 @@ def ocr(  # noqa: ruff: disable=D417
             plugin_manager = get_plugin_manager(plugins)
         plugin_manager.hook.add_options(parser=parser)  # pylint: disable=no-member
 
-        if 'verbose' in kwargs:
+        if "verbose" in kwargs:
             warn("ocrmypdf.ocr(verbose=) is ignored. Use ocrmypdf.configure_logging().")
 
         options = create_options(**create_options_kwargs)
@@ -357,14 +358,14 @@ def ocr(  # noqa: ruff: disable=D417
 
 
 __all__ = [
-    'PageNumberFilter',
-    'TqdmConsole',
-    'Verbosity',
-    'check_options',
-    'configure_logging',
-    'create_options',
-    'get_parser',
-    'get_plugin_manager',
-    'ocr',
-    'run_pipeline',
+    "PageNumberFilter",
+    "TqdmConsole",
+    "Verbosity",
+    "check_options",
+    "configure_logging",
+    "create_options",
+    "get_parser",
+    "get_plugin_manager",
+    "ocr",
+    "run_pipeline",
 ]

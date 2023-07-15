@@ -342,6 +342,12 @@ Online documentation is located at:
     )
     
     preprocessing.add_argument(
+        '--autolevel-contrast',
+        action='store_true',
+        help="If True, try to improve contrast with the imagemagick function -auto-level. See https://imagemagick.org/script/command-line-options.php#auto-level for more information",
+    )
+    
+    preprocessing.add_argument(
         '--sharpen-edges',
         action='store_true',
         help="If True, try to shapren edges with the imagemagick function -sharpen."
@@ -368,7 +374,12 @@ Online documentation is located at:
     parser.add_argument(
         '--visible-text',
         action='store_true',
-        help="If False Text is written in fontcolor to image"
+        help="If True Text is written in fontcolor to image"
+    )
+    parser.add_argument(
+        '--strip-existing-text',
+        action='store_true',
+        help="If True existing text is deleted from pdf"
     )
     
     

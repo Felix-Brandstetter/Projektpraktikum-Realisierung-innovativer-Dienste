@@ -1,1 +1,3 @@
-default-dpi: 300
+preprocess_sharpen_edges_ridss2023:
+  radius: 1.5
+  sigma: 1.0
