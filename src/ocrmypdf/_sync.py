@@ -109,6 +109,7 @@ def preprocess(
     improve_contrast: bool = False,
     sharpen_edges: bool = False,
     deskew_ridss2023: bool = False,
+    rotate_image_to_correct_text_orientation: bool = False
 ) -> Path:
     if remove_background:
         image = preprocess_remove_background(image, page_context)
@@ -118,6 +119,8 @@ def preprocess(
         image = preprocess_clean(image, page_context)
     if deskew_ridss2023:
         image = preprocess_deskew_ridss2023(image, page_context)
+    if rotate_image_to_correct_text_orientation:
+        image = rotate_image_to_corrected_text_orientation_ridss2023(image, page_context)
     return image
 
 
@@ -142,7 +145,8 @@ def make_intermediate_images(
             options.normalize_contrast,
             options.improve_contrast,
             options.sharpen_edges,
-            options.deskew_ridss2023
+            options.deskew_ridss2023,
+            options.rotate_image_to_correct_text_orientation
         ]
     ):
         ocr_image = preprocess_out = preprocess(
@@ -151,10 +155,11 @@ def make_intermediate_images(
             options.remove_background,
             options.deskew,
             clean=False,
-            normalize_contrast=options.normalize_contrast,
-            improve_contrast=options.improve_contrast,
-            sharpen_edges=options.sharpen_edges,
-            deskew_ridss2023=options.deskew_ridss2023,
+            normalize_contrast = options.normalize_contrast,
+            improve_contrast = options.improve_contrast,
+            sharpen_edges = options.sharpen_edges,
+            deskew_ridss2023 = options.deskew_ridss2023,
+            rotate_image_to_correct_text_orientation = options.rotate_image_to_correct_text_orientation
         )
     else:
         if not options.lossless_reconstruction:
@@ -168,6 +173,7 @@ def make_intermediate_images(
                 improve_contrast=options.improve_contrast,
                 sharpen_edges=options.sharpen_edges,
                 deskew_ridss2023=options.deskew_ridss2023,
+                rotate_image_to_correct_text_orientation = options.rotate_image_to_correct_text_orientation
             )
         if options.remove_vectors:
             rasterize_ocr_out = rasterize(

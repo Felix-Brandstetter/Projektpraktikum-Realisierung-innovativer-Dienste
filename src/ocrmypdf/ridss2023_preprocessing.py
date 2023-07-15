@@ -11,7 +11,7 @@ import math
 from deskew import determine_skew
 
 
-from ocrmypdf._pipeline import get_page_square_dpi
+from ocrmypdf._pipeline import get_page_square_dpi, get_orientation_correction
 # Remove this workaround when we require Pillow >= 10
 try:
     BICUBIC = Image.Resampling.BICUBIC  # type: ignore
@@ -46,5 +46,22 @@ def preprocess_deskew_ridss2023(input_file: Path, page_context: PageContext) -> 
                 fillcolor=ImageColor.getcolor('white', mode=im.mode),
         ) as deskewed:
             deskewed.save(output_file, dpi=dpi)
+
+    return output_file
+
+def rotate_image_to_corrected_text_orientation_ridss2023( input_file: Path, page_context: PageContext) -> Path:
+    # TODO Test if that works with multipage
+    output_file = page_context.get_path('rotate_image_to_correct_text_orientation.png')
+    dpi = get_page_square_dpi(page_context.pageinfo, page_context.options)
+    angle  = get_orientation_correction(input_file, page_context)
+    with Image.open(input_file) as im:
+        # According to Pillow docs, .rotate() will automatically use Image.NEAREST
+        # resampling if image is mode '1' or 'P'
+        deskewed = im.rotate(
+            angle,
+            resample=BICUBIC,
+            fillcolor=ImageColor.getcolor('white', mode=im.mode),  # type: ignore
+    )
+    deskewed.save(output_file, dpi=dpi)
 
     return output_file

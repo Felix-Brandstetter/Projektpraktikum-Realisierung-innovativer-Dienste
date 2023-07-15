@@ -10,7 +10,6 @@ ocrmypdf.ocr(
     input_file=Path(input_file),
     output_file=Path(output_file),
     image_dpi=150,
-    redo_ocr=True, #strips existing text from pdf
     force_ocr=True, # forces ocr if pdf already contains text
     rotate_pages=True, # tries to rotate pages to the correct text orientation (OSD Option of tesseract before preprocessing)
     rotate_pages_threshold = 14.0, #Confidence threshold at which pages are rotated.
@@ -24,7 +23,7 @@ ocrmypdf.ocr(
     improve_contrast=False,
     sharpen_edges=False,
     deskew_ridss2023=True,
-    rotate_image_to_correct_text_orientation=False,
+    rotate_image_to_correct_text_orientation=True,
     font_color_pdf="green", # fontcolor in created pdf (Pay attention to the visible text option)
     visible_text=True, #If True text is visible in created PDF
     tesseract_config= "config/tesseract-config (Sauvola).cfg" # Tesseract config to set threshold method used during binarization
