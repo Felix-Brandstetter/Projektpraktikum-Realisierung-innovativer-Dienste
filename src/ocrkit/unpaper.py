@@ -24,6 +24,9 @@ from ocrmypdf.subprocess import get_version, run
 # https://github.com/Flameeyes/unpaper/blob/master/doc/basic-concepts.md
 
 
+## Initializes and provides an interface to the 'unpaper' executable for image preprocessing 
+
+
 if sys.version_info >= (3, 10):
     from tempfile import TemporaryDirectory
 else:

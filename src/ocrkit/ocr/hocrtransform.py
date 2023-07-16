@@ -4,10 +4,6 @@
 # SPDX-FileCopyrightText: 2022 James R. Barlow
 # SPDX-License-Identifier: MIT
 
-#TODO Write word only if confidence is higher ...
-
-"""Transform .hocr and page image to text PDF."""
-
 from __future__ import annotations
 
 import os
@@ -31,6 +27,10 @@ with warnings.catch_warnings():
     from reportlab.lib.colors import black, cyan, magenta, red
     from reportlab.lib.units import inch
     from reportlab.pdfgen.canvas import Canvas
+
+
+## Transform .hocr and page image to text PDF    
+
 
 # According to Wikipedia these languages are supported in the ISO-8859-1 character
 # set, meaning reportlab can generate them and they are compatible with hocr,

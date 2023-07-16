@@ -13,5 +13,3 @@ services:
               python /tmp/debugpy --wait-for-client --listen 0.0.0.0:5678 src/main/main.py "]
     volumes:
       - ../:/RIDSS2023
-      - ../inputfolder:/RIDSS2023/inputfolder
-      - ../outputfolder:/RIDSS2023/outputfolder
