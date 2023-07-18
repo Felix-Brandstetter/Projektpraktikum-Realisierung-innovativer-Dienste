@@ -1,7 +1,6 @@
 # RIDSS2023
 
-## Prozessablauf
-<img src="./README_Images/Prozessplan.png" width="400">
+# Experiments conducted as part of the project RIDSS2023
 
 ## Quickstart
 1. `git clone https://git.scc.kit.edu/von-bis/praktikum/rid/ridss2023.git`
