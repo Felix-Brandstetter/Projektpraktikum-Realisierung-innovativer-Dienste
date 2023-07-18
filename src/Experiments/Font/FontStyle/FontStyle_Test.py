@@ -29,10 +29,6 @@ os.makedirs(output_folder)
 # List of supported file extensions
 supported_extensions = [".pdf"]
 
-# Set MAX_IMAGE_PIXELS for Experiments
-Image.MAX_IMAGE_PIXELS = 1000000000
-
-
 # Iterate over all files in the input folder
 for filename in os.listdir(input_folder):
     # Check if the file has a supported extension
