@@ -4,7 +4,6 @@
 *.tiff
 *.xlsx
 *.txt
-*.pdf
 tmp/*
 inputfolder/*
 outputfolder/*
