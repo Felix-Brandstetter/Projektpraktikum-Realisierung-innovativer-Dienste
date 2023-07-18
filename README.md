@@ -2,6 +2,10 @@
 <!-- SPDX-FileCopyrightText: 2015 James R. Barlow -->
 <!-- SPDX-License-Identifier: CC-BY-SA-4.0 -->
 
+# Disclaimer
+This is a fok of the OCRmyPDF repository with the PreProcessing measures created within the Project RIDSS2023.
+
+# Original ReadMe
 <img src="docs/images/logo.svg" width="240" alt="OCRmyPDF">
 
 [![Build Status](https://github.com/ocrmypdf/OCRmyPDF/actions/workflows/build.yml/badge.svg)](https://github.com/ocrmypdf/OCRmyPDF/actions/workflows/build.yml) [![PyPI version][pypi]](https://pypi.org/project/ocrmypdf/) ![Homebrew version][homebrew] ![ReadTheDocs][docs] ![Python versions][pyversions]

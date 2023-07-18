@@ -1,7 +1,7 @@
 import ocrmypdf
 from pathlib import Path
 
-input_file = "/RIDSS2023/Testdateien/ToOcr-10.pdf"
+input_file = "/RIDSS2023/Testdateien/ToOcr-24.pdf"
 output_file = "output/WithoutPreProcessing.pdf"
 
 ocrmypdf.configure_logging(2)
@@ -14,7 +14,7 @@ ocrmypdf.ocr(
     image_dpi=150,
     force_ocr=True, # forces ocr if pdf already contains text
     rotate_pages=True, # tries to rotate pages to the correct text orientation (OSD Option of tesseract before preprocessing)
-    rotate_pages_threshold = 4, #Confidence threshold at which pages are rotated.
+    rotate_pages_threshold = 0.1, #Confidence threshold at which pages are rotated.
     pdf_renderer="hocr", # pdf renderer. Must be "hocr" if font should be visible
     keep_temporary_files=True, 
     deskew=True,
@@ -32,7 +32,7 @@ ocrmypdf.ocr(
     image_dpi=150,
     force_ocr=True, # forces ocr if pdf already contains text
     rotate_pages=True, # tries to rotate pages to the correct text orientation (OSD Option of tesseract before preprocessing)
-    rotate_pages_threshold = 4, #Confidence threshold at which pages are rotated.
+    rotate_pages_threshold = 0.1, #Confidence threshold at which pages are rotated.
     pdf_renderer="hocr", # pdf renderer. Must be "hocr" if font should be visible
     keep_temporary_files=True, 
     deskew=False,
@@ -42,8 +42,8 @@ ocrmypdf.ocr(
     #Ridss2023 Options
     #Contrast
     normalize_contrast=False,
-    autolevel_contrast=True,
-    improve_contrast=False,
+    autolevel_contrast=False,
+    improve_contrast=True,
     sharpen_edges=False,
     adaptive_sharpen_edges=True,
     despeckle=False,

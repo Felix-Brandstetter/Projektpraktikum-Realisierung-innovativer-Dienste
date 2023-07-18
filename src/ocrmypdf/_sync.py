@@ -123,8 +123,6 @@ def preprocess(
         image = preprocess_deskew(image, page_context)
     if clean:
         image = preprocess_clean(image, page_context)
-    if deskew_ridss2023:
-        image = preprocess_deskew_ridss2023(image, page_context)
     if normalize_contrast:
         image = preprocess_normalize_contrast_ridss2023(image, page_context)
     if autolevel_contrast:
@@ -133,6 +131,10 @@ def preprocess(
         image = preprocess_improve_contrast_ridss2023(image, page_context)
     if sharpen_edges:
         image = preprocess_sharpen_edges_ridss2023(image, page_context)
+    if adaptive_sharpen:
+        image = preprocess_adaptive_sharpen_edges_ridss2023(image, page_context)
+    if deskew_ridss2023:
+        image = preprocess_deskew_ridss2023(image, page_context)
     if remove_borders:
         image = preprocess_remove_borders_ridss2023(image, page_context)
     if multi_angle_deskew:
@@ -141,8 +143,6 @@ def preprocess(
         image = preprocess_dewarp_ridss2023(image, page_context)
     if despeckle:
         image = preprocess_despeckle_ridss(image, page_context)
-    if adaptive_sharpen:
-        image = preprocess_adaptive_sharpen_edges_ridss2023(image, page_context)
     if rotate_image_to_correct_text_orientation:
         #OSD orientation (after deskew better results)
         image = preprocess_rotate_image_to_corrected_text_orientation_ridss2023(
