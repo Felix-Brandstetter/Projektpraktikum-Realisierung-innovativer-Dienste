@@ -219,7 +219,7 @@ class TiffImage:
         If the current pixel has greater value than the average of the surrounding pixels, then the pixel becomes white, else black.
         """
 
-        workfolder = TemporaryDirectory(dir="/RIDSS2023/tmp")
+        workfolder = TemporaryDirectory()
         path_to_tiff = os.path.join(workfolder.name, self.basename + ".tiff")
         with Image(filename=self.path, resolution=self.dpi) as img:
             for page_number in range(len(img.sequence)):
@@ -241,7 +241,7 @@ class TiffImage:
 
         if method not in ["kapur", "otsu", "triagle"]:
             print("Not a valid Threshold Method")
-        workfolder = TemporaryDirectory(dir="/RIDSS2023/tmp")
+        workfolder = TemporaryDirectory()
         path_to_tiff = os.path.join(workfolder.name, self.basename + ".tiff")
         with Image(filename=self.path, resolution=self.dpi) as img:
             img.transform_colorspace("gray")
@@ -255,7 +255,7 @@ class TiffImage:
         Binarize the image using the black threshold method from Wand
         """
 
-        workfolder = TemporaryDirectory(dir="/RIDSS2023/tmp")
+        workfolder = TemporaryDirectory()
         path_to_tiff = os.path.join(workfolder.name, self.basename + ".tiff")
         with Image(filename=self.path, resolution=self.dpi) as img:
             img.transform_colorspace("gray")
@@ -269,7 +269,7 @@ class TiffImage:
         Binarize the image using the range threshold method from Wand
         """
 
-        workfolder = TemporaryDirectory(dir="/RIDSS2023/tmp")
+        workfolder = TemporaryDirectory()
         path_to_tiff = os.path.join(workfolder.name, self.basename + ".tiff")
         with Image(filename=self.path, resolution=self.dpi) as img:
             img.transform_colorspace("gray")
@@ -291,7 +291,7 @@ class TiffImage:
         Sharpen the image using the edge method from Wand
         """
 
-        workfolder = TemporaryDirectory(dir="/RIDSS2023/tmp")
+        workfolder = TemporaryDirectory()
         path_to_tiff = os.path.join(workfolder.name, self.basename + ".tiff")
         with Image(filename=self.path, resolution=self.dpi) as img:
             img.transform_colorspace("gray")
@@ -305,7 +305,7 @@ class TiffImage:
         Sharpen the image using the emboss method from Wand
         """
 
-        workfolder = TemporaryDirectory(dir="/RIDSS2023/tmp")
+        workfolder = TemporaryDirectory()
         path_to_tiff = os.path.join(workfolder.name, self.basename + ".tiff")
         with Image(filename=self.path, resolution=self.dpi) as img:
             img.transform_colorspace("gray")
@@ -319,7 +319,7 @@ class TiffImage:
         Sharpen the image using the kuwahara method from Wand
         """
 
-        workfolder = TemporaryDirectory(dir="/RIDSS2023/tmp")
+        workfolder = TemporaryDirectory()
         path_to_tiff = os.path.join(workfolder.name, self.basename + ".tiff")
         with Image(filename=self.path, resolution=self.dpi) as img:
             img.kuwahara(radius=radius, sigma=sigma)
@@ -332,7 +332,7 @@ class TiffImage:
         Sharpen the image using the shade method from Wand
         """
 
-        workfolder = TemporaryDirectory(dir="/RIDSS2023/tmp")
+        workfolder = TemporaryDirectory()
         path_to_tiff = os.path.join(workfolder.name, self.basename + ".tiff")
         with Image(filename=self.path, resolution=self.dpi) as img:
             img.shade(gray=gray, azimuth=azimuth, elevation=elevation)
@@ -344,7 +344,7 @@ class TiffImage:
         """
         Sharpen the image using the sharpen method from Wand
         """
-        workfolder = TemporaryDirectory(dir="/RIDSS2023/tmp")
+        workfolder = TemporaryDirectory()
         path_to_tiff = os.path.join(workfolder.name, self.basename + ".tiff")
         with Image(filename=self.path, resolution=self.dpi) as img:
             img.sharpen(radius=radius, sigma=sigma)
@@ -357,7 +357,7 @@ class TiffImage:
         Sharpen the image using the adaptive sharpen method from Wand
         """
 
-        workfolder = TemporaryDirectory(dir="/RIDSS2023/tmp")
+        workfolder = TemporaryDirectory()
         path_to_tiff = os.path.join(workfolder.name, self.basename + ".tiff")
         with Image(filename=self.path, resolution=self.dpi) as img:
             img.adaptive_sharpen(radius=radius, sigma=sigma)
@@ -371,7 +371,7 @@ class TiffImage:
         """
         Sharpen the image using the unsharp mask method from Wand
         """
-        workfolder = TemporaryDirectory(dir="/RIDSS2023/tmp")
+        workfolder = TemporaryDirectory()
         path_to_tiff = os.path.join(workfolder.name, self.basename + ".tiff")
         with Image(filename=self.path, resolution=self.dpi) as img:
             img.unsharp_mask(
@@ -386,7 +386,7 @@ class TiffImage:
         Skeletonize the image using the zhang method from scikit-image
         """
 
-        workfolder = TemporaryDirectory(dir="/RIDSS2023/tmp")
+        workfolder = TemporaryDirectory()
         path_to_tiff = os.path.join(workfolder.name, self.basename + ".tiff")
         # Read the tiff image as a grayscale cv2 image
         img = cv2.imread(self.path, cv2.IMREAD_GRAYSCALE)
@@ -411,7 +411,7 @@ class TiffImage:
         Skeletonize the image using the medial axis method from scikit-image
         """
 
-        workfolder = TemporaryDirectory(dir="/RIDSS2023/tmp")
+        workfolder = TemporaryDirectory()
         path_to_tiff = os.path.join(workfolder.name, self.basename + ".tiff")
         # Read the tiff image as a grayscale cv2 image
         img = cv2.imread(self.path, cv2.IMREAD_GRAYSCALE)
@@ -435,7 +435,7 @@ class TiffImage:
         """
         Skeletonize the image using the thin method from scikit-image
         """
-        workfolder = TemporaryDirectory(dir="/RIDSS2023/tmp")
+        workfolder = TemporaryDirectory()
         path_to_tiff = os.path.join(workfolder.name, self.basename + ".tiff")
         # Read the tiff image as a grayscale cv2 image
         img = cv2.imread(self.path, cv2.IMREAD_GRAYSCALE)
@@ -459,7 +459,7 @@ class TiffImage:
         """
         Skeletonize the image using openCV
         """
-        workfolder = TemporaryDirectory(dir="/RIDSS2023/tmp")
+        workfolder = TemporaryDirectory()
         path_to_tiff = os.path.join(workfolder.name, self.basename + ".tiff")
         # Read the image as a grayscale image
         img = cv2.imread(self.path, cv2.IMREAD_GRAYSCALE)
@@ -490,7 +490,7 @@ class TiffImage:
         """
         Deskew the image using the deskew method from Wand
         """
-        workfolder = TemporaryDirectory(dir="/RIDSS2023/tmp")
+        workfolder = TemporaryDirectory()
         path_to_tiff = os.path.join(workfolder.name, self.basename + ".tiff")
         with Image(filename=self.path, resolution=self.dpi) as img:
             img.deskew(0.4 * img.quantum_range)
@@ -502,7 +502,7 @@ class TiffImage:
         """
         Despeckle the image using the despeckle method from Wand
         """
-        workfolder = TemporaryDirectory(dir="/RIDSS2023/tmp")
+        workfolder = TemporaryDirectory()
         path_to_tiff = os.path.join(workfolder.name, self.basename + ".tiff")
         with Image(filename=self.path, resolution=self.dpi) as img:
             img.despeckle()
@@ -514,7 +514,7 @@ class TiffImage:
         """
         Despeckle the image using the fastNlMeansDenoising method from openCV
         """
-        workfolder = TemporaryDirectory(dir="/RIDSS2023/tmp")
+        workfolder = TemporaryDirectory()
         path_to_tiff = os.path.join(workfolder.name, self.basename + ".tiff")
         # Apply denoising
         im_gray = cv2.imread(self.path, cv2.IMREAD_GRAYSCALE)
@@ -530,7 +530,7 @@ class TiffImage:
         """
         Despeckle the image using the medianBlur method from openCV
         """
-        workfolder = TemporaryDirectory(dir="/RIDSS2023/tmp")
+        workfolder = TemporaryDirectory()
         path_to_tiff = os.path.join(workfolder.name, self.basename + ".tiff")
         # Apply denoising
         im_gray = cv2.imread(self.path, cv2.IMREAD_GRAYSCALE)
@@ -544,7 +544,7 @@ class TiffImage:
         """
         Turn the image gray with the transform colorspace method from Wand
         """
-        workfolder = TemporaryDirectory(dir="/RIDSS2023/tmp")
+        workfolder = TemporaryDirectory()
         path_to_tiff = os.path.join(workfolder.name, self.basename + ".tiff")
         with Image(filename=self.path, resolution=self.dpi) as img:
             img.transform_colorspace("gray")
@@ -556,7 +556,7 @@ class TiffImage:
         """
         Improve the contrast of the image with the contrast method from Wand
         """
-        workfolder = TemporaryDirectory(dir="/RIDSS2023/tmp")
+        workfolder = TemporaryDirectory()
         path_to_tiff = os.path.join(workfolder.name, self.basename + ".tiff")
         with Image(filename=self.path, resolution=self.dpi) as img:
             img.contrast(sharpen=True)
@@ -568,7 +568,7 @@ class TiffImage:
         """
         Improve the contrast of the image with the local_contrast method from Wand
         """
-        workfolder = TemporaryDirectory(dir="/RIDSS2023/tmp")
+        workfolder = TemporaryDirectory()
         path_to_tiff = os.path.join(workfolder.name, self.basename + ".tiff")
         with Image(filename=self.path, resolution=self.dpi) as img:
             img.local_contrast(radius=radius, strength=strength)
@@ -580,7 +580,7 @@ class TiffImage:
         """
         Improve the contrast of the image with the sigmoidal_contrast method from Wand
         """
-        workfolder = TemporaryDirectory(dir="/RIDSS2023/tmp")
+        workfolder = TemporaryDirectory()
         path_to_tiff = os.path.join(workfolder.name, self.basename + ".tiff")
         with Image(filename=self.path, resolution=self.dpi) as img:
             img.sigmoidal_contrast(strength=strength, midpoint=midpoint * img.quantum_range)
@@ -592,7 +592,7 @@ class TiffImage:
         """
         Preprocess the image using the clean method from unpaper
         """
-        workfolder = TemporaryDirectory(dir="/RIDSS2023/tmp")
+        workfolder = TemporaryDirectory()
         path_to_tiff = os.path.join(workfolder.name, self.basename + ".tiff")
 
         clean(input_file=Path(self.path), output_file=Path(path_to_tiff), dpi=self.dpi)
@@ -605,7 +605,7 @@ class TiffImage:
         Rotate the image to correct the text orientation
         """
         # Create a temporary working folder
-        workfolder = TemporaryDirectory(dir="/RIDSS2023/tmp")
+        workfolder = TemporaryDirectory()
         path_to_tiff = os.path.join(workfolder.name, self.basename + ".tiff")
         # Split the TIFF image into separate pages
         pages = self.split_tiff_image()
@@ -629,7 +629,7 @@ class TiffImage:
         """
         Resize the image to fit an A4 page, but only shrink larger images
         """
-        workfolder = TemporaryDirectory(dir="/RIDSS2023/tmp")
+        workfolder = TemporaryDirectory()
         path_to_tiff = os.path.join(workfolder.name, self.basename + ".tiff")
         command = ["magick", self.path, "-resize", f"{width}x{height}>", path_to_tiff]
         subprocess.run(command, check=True)
@@ -640,7 +640,7 @@ class TiffImage:
         """
         Resize the image to fit an A4 page
         """
-        workfolder = TemporaryDirectory(dir="/RIDSS2023/tmp")
+        workfolder = TemporaryDirectory()
         path_to_tiff = os.path.join(workfolder.name, self.basename + ".tiff")
         command = ["magick", self.path, "-resize", f"{width}x{height}", path_to_tiff]
         subprocess.run(command, check=True)

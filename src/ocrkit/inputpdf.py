@@ -19,7 +19,7 @@ class InputPDF:
     def convert_to_tiff(self) -> TiffImage:
         # TODO: Resize to A4
         # Create a temporary working folder
-        workfolder = tempfile.TemporaryDirectory(dir="/RIDSS2023/tmp")
+        workfolder = tempfile.TemporaryDirectory()
         # Define the path to save the TIFF file
         path_to_tiff = os.path.join(workfolder.name, self.basename + ".tiff")
         # Convert PDF to TIFF using the Wand library
@@ -40,7 +40,7 @@ class InputPDF:
         auto_rotate_pages: bool = True,
     ):
         # Create a temporary working folder
-        workfolder = tempfile.TemporaryDirectory(dir="/RIDSS2023/tmp")
+        workfolder = tempfile.TemporaryDirectory()
         # Define the path to save the TIFF file
         path_to_tiff = os.path.join(workfolder.name, self.basename + ".tiff")
         # Build the Ghostscript command
@@ -73,7 +73,7 @@ class InputPDF:
         height: int = 0
     ):
         # Create a temporary working folder
-        workfolder = tempfile.TemporaryDirectory(dir="/RIDSS2023/tmp")
+        workfolder = tempfile.TemporaryDirectory()
         # Define the path to save the TIFF file
         path_to_tiff = os.path.join(workfolder.name, self.basename + ".tiff")
         # Build the ImageMagick command

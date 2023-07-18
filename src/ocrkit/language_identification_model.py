@@ -5,7 +5,7 @@ import fasttext
 class Language_Identification_Model:
 
     def __init__(self):
-        pretrained_lang_model = "/RIDSS2023/inputfolder/lid.176.bin"
+        pretrained_lang_model = "/RIDSS2023/src/ocrkit/lid.176 (1).bin"
         self.model = fasttext.load_model(pretrained_lang_model)
     
     # Function to identify the languages in a text

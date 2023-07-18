@@ -11,3 +11,5 @@ Shapely==2.0.1
 Wand==0.6.11
 openpyxl
 ocrmypdf
+opencv-python
+scikit-image

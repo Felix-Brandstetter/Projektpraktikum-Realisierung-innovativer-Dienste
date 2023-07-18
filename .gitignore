@@ -9,8 +9,9 @@ tmp/*
 inputfolder/*
 outputfolder/*
 .pytest_cache/*
+Experiments_Results/*
 !README_Images/*
 !*.gitkeep
 !*.bin
-!/src/Experimente/Testdateien/*/*.pdf
+!/RIDSS2023/src/Experiments/Test_Files/*/*.pdf
 
