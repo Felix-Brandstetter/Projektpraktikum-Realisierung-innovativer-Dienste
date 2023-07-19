@@ -9,6 +9,7 @@ inputfolder/*
 outputfolder/*
 .pytest_cache/*
 Experiments_Results/*
+output/*
 !README_Images/*
 !*.gitkeep
 !*.bin
