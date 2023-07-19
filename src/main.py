@@ -1,7 +1,8 @@
 import ocrmypdf
 from pathlib import Path
 
-input_file = "/RIDSS2023/Testdateien/ToOcr-24.pdf"
+#input_file = "/RIDSS2023/Testdateien/ToOcr-24.pdf"
+input_file = "/RIDSS2023/Testdateien/ToOcr-03.pdf"
 output_file = "output/WithoutPreProcessing.pdf"
 
 ocrmypdf.configure_logging(2)
