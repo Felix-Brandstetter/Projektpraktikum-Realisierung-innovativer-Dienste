@@ -88,18 +88,21 @@ for filename in os.listdir(input_folder):
             # Apply the corresponding preprocessing method
             if method == "otsu":
                 # Get ocrdata from Tiff Image
+                tessconfig = "-c thresholding_method=0 -c tessedit_write_images=1 -c thresholding_debug=1"
                 ocrdata = ocrkit.get_ocr_data(
-                    tiff_image=tiff_image, language="deu+eng+chi_sim", tessconfig="-c thresholding_method=0 -c tessedit_write_images=1 -c thresholding_debug=1"
+                    tiff_image=tiff_image, language="deu+eng+chi_sim", tessconfig=tessconfig
                 )
             if method == "adaptive_otsu":
                 # Get ocrdata from Tiff Image
+                tessconfig = "-c thresholding_method=1 -c tessedit_write_images=1 -c thresholding_debug=1"
                 ocrdata = ocrkit.get_ocr_data(
-                    tiff_image=tiff_image, language="deu+eng+chi_sim", tessconfig="-c thresholding_method=1 -c tessedit_write_images=1 -c thresholding_debug=1"
+                    tiff_image=tiff_image, language="deu+eng+chi_sim", tessconfig=tessconfig
                 )
             else:
                 # Get ocrdata from Tiff Image
+                tessconfig= "-c thresholding_method=2 -c tessedit_write_images=1 -c thresholding_debug=1"
                 ocrdata = ocrkit.get_ocr_data(
-                    tiff_image=tiff_image, language="deu+eng+chi_sim", tessconfig="-c thresholding_method=2 -c tessedit_write_images=1 -c thresholding_debug=1"
+                    tiff_image=tiff_image, language="deu+eng+chi_sim", tessconfig=tessconfig
                 )
 
             # Get Evaluation Data
@@ -120,4 +123,5 @@ for filename in os.listdir(input_folder):
                     file_output_folder, f"tiff_image_{method}.pdf"
                 ),
                 language="deu+eng+chi_sim",
+                tessconfig=tessconfig
             )

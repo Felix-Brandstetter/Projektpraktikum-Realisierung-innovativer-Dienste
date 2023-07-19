@@ -24,6 +24,7 @@ def create_searchable_pdf(
     show_bounding_boxes: bool = False,
     invisible_text: bool = False,
     interword_spaces: bool = False,
+    tessconfig:str = None
 ):
     """ 
     Creates a searchable PDF file from a TiffImage object.
@@ -45,7 +46,7 @@ def create_searchable_pdf(
     for page_number, page in enumerate(tiff_image_pages):
         # Create hocr file
         hocr_file = _create_hocr_file_from_one_page_image(
-            image=page.path, working_folder=tiff_image.workfolder, language=language
+            image=page.path, working_folder=tiff_image.workfolder, language=language, tessconfig=tessconfig
         )
         # Define the output PDF page filename
         created_pdf_page = os.path.join(
@@ -70,18 +71,27 @@ def create_searchable_pdf(
     merger.write(out_filename)
 
 
-def _create_hocr_file_from_one_page_image(image, working_folder, language):
+def _create_hocr_file_from_one_page_image(image, working_folder, language, tessconfig):
     """ Creates a hOCR file from a single-page image using Tesseract OCR"""
 
     # Define the base output filename
     output_filename_base = os.path.join(working_folder.name, "hocrfile")
     # Run Tesseract OCR to generate hocr file
-    ocrdata = pytesseract.pytesseract.run_tesseract(
-        input_filename=image,
-        output_filename_base=output_filename_base,
-        lang=language,
-        extension="hocr",
-    )
+    if tessconfig is not None:
+        ocrdata = pytesseract.pytesseract.run_tesseract(
+            input_filename=image,
+            output_filename_base=output_filename_base,
+            lang=language,
+            extension="hocr",
+            config=tessconfig
+        )
+    else: 
+        ocrdata = pytesseract.pytesseract.run_tesseract(
+            input_filename=image,
+            output_filename_base=output_filename_base,
+            lang=language,
+            extension="hocr",
+        )
     # Return the path to the generated hocr file
     return output_filename_base + ".hocr"
 
