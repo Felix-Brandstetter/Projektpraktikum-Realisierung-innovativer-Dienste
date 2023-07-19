@@ -114,16 +114,22 @@ def _merge_hocr_and_one_page_image(
 
 
 def get_ocr_data(
-    tiff_image: TiffImage, language: str, delete_minus1_confidences: bool = True
+    tiff_image: TiffImage, language: str, delete_minus1_confidences: bool = True, tessconfig:str = None
 ):
     """ Performs OCR on a TiffImage and returns the OCR-Data as a DataFrame"""
 
     # Get the start time for measuring runtime
     start_time = datetime.now()
     # Perform OCR using pytesseract and obtain OCR data as a DataFrame
-    ocrdata = pytesseract.image_to_data(
-        image=tiff_image.path, output_type=Output.DATAFRAME, lang=language
-    )
+    if tessconfig is not None:
+        ocrdata = pytesseract.image_to_data(
+            image=tiff_image.path, output_type=Output.DATAFRAME, lang=language, config=tessconfig
+        )
+    else:
+        ocrdata = pytesseract.image_to_data(
+            image=tiff_image.path, output_type=Output.DATAFRAME, lang=language
+        )
+        
     # Calculate the runtime by subtracting the start time from the end time
     runtime = datetime.now() - start_time
     # Format the runtime to two decimal places

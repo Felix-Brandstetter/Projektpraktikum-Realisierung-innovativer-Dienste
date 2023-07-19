@@ -449,12 +449,12 @@ def evaluate_ocrdata(ocrdata: pd.DataFrame):
     )
 
     # Get the unique page numbers from the OCR data
-    unique_pages = ocrdata["page"].unique()
+    unique_pages = ocrdata["page_num"].unique()
 
     # Iterate over each page and calculate the statistics
     for page in unique_pages:
         # Filter the OCR data for the current page
-        page_data = ocrdata[ocrdata["page"] == page]
+        page_data = ocrdata[ocrdata["page_num"] == page]
 
         # Calculate the statistics for the current page
         average_confidence = _get_average_confidence(page_data)
@@ -486,7 +486,8 @@ def evaluate_ocrdata(ocrdata: pd.DataFrame):
         }
 
         # Append the evaluation results for the current page to the main evaluation DataFrame
-        ocr_evaluation = ocr_evaluation.append(evaluation_results, ignore_index=True)
+        new_row = pd.DataFrame(evaluation_results, index=[page])
+        ocr_evaluation = pd.concat([ocr_evaluation, new_row], axis=0, ignore_index=True)
 
     return ocr_evaluation
 
